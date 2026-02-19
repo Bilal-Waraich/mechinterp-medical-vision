@@ -17,7 +17,6 @@ dependencies = [
     "Pillow",
     "albumentations>=2.0.0",
     "mmdet>=3.3.0",
-    "MedicalMultitaskModeling @ file://./UmedPT",
 ]
 
 [project.optional-dependencies]
