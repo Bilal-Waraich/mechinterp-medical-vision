@@ -3,7 +3,10 @@ import random
 import pandas as pd
 from PIL import Image, ImageDraw
 
-def generate_shape_dataset(output_dir='shapes_data', num_samples=100, img_size=(64, 64)):
+x = 64 * 2
+y = 64 *2
+
+def generate_shape_dataset(output_dir='shapes_data', num_samples=1000, img_size=(x, y)):
     os.makedirs(output_dir, exist_ok=True)
     data = []
     shapes = ['circle', 'square', 'triangle']
@@ -31,7 +34,7 @@ def generate_shape_dataset(output_dir='shapes_data', num_samples=100, img_size=(
             draw.polygon(points, fill=color)
             
         # Save image and record label
-        file_path = f"{output_dir}/shape_{i}.png"
+        file_path = f"{output_dir}/shape_{i+1}.png"
         img.save(file_path)
         data.append({'file_path': file_path, 'label': shape_type})
         
