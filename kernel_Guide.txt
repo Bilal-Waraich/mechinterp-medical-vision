@@ -1,0 +1,156 @@
+jovyan@jupyter-waraich:~/sparse-auto-encoder$ conda create --name myenv python=3.11
+WARNING: A conda environment already exists at '/opt/conda/envs/myenv'
+
+Remove existing environment?
+This will remove ALL directories contained within this specified prefix directory, including any other conda environments.
+
+ (y/[n])? y
+
+Channels:
+ - conda-forge
+Platform: linux-64
+Collecting package metadata (repodata.json): done
+Solving environment: done
+
+## Package Plan ##
+
+  environment location: /opt/conda/envs/myenv
+
+  added / updated specs:
+    - python=3.11
+
+
+The following NEW packages will be INSTALLED:
+
+  _openmp_mutex      conda-forge/linux-64::_openmp_mutex-4.5-20_gnu 
+  bzip2              conda-forge/linux-64::bzip2-1.0.8-hda65f42_9 
+  ca-certificates    conda-forge/noarch::ca-certificates-2026.1.4-hbd8a1cb_0 
+  icu                conda-forge/linux-64::icu-78.2-h33c6efd_0 
+  ld_impl_linux-64   conda-forge/linux-64::ld_impl_linux-64-2.45.1-default_hbd61a6d_101 
+  libexpat           conda-forge/linux-64::libexpat-2.7.4-hecca717_0 
+  libffi             conda-forge/linux-64::libffi-3.5.2-h3435931_0 
+  libgcc             conda-forge/linux-64::libgcc-15.2.0-he0feb66_18 
+  libgcc-ng          conda-forge/linux-64::libgcc-ng-15.2.0-h69a702a_18 
+  libgomp            conda-forge/linux-64::libgomp-15.2.0-he0feb66_18 
+  liblzma            conda-forge/linux-64::liblzma-5.8.2-hb03c661_0 
+  libnsl             conda-forge/linux-64::libnsl-2.0.1-hb9d3cd8_1 
+  libsqlite          conda-forge/linux-64::libsqlite-3.51.2-hf4e2dac_0 
+  libstdcxx          conda-forge/linux-64::libstdcxx-15.2.0-h934c35e_18 
+  libuuid            conda-forge/linux-64::libuuid-2.41.3-h5347b49_0 
+  libxcrypt          conda-forge/linux-64::libxcrypt-4.4.36-hd590300_1 
+  libzlib            conda-forge/linux-64::libzlib-1.3.1-hb9d3cd8_2 
+  ncurses            conda-forge/linux-64::ncurses-6.5-h2d0b736_3 
+  openssl            conda-forge/linux-64::openssl-3.6.1-h35e630c_1 
+  packaging          conda-forge/noarch::packaging-26.0-pyhcf101f3_0 
+  pip                conda-forge/noarch::pip-26.0.1-pyh8b19718_0 
+  python             conda-forge/linux-64::python-3.11.14-hd63d673_3_cpython 
+  readline           conda-forge/linux-64::readline-8.3-h853b02a_0 
+  setuptools         conda-forge/noarch::setuptools-82.0.0-pyh332efcf_0 
+  tk                 conda-forge/linux-64::tk-8.6.13-noxft_h366c992_103 
+  tzdata             conda-forge/noarch::tzdata-2025c-hc9c84f9_1 
+  wheel              conda-forge/noarch::wheel-0.46.3-pyhd8ed1ab_0 
+  zstd               conda-forge/linux-64::zstd-1.5.7-hb78ec9c_6 
+
+
+Proceed ([y]/n)? y
+
+
+Downloading and Extracting Packages:
+
+Preparing transaction: done
+Verifying transaction: done
+Executing transaction: done
+#
+# To activate this environment, use
+#
+#     $ conda activate myenv
+#
+# To deactivate an active environment, use
+#
+#     $ conda deactivate
+
+jovyan@jupyter-waraich:~/sparse-auto-encoder$ conda init bash
+no change     /opt/conda/condabin/conda
+no change     /opt/conda/bin/conda
+no change     /opt/conda/bin/conda-env
+no change     /opt/conda/bin/activate
+no change     /opt/conda/bin/deactivate
+no change     /opt/conda/etc/profile.d/conda.sh
+no change     /opt/conda/etc/fish/conf.d/conda.fish
+no change     /opt/conda/shell/condabin/Conda.psm1
+no change     /opt/conda/shell/condabin/conda-hook.ps1
+no change     /opt/conda/lib/python3.13/site-packages/xontrib/conda.xsh
+no change     /opt/conda/etc/profile.d/conda.csh
+no change     /home/jovyan/.bashrc
+No action taken.
+jovyan@jupyter-waraich:~/sparse-auto-encoder$ source ~/.bashrc
+(base) jovyan@jupyter-waraich:~/sparse-auto-encoder$ conda activate myenv
+(myenv) jovyan@jupyter-waraich:~/sparse-auto-encoder$ pwd
+/home/jovyan/sparse-auto-encoder
+(myenv) jovyan@jupyter-waraich:~/sparse-auto-encoder$ ^C
+(myenv) jovyan@jupyter-waraich:~/sparse-auto-encoder$ conda install ipykernel
+Channels:
+ - conda-forge
+Platform: linux-64
+Collecting package metadata (repodata.json): done
+Solving environment: done
+
+## Package Plan ##
+
+  environment location: /opt/conda/envs/myenv
+
+  added / updated specs:
+    - ipykernel
+
+
+The following NEW packages will be INSTALLED:
+
+  asttokens          conda-forge/noarch::asttokens-3.0.1-pyhd8ed1ab_0 
+  comm               conda-forge/noarch::comm-0.2.3-pyhe01879c_0 
+  debugpy            conda-forge/linux-64::debugpy-1.8.20-py311hc665b79_0 
+  decorator          conda-forge/noarch::decorator-5.2.1-pyhd8ed1ab_0 
+  executing          conda-forge/noarch::executing-2.2.1-pyhd8ed1ab_0 
+  ipykernel          conda-forge/noarch::ipykernel-7.2.0-pyha191276_1 
+  ipython            conda-forge/noarch::ipython-9.10.0-pyh53cf698_0 
+  ipython_pygments_~ conda-forge/noarch::ipython_pygments_lexers-1.1.1-pyhd8ed1ab_0 
+  jedi               conda-forge/noarch::jedi-0.19.2-pyhd8ed1ab_1 
+  jupyter_client     conda-forge/noarch::jupyter_client-8.8.0-pyhcf101f3_0 
+  jupyter_core       conda-forge/noarch::jupyter_core-5.9.1-pyhc90fa1f_0 
+  keyutils           conda-forge/linux-64::keyutils-1.6.3-hb9d3cd8_0 
+  krb5               conda-forge/linux-64::krb5-1.21.3-h659f571_0 
+  libedit            conda-forge/linux-64::libedit-3.1.20250104-pl5321h7949ede_0 
+  libsodium          conda-forge/linux-64::libsodium-1.0.20-h4ab18f5_0 
+  libstdcxx-ng       conda-forge/linux-64::libstdcxx-ng-15.2.0-hdf11a46_18 
+  matplotlib-inline  conda-forge/noarch::matplotlib-inline-0.2.1-pyhd8ed1ab_0 
+  nest-asyncio       conda-forge/noarch::nest-asyncio-1.6.0-pyhd8ed1ab_1 
+  parso              conda-forge/noarch::parso-0.8.6-pyhcf101f3_0 
+  pexpect            conda-forge/noarch::pexpect-4.9.0-pyhd8ed1ab_1 
+  platformdirs       conda-forge/noarch::platformdirs-4.9.2-pyhcf101f3_0 
+  prompt-toolkit     conda-forge/noarch::prompt-toolkit-3.0.52-pyha770c72_0 
+  psutil             conda-forge/linux-64::psutil-7.2.2-py311haee01d2_0 
+  ptyprocess         conda-forge/noarch::ptyprocess-0.7.0-pyhd8ed1ab_1 
+  pure_eval          conda-forge/noarch::pure_eval-0.2.3-pyhd8ed1ab_1 
+  pygments           conda-forge/noarch::pygments-2.19.2-pyhd8ed1ab_0 
+  python-dateutil    conda-forge/noarch::python-dateutil-2.9.0.post0-pyhe01879c_2 
+  python_abi         conda-forge/noarch::python_abi-3.11-8_cp311 
+  pyzmq              conda-forge/linux-64::pyzmq-27.1.0-py311h2315fbb_0 
+  six                conda-forge/noarch::six-1.17.0-pyhe01879c_1 
+  stack_data         conda-forge/noarch::stack_data-0.6.3-pyhd8ed1ab_1 
+  tornado            conda-forge/linux-64::tornado-6.5.4-py311h41d9c34_0 
+  traitlets          conda-forge/noarch::traitlets-5.14.3-pyhd8ed1ab_1 
+  typing_extensions  conda-forge/noarch::typing_extensions-4.15.0-pyhcf101f3_0 
+  wcwidth            conda-forge/noarch::wcwidth-0.6.0-pyhd8ed1ab_0 
+  zeromq             conda-forge/linux-64::zeromq-4.3.5-h387f397_9 
+
+
+Proceed ([y]/n)? y
+
+
+Downloading and Extracting Packages:
+
+Preparing transaction: done
+Verifying transaction: done
+Executing transaction: done
+(myenv) jovyan@jupyter-waraich:~/sparse-auto-encoder$ python -m ipykernel install --user --name myenv --display-name "myenv (Python 3.11)"
+Installed kernelspec myenv in /home/jovyan/.local/share/jupyter/kernels/myenv
+(myenv) jovyan@jupyter-waraich:~/sparse-auto-encoder$ 
