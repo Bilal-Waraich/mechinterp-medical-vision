@@ -36,7 +36,7 @@ def generate_shape_dataset(output_dir='shapes_data', num_samples=1000, img_size=
         # Save image and record label
         file_path = f"{output_dir}/shape_{i+1}.png"
         img.save(file_path)
-        data.append({'file_path': file_path, 'label': shape_type})
+        data.append({'image_name': file_path, 'label': shape_type})
         
     # Save labels to CSV
     pd.DataFrame(data).to_csv('labels.csv', index=False)
