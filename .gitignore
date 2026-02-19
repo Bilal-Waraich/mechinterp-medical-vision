@@ -1,3 +1,6 @@
-dummy-data/shapes_data
+dummy-testing-mmm/shapes_data
 .venv
 .idea
+.vscode
+.claude
+.env
