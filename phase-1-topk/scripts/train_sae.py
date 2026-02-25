@@ -80,7 +80,7 @@ DEFAULT_OUTPUT_DIR    = "sae_output"
 DEFAULT_EXPANSION     = 16        # d_sae = expansion * d_in
 DEFAULT_K             = 50        # BatchTopK active features per batch step
 DEFAULT_LR            = 5e-5
-DEFAULT_LR_END        = 0.0
+DEFAULT_LR_END        = 1e-6
 DEFAULT_BATCH_SIZE    = 4096
 DEFAULT_N_EPOCHS      = 10
 DEFAULT_WARMUP_STEPS  = 500
@@ -212,7 +212,7 @@ def main() -> None:
     print(f"[Train] Total samples    : {total_training_samples:,}  ({args.n_epochs} epochs)")
     print(f"[Train] Total steps      : {total_training_steps:,}")
     print(f"[Train] Batch size       : {args.batch_size}")
-    print(f"[Train] LR               : {args.lr} -> {args.lr_end}  (cosine)")
+    print(f"[Train] LR               : {args.lr} -> {args.lr_end}  (cosineannealing)")
     print(f"[Train] Warmup steps     : {args.warmup_steps}")
     print(f"[Train] Device           : {device}  AMP={use_amp}")
     print(f"[Train] W&B              : {args.wandb}\n")
@@ -240,7 +240,7 @@ def main() -> None:
         autocast                 = use_amp,
         lr                       = args.lr,
         lr_end                   = args.lr_end,
-        lr_scheduler_name        = "cosine",
+        lr_scheduler_name        = "cosineannealing",
         lr_warm_up_steps         = args.warmup_steps,
         lr_decay_steps           = decay_steps,
         n_restart_cycles         = 1,
@@ -287,7 +287,7 @@ def main() -> None:
     print(f"  Inference SAE : {inference_path}")
     print(f"  Checkpoints   : {ckpt_dir}")
     print(f"{'='*64}")
-    print(f"\n-> Bilal: trained BatchTopK SAE saved to {out_dir}")
+    print(f"\n->trained BatchTopK SAE saved to {out_dir}")
 
 
 if __name__ == "__main__":
