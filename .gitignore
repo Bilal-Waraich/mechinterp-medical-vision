@@ -4,3 +4,5 @@ dummy-testing-mmm/shapes_data
 .vscode
 .claude
 .env
+encoder-1.0.4.pt
+*.egg-info
