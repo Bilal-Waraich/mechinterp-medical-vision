@@ -33,6 +33,15 @@ dependencies = [
 
     # ── Build utilities ───────────────────────────────────────────────────
     "packaging>=21.0",
+    "logfire",
+    "segmentation-models-pytorch",     
+    "monai",     
+    "torchinfo",     
+    "shapely",     
+    "rasterio",     
+    "tiffslide",     
+    "universal-pathlib",     
+    "pydantic-settings",
 ]
 
 [project.optional-dependencies]

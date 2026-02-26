@@ -73,7 +73,7 @@ Extract intermediate representations from the frozen Swin Transformer backbone.
 
 ```bash
 python src/scripts/harvest_activations.py \
-    --checkpoint encoder-1.0.4.pt/encoder.pt \
+    --checkpoint encoder-1.0.4.pt/encoder-1.0.4.pt/encoder.pt \
     --n_samples 50000 \
     --batch_size 32 \
     --image_size 224 \
