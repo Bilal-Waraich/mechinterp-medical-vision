@@ -6,3 +6,4 @@ dummy-testing-mmm/shapes_data
 .env
 encoder-1.0.4.pt
 *.egg-info
+.pytest_cache
