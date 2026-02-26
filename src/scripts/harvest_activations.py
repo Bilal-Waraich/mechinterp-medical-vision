@@ -338,48 +338,49 @@ def harvest_activations(
     print(f"[Harvest] Estimated size    : {est_gb:.1f} GB (float32)")
     print(f"[Harvest] Batches to run    : {len(dataloader)}\n")
 
-    # ── collection loop ──────────────────────────────────────────────────
-    all_acts: list[torch.Tensor] = []
+    # ── pre-allocate output tensor ───────────────────────────────────────
+    # Size is known exactly: every image yields n_spatial tokens regardless
+    # of batch boundaries, so no cat or grow-and-copy is needed.
+    n_effective = len(dataloader.dataset) * n_spatial
+    activations = torch.empty(n_effective, d_model, dtype=torch.float32)
     t0 = time.time()
+    ptr = 0
 
     encoder.eval()
     with torch.inference_mode():
-        for batch_idx, (images, _labels) in enumerate(dataloader):
+        for batch_idx, (images, _) in enumerate(dataloader):
             encoder(images.to(device))           # hook fires here
 
             feat = captured["feat"]              # (B, H', W', C')  NHWC
             B, H, W, C = feat.shape
 
-            # ── Reshape: (B, C, H, W) → (B*H*W, C) ─────────────────────
-            feat_nchw = feat.permute(0, 3, 1, 2)               # (B, C, H, W)
-            flat      = feat_nchw.permute(0, 2, 3, 1).reshape(B * H * W, C)  # (B*H*W, C)
+            # NHWC → (B*H*W, C): the two permutes in the original cancelled out
+            flat = feat.reshape(B * H * W, C).float()
 
-            all_acts.append(flat)
+            # Normalize per-batch — normalize_activations is per-token (dim=-1)
+            # so applying it here gives the same result as applying it globally.
+            flat = normalize_activations(flat, d_model)
+
+            n = flat.shape[0]
+            activations[ptr : ptr + n] = flat
+            ptr += n
 
             if (batch_idx + 1) % 50 == 0 or (batch_idx + 1) == len(dataloader):
-                n_so_far = sum(a.shape[0] for a in all_acts)
-                elapsed  = time.time() - t0
+                elapsed = time.time() - t0
                 print(f"  batch {batch_idx + 1:>5} / {len(dataloader)}  |  "
-                      f"{n_so_far:>12,} vectors  |  {elapsed:.1f}s")
+                      f"{ptr:>12,} vectors  |  {elapsed:.1f}s")
 
     hook_handle.remove()
-
-    # ── concatenate ──────────────────────────────────────────────────────
-    activations = torch.cat(all_acts, dim=0).float()
-    del all_acts
+    activations = activations[:ptr]  # guard: trim if dataset len was off
     elapsed = time.time() - t0
 
     n_eff = activations.shape[0]
     print(f"\n[Harvest] Done in {elapsed:.1f}s")
     print(f"[Harvest] N_effective = {n_eff:,}")
 
-    # ── normalize ────────────────────────────────────────────────────────
-    avg_sq_before = activations.pow(2).sum(dim=-1).mean().item()
-    activations   = normalize_activations(activations, d_model)
-    avg_sq_after  = activations.pow(2).sum(dim=-1).mean().item()
-
-    print(f"[Normalize] avg ‖x‖² : {avg_sq_before:.2f} → {avg_sq_after:.2f}  "
-          f"(target ≈ {d_model})")
+    # ── verify normalization (read-only, no extra allocation) ─────────────
+    avg_sq_after = activations.pow(2).sum(dim=-1).mean().item()
+    print(f"[Normalize] avg ‖x‖² = {avg_sq_after:.2f}  (target ≈ {d_model})")
 
     info = {
         "d_model"    : d_model,
