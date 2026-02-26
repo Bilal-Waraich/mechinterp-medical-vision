@@ -42,6 +42,7 @@ dependencies = [
     "tiffslide",     
     "universal-pathlib",     
     "pydantic-settings",
+    "albumentations",
 ]
 
 [project.optional-dependencies]

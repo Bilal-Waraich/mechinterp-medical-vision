@@ -246,6 +246,53 @@ data/vis_outputs/
 
 ---
 
+## Deployment (Nomad Batch Job)
+
+The full harvest → train pipeline runs as a single Nomad batch job using CSI volumes for storage.
+
+### Build & Push Docker Image
+
+```bash
+# Build from repo root
+docker build -t registry.example.com/sae-01/sae-pipeline:latest .
+
+# Login to Harbor
+docker login registry.example.com
+
+# Push
+docker push registry.example.com/sae-01/sae-pipeline:latest
+```
+
+> If you built with a different tag, retag first:
+> ```bash
+> docker tag <old-tag> registry.example.com/sae-01/sae-pipeline:latest
+> ```
+
+### Submit & Monitor
+
+```bash
+# Submit
+nomad job run nomad/sae-pipeline.nomad
+
+# Check status
+nomad job status sae-1.0
+
+# Stream logs (replace <alloc-id> with ID from status output)
+nomad alloc logs <alloc-id> harvest
+nomad alloc logs <alloc-id> train
+```
+
+### Storage Layout (`\\fileserver\share\deep_learning\`)
+
+| Path | Role |
+|---|---|
+| `input\data\MechanisticInterpretability_BWA_NLA\encoder-1.0.4.pt\encoder.pt` | Encoder checkpoint (read-only, CSI `default_dl_input`) |
+| `output\MechanisticInterpretability_BWA_NLA\sae-1.0\checkpoints\` | SAE checkpoints written by train task (CSI `default_dl_output`) |
+
+Intermediate activations (`~4 GB`) live in `NOMAD_ALLOC_DIR` (ephemeral, shared between tasks, discarded after job).
+
+---
+
 ## Tests
 
 All tests run on CPU with tiny synthetic data (no GPU or disk I/O required):
