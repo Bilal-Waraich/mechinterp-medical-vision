@@ -308,9 +308,18 @@ def harvest_activations(
     dataloader: DataLoader,
     device: torch.device,
     pm_index: int = DEFAULT_PM_INDEX,
+    patches_dir: Optional[str] = None,
 ) -> tuple[torch.Tensor, dict]:
     """
     Collect, flatten, and normalize activations from the hooked PM layer.
+
+    Parameters
+    ----------
+    patches_dir : str or None
+        If given, each 224×224 input patch is saved as a PNG named
+        ``{patch_idx:07d}.png`` in this directory.  These files are
+        required by ``visualise.py`` for spatial overlay rendering.
+        Pixel values are clamped to [0, 1] before saving (no de-normalisation).
 
     Returns
     -------
@@ -338,6 +347,14 @@ def harvest_activations(
     print(f"[Harvest] Estimated size    : {est_gb:.1f} GB (float32)")
     print(f"[Harvest] Batches to run    : {len(dataloader)}\n")
 
+    # ── patches_dir setup ───────────────────────────────────────────────
+    _patches_out: Optional[Path] = None
+    if patches_dir:
+        from PIL import Image as _PILImage
+        _patches_out = Path(patches_dir)
+        _patches_out.mkdir(parents=True, exist_ok=True)
+        print(f"[Harvest] Saving patch PNGs to {_patches_out}")
+
     # ── pre-allocate output tensor ───────────────────────────────────────
     # Size is known exactly: every image yields n_spatial tokens regardless
     # of batch boundaries, so no cat or grow-and-copy is needed.
@@ -345,6 +362,7 @@ def harvest_activations(
     activations = torch.empty(n_effective, d_model, dtype=torch.float32)
     t0 = time.time()
     ptr = 0
+    patch_ptr = 0  # tracks which patch (image) we are on, for PNG filenames
 
     encoder.eval()
     with torch.inference_mode():
@@ -364,6 +382,18 @@ def harvest_activations(
             n = flat.shape[0]
             activations[ptr : ptr + n] = flat
             ptr += n
+
+            # ── Save patch PNGs (one per input image in the batch) ───────
+            if _patches_out is not None:
+                # images: [B, 3, H, W] float32 in [0,1] (SemiCOL) or
+                # ImageNet-normalised (synthetic) — clamp to [0,1] either way
+                imgs_cpu = images.cpu().clamp(0.0, 1.0)
+                for i in range(B):
+                    arr = (imgs_cpu[i].permute(1, 2, 0).numpy() * 255).astype("uint8")
+                    _PILImage.fromarray(arr).save(
+                        _patches_out / f"{patch_ptr:07d}.png"
+                    )
+                    patch_ptr += 1
 
             if (batch_idx + 1) % 50 == 0 or (batch_idx + 1) == len(dataloader):
                 elapsed = time.time() - t0
@@ -410,6 +440,18 @@ def main():
     ap.add_argument("--output",      default=DEFAULT_OUTPUT_PATH)
     ap.add_argument("--device",
                     default="cuda:0" if torch.cuda.is_available() else "cpu")
+    # ── SemiCOL real-data options (optional; omit to keep synthetic fallback) ─
+    ap.add_argument("--data_dir",      type=str, default=None,
+                    help="Path to SemiCOL data root. If omitted, synthetic data is used.")
+    ap.add_argument("--track",         type=str, default="b", choices=["a", "b"],
+                    help="Dataset track: 'b'=weak WSI (SAE training), 'a'=manual masks (validation).")
+    ap.add_argument("--max_per_slide", type=int, default=500,
+                    help="Track B: max patches sampled per WSI slide.")
+    ap.add_argument("--max_per_case",  type=int, default=2000,
+                    help="Track A: max patches sampled per annotated case.")
+    ap.add_argument("--patches_dir",   type=str, default=None,
+                    help="If set, saves each input patch as {idx:07d}.png here. "
+                         "Required for visualise.py spatial overlays.")
     args = ap.parse_args()
 
     device = torch.device(args.device)
@@ -420,14 +462,30 @@ def main():
     if device.type == "cuda":
         print(f"GPU        : {torch.cuda.get_device_name(0)}")
     print(f"Checkpoint : {args.checkpoint}")
-    print(f"N samples  : {args.n_samples:,}")
+    if args.data_dir:
+        print(f"Data dir   : {args.data_dir}")
+        print(f"Track      : {args.track}  ({'weak WSI' if args.track == 'b' else 'manual masks'})")
+        if args.track == "b":
+            print(f"Max/slide  : {args.max_per_slide}")
+        else:
+            print(f"Max/case   : {args.max_per_case}")
+    else:
+        print(f"N samples  : {args.n_samples:,}  (synthetic fallback)")
     print(f"Batch size : {args.batch_size}")
     print(f"PM index   : {args.pm_index}  (0=Stage1→2, 1=Stage2→3, 2=Stage3→4)")
     print(f"Output     : {args.output}")
     print()
 
     # 1. Dataset ──────────────────────────────────────────────────────────────
-    dataset    = load_dataset(args.n_samples, args.image_size)
+    if args.data_dir:
+        if args.track == "b":
+            from datasets.semicol_dataset import SemiCOLWeakDataset
+            dataset = SemiCOLWeakDataset(args.data_dir, args.max_per_slide)
+        else:
+            from datasets.semicol_dataset import SemiCOLManualDataset
+            dataset = SemiCOLManualDataset(args.data_dir, args.max_per_case)
+    else:
+        dataset = load_dataset(args.n_samples, args.image_size)
     dataloader = DataLoader(
         dataset,
         batch_size=args.batch_size,
@@ -441,7 +499,8 @@ def main():
 
     # 3. Harvest ──────────────────────────────────────────────────────────────
     activations, info = harvest_activations(
-        encoder, dataloader, device, args.pm_index
+        encoder, dataloader, device, args.pm_index,
+        patches_dir=args.patches_dir,
     )
 
     # 4. Summary ──────────────────────────────────────────────────────────────
@@ -457,17 +516,48 @@ def main():
     out_path = Path(args.output)
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
+    import json as _json
+
+    track      = args.track if args.data_dir else "synthetic"
+    class_names = (
+        dataset.class_names if hasattr(dataset, "class_names") else []
+    )
+
     metadata = {
-        "checkpoint" : str(args.checkpoint),
-        "d_model"    : str(d_model),
-        "spatial_h"  : str(info["spatial_h"]),
-        "spatial_w"  : str(info["spatial_w"]),
-        "n_images"   : str(info["n_images"]),
-        "n_effective": str(n_eff),
-        "pm_index"   : str(args.pm_index),
-        "image_size" : str(args.image_size),
+        "checkpoint"  : str(args.checkpoint),
+        "d_model"     : str(d_model),
+        "spatial_h"   : str(info["spatial_h"]),
+        "spatial_w"   : str(info["spatial_w"]),
+        "n_images"    : str(info["n_images"]),
+        "n_effective" : str(n_eff),
+        "pm_index"    : str(args.pm_index),
+        "image_size"  : str(args.image_size),
+        "track"       : track,
+        "class_names" : _json.dumps(class_names),
     }
-    save_file({"activations": activations}, str(out_path), metadata=metadata)
+
+    # Labels and patch IDs are stored at patch granularity (one entry per
+    # original 224×224 patch), NOT per activation row.  Each patch produces
+    # spatial_h × spatial_w = 196 activation rows (for pm_index=1).
+    # Downstream code must tile labels by n_patches if row-level labels are
+    # needed (e.g. np.repeat(labels, spatial_h * spatial_w)).
+    n_patches = len(dataset)  # patches after background filtering, not raw image count
+    patch_labels = (
+        torch.tensor(dataset.labels, dtype=torch.int32)
+        if hasattr(dataset, "labels") and dataset.labels
+        else torch.full((n_patches,), -1, dtype=torch.int32)
+    )
+    patch_ids = torch.arange(n_patches, dtype=torch.int32)
+
+    save_file(
+        {
+            "activations": activations,
+            "labels"     : patch_labels,   # [N_patches] int32, patch granularity
+            "patch_ids"  : patch_ids,      # [N_patches] int32, sequential index
+        },
+        str(out_path),
+        metadata=metadata,
+    )
 
     size_mb = out_path.stat().st_size / 1e6
     print(f"Saved → {out_path}  ({size_mb:.1f} MB)")
