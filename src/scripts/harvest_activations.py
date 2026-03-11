@@ -491,7 +491,7 @@ def main():
         dataset,
         batch_size=args.batch_size,
         shuffle=False,
-        num_workers=0,            # avoids shm issues in Docker / Nomad
+        num_workers=8,
         pin_memory=(device.type == "cuda"),
     )
 
