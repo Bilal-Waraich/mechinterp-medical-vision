@@ -441,15 +441,21 @@ def main():
     ap.add_argument("--output",      default=DEFAULT_OUTPUT_PATH)
     ap.add_argument("--device",
                     default="cuda:0" if torch.cuda.is_available() else "cpu")
-    # ── SemiCOL real-data options (optional; omit to keep synthetic fallback) ─
+    # ── Real-data options (optional; omit to keep synthetic fallback) ────────
     ap.add_argument("--data_dir",      type=str, default=None,
-                    help="Path to SemiCOL data root. If omitted, synthetic data is used.")
+                    help="Path to dataset root. If omitted, synthetic data is used.")
+    ap.add_argument("--dataset",       type=str, default="semicol",
+                    choices=["semicol", "brain_tumor"],
+                    help="Which dataset to load from --data_dir: "
+                         "'semicol' (SemiCOL colorectal) or "
+                         "'brain_tumor' (Kaggle brain-tumor-classification-mri Training/).")
+    # SemiCOL-specific options (ignored when --dataset brain_tumor)
     ap.add_argument("--track",         type=str, default="b", choices=["a", "b"],
-                    help="Dataset track: 'b'=weak WSI (SAE training), 'a'=manual masks (validation).")
+                    help="SemiCOL track: 'b'=weak WSI (SAE training), 'a'=manual masks (validation).")
     ap.add_argument("--max_per_slide", type=int, default=500,
-                    help="Track B: max patches sampled per WSI slide.")
+                    help="SemiCOL Track B: max patches sampled per WSI slide.")
     ap.add_argument("--max_per_case",  type=int, default=2000,
-                    help="Track A: max patches sampled per annotated case.")
+                    help="SemiCOL Track A: max patches sampled per annotated case.")
     ap.add_argument("--patches_dir",   type=str, default=None,
                     help="If set, saves each input patch as {idx:07d}.png here. "
                          "Required for visualise.py spatial overlays.")
@@ -464,12 +470,14 @@ def main():
         print(f"GPU        : {torch.cuda.get_device_name(0)}")
     print(f"Checkpoint : {args.checkpoint}")
     if args.data_dir:
+        print(f"Dataset    : {args.dataset}")
         print(f"Data dir   : {args.data_dir}")
-        print(f"Track      : {args.track}  ({'weak WSI' if args.track == 'b' else 'manual masks'})")
-        if args.track == "b":
-            print(f"Max/slide  : {args.max_per_slide}")
-        else:
-            print(f"Max/case   : {args.max_per_case}")
+        if args.dataset == "semicol":
+            print(f"Track      : {args.track}  ({'weak WSI' if args.track == 'b' else 'manual masks'})")
+            if args.track == "b":
+                print(f"Max/slide  : {args.max_per_slide}")
+            else:
+                print(f"Max/case   : {args.max_per_case}")
     else:
         print(f"N samples  : {args.n_samples:,}  (synthetic fallback)")
     print(f"Batch size : {args.batch_size}")
@@ -479,7 +487,10 @@ def main():
 
     # 1. Dataset ──────────────────────────────────────────────────────────────
     if args.data_dir:
-        if args.track == "b":
+        if args.dataset == "brain_tumor":
+            from datasets.brain_cancer_dataset import BrainTumorDataset
+            dataset = BrainTumorDataset(args.data_dir)
+        elif args.track == "b":
             from datasets.semicol_dataset import SemiCOLWeakDataset
             dataset = SemiCOLWeakDataset(args.data_dir, args.max_per_slide)
         else:
@@ -519,7 +530,12 @@ def main():
 
     import json as _json
 
-    track      = args.track if args.data_dir else "synthetic"
+    if not args.data_dir:
+        track = "synthetic"
+    elif args.dataset == "brain_tumor":
+        track = "brain_tumor"
+    else:
+        track = args.track
     class_names = (
         dataset.class_names if hasattr(dataset, "class_names") else []
     )
