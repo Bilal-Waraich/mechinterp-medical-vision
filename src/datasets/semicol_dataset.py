@@ -304,7 +304,19 @@ class SemiCOLManualDataset(Dataset):
         inst_counts: dict[str, int] = collections.defaultdict(int)
         class_counts: dict[str, int] = collections.defaultdict(int)
 
-        for ds_dir in sorted(manual_root.iterdir()):
+        if not manual_root.exists():
+            print(f"  [ERROR] manual_root does not exist: {manual_root}")
+            if data_dir.exists():
+                print(f"  [DEBUG] Contents of data_dir ({data_dir}):")
+                for p in sorted(data_dir.iterdir()):
+                    print(f"    {p.name}  ({'dir' if p.is_dir() else 'file'})")
+            else:
+                print(f"  [ERROR] data_dir does not exist either: {data_dir}")
+        else:
+            ds_dirs = [p for p in manual_root.iterdir() if p.is_dir()]
+            print(f"  [DEBUG] manual_root={manual_root}  ({len(ds_dirs)} dataset dirs: {[d.name for d in sorted(ds_dirs)]})")
+
+        for ds_dir in sorted(manual_root.iterdir()) if manual_root.exists() else []:
             if not ds_dir.is_dir():
                 continue
             institution = self._INSTITUTION_MAP.get(ds_dir.name, ds_dir.name)
@@ -315,22 +327,41 @@ class SemiCOLManualDataset(Dataset):
                 img_dir = case_dir / "image"
                 msk_dir = case_dir / "mask"
                 if not img_dir.exists() or not msk_dir.exists():
+                    print(f"  [DEBUG] Skipping {case_dir.name}: missing image/={img_dir.exists()} mask/={msk_dir.exists()}")
                     continue
 
-                img_files = sorted(img_dir.glob("*.tiff")) + sorted(img_dir.glob("*.tif"))
+                img_files = (
+                    sorted(img_dir.glob("*.tiff"))
+                    + sorted(img_dir.glob("*.tif"))
+                    + sorted(img_dir.glob("*.png"))
+                )
+                if not img_files:
+                    print(f"  [DEBUG] No image files in {img_dir}")
+                    continue
+
+                msk_files = (
+                    sorted(msk_dir.glob("*.tiff"))
+                    + sorted(msk_dir.glob("*.tif"))
+                    + sorted(msk_dir.glob("*.png"))
+                )
+                msk_by_stem = {f.stem: f for f in msk_files}
+
+                if not msk_files:
+                    print(f"  [DEBUG] No mask files in {msk_dir}")
+                    continue
+
+                case_patches_before = len(self._patches)
                 for img_path in img_files:
-                    mask_path = msk_dir / img_path.name
-                    if not mask_path.exists():
-                        alt = msk_dir / (img_path.stem + ".tif")
-                        if alt.exists():
-                            mask_path = alt
-                        else:
-                            print(f"  [WARN] No mask for {img_path.name} in {case_dir.name}")
-                            continue
+                    added = len(self._patches) - case_patches_before
+                    if added >= max_per_case:
+                        break
+                    mask_path = msk_by_stem.get(img_path.stem + "-labelled") or msk_by_stem.get(img_path.stem)
+                    if mask_path is None:
+                        continue
 
                     self._index_tile(
                         img_path, mask_path, case_dir.name, institution,
-                        max_per_case, inst_counts, class_counts,
+                        max_per_case - added, inst_counts, class_counts,
                     )
 
         total = sum(inst_counts.values())
@@ -343,6 +374,11 @@ class SemiCOLManualDataset(Dataset):
             n = class_counts.get(cls, 0)
             print(f"    {cls:<6}: {n:>8,}")
 
+    @staticmethod
+    def _read_region_pil(path: Path, row: int, col: int) -> Image.Image:
+        with Image.open(path) as img:
+            return img.crop((col, row, col + PATCH_SIZE, row + PATCH_SIZE))
+
     def _index_tile(
         self,
         img_path: Path,
@@ -353,10 +389,16 @@ class SemiCOLManualDataset(Dataset):
         inst_counts: dict,
         class_counts: dict,
     ) -> None:
+        use_pil = img_path.suffix.lower() == ".png"
         try:
-            ts_img = self._tiffslide.TiffSlide(str(img_path))
-            W, H = ts_img.level_dimensions[0]
-            ts_img.close()
+            if use_pil:
+                _img = Image.open(img_path)
+                W, H = _img.size
+                _img.close()
+            else:
+                ts_img = self._tiffslide.TiffSlide(str(img_path))
+                W, H = ts_img.level_dimensions[0]
+                ts_img.close()
         except Exception as exc:
             print(f"  [WARN] Cannot open image {img_path.name}: {exc}")
             return
@@ -373,31 +415,37 @@ class SemiCOLManualDataset(Dataset):
             candidates = [candidates[i] for i in sorted(chosen)]
 
         try:
-            ts_img = self._tiffslide.TiffSlide(str(img_path))
-            ts_msk = self._tiffslide.TiffSlide(str(mask_path))
+            if use_pil:
+                pil_img = Image.open(img_path)
+                pil_msk = Image.open(mask_path)
+            else:
+                ts_img = self._tiffslide.TiffSlide(str(img_path))
+                ts_msk = self._tiffslide.TiffSlide(str(mask_path))
 
             for r, c in candidates:
-                img_region = ts_img.read_region((c, r), 0, (PATCH_SIZE, PATCH_SIZE))
+                if use_pil:
+                    img_region = pil_img.crop((c, r, c + PATCH_SIZE, r + PATCH_SIZE))
+                    msk_region = pil_msk.crop((c, r, c + PATCH_SIZE, r + PATCH_SIZE))
+                else:
+                    img_region = ts_img.read_region((c, r), 0, (PATCH_SIZE, PATCH_SIZE))
+                    msk_region = ts_msk.read_region((c, r), 0, (PATCH_SIZE, PATCH_SIZE))
+
                 img_np = np.array(img_region.convert("RGB"))
 
                 if _is_background(img_np):
                     continue
 
-                msk_region = ts_msk.read_region((c, r), 0, (PATCH_SIZE, PATCH_SIZE))
                 msk_np = np.array(msk_region)
                 if msk_np.ndim == 3:
                     msk_np = msk_np[:, :, 0]
 
-                # Skip patches where more than 50% of pixels are unlabelled
                 nonzero = msk_np != 0
                 if nonzero.sum() < (PATCH_SIZE * PATCH_SIZE * 0.5):
                     continue
 
-                # Dominant tissue class = mode of non-zero pixel values
                 vals, cnts = np.unique(msk_np[nonzero], return_counts=True)
                 dominant = int(vals[cnts.argmax()])
 
-                # Skip background class and any unknown values
                 if dominant == _BACK_LABEL or dominant not in self._PIXEL_TO_IDX:
                     continue
 
@@ -411,8 +459,12 @@ class SemiCOLManualDataset(Dataset):
                 inst_counts[institution] += 1
                 class_counts[label_name] += 1
 
-            ts_img.close()
-            ts_msk.close()
+            if use_pil:
+                pil_img.close()
+                pil_msk.close()
+            else:
+                ts_img.close()
+                ts_msk.close()
         except Exception as exc:
             print(f"  [WARN] Error reading tile {img_path.name}: {exc}")
 
@@ -421,9 +473,12 @@ class SemiCOLManualDataset(Dataset):
 
     def __getitem__(self, idx: int) -> tuple[torch.Tensor, int]:
         img_path, _mask_path, row, col, label_idx = self._patches[idx]
-        ts = self._tiffslide.TiffSlide(img_path)
-        region = ts.read_region((col, row), 0, (PATCH_SIZE, PATCH_SIZE))
-        ts.close()
+        if img_path.endswith(".png"):
+            region = self._read_region_pil(Path(img_path), row, col)
+        else:
+            ts = self._tiffslide.TiffSlide(img_path)
+            region = ts.read_region((col, row), 0, (PATCH_SIZE, PATCH_SIZE))
+            ts.close()
         patch_np = np.array(region.convert("RGB"), dtype=np.float32) / 255.0
-        tensor = torch.from_numpy(patch_np).permute(2, 0, 1)  # [3, H, W]
+        tensor = torch.from_numpy(patch_np).permute(2, 0, 1)
         return tensor, label_idx

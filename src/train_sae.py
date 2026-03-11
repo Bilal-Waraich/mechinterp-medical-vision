@@ -281,13 +281,11 @@ def train(cfg: SAEConfig) -> BatchTopKSAE:
             )
 
         # ── Checkpoint ────────────────────────────────────────────────────
-        if step % cfg.checkpoint_every == 0:
+        if step % cfg.checkpoint_every == 0 or step == cfg.steps:
             ckpt = save_checkpoint(model, cfg, step)
             print(f"[Checkpoint] step {step} → {ckpt}")
 
-    # Final checkpoint
-    ckpt = save_checkpoint(model, cfg, cfg.steps)
-    print(f"\n[Done] Final checkpoint → {ckpt}")
+    print(f"\n[Done] Training complete.")
 
     if use_wandb:
         wandb.finish()

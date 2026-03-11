@@ -12,23 +12,24 @@ Pipeline
   4. Pass all batches through; hook captures (B, H', W', C') NHWC tensors
   5. Reshape to (B*H'*W', C') — the (B, C, H, W) → (B*H*W, C) flattening
   6. Anthropic-style normalization: x / (rms(x) + ε) * sqrt(d_model)
-  7. Print N_effective and save to data/dummy_activations.safetensors
+  7. Print N_effective and save to --output path
 
 Usage (from repo root)
 ----------------------
   # Default: synthetic data, Stage 2→3 hook
-  python phase-1-topk/scripts/harvest_activations.py
+  python src/scripts/harvest_activations.py
 
   # With a specific checkpoint
-  python phase-1-topk/scripts/harvest_activations.py \\
+  python src/scripts/harvest_activations.py \
       --checkpoint encoder-1.0.4.pt/encoder.pt
 
   # All options
-  python phase-1-topk/scripts/harvest_activations.py \\
-      --checkpoint encoder-1.0.4.pt/encoder.pt \\
-      --n_samples 50000 --batch_size 32 \\
-      --pm_index 1 \\
-      --output data/dummy_activations.safetensors \\
+  python src/scripts/harvest_activations.py \
+      --checkpoint encoder-1.0.4.pt/encoder.pt \
+      --data_dir /path/to/semicol --track b \
+      --n_samples 50000 --batch_size 256 \
+      --pm_index 1 \
+      --output data/activations.safetensors \
       --device cuda:0
 
 PatchMerging index (--pm_index)
