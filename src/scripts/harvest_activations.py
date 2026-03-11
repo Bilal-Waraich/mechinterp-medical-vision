@@ -445,10 +445,11 @@ def main():
     ap.add_argument("--data_dir",      type=str, default=None,
                     help="Path to dataset root. If omitted, synthetic data is used.")
     ap.add_argument("--dataset",       type=str, default="semicol",
-                    choices=["semicol", "brain_tumor"],
+                    choices=["semicol", "brain_tumor", "tcga_breast"],
                     help="Which dataset to load from --data_dir: "
-                         "'semicol' (SemiCOL colorectal) or "
-                         "'brain_tumor' (Kaggle brain-tumor-classification-mri Training/).")
+                         "'semicol' (SemiCOL colorectal), "
+                         "'brain_tumor' (Kaggle brain-tumor-classification-mri Training/), or "
+                         "'tcga_breast' (TCGA-BRCA SVS WSIs with OncoTree histological labels).")
     # SemiCOL-specific options (ignored when --dataset brain_tumor)
     ap.add_argument("--track",         type=str, default="b", choices=["a", "b"],
                     help="SemiCOL track: 'b'=weak WSI (SAE training), 'a'=manual masks (validation).")
@@ -478,6 +479,8 @@ def main():
                 print(f"Max/slide  : {args.max_per_slide}")
             else:
                 print(f"Max/case   : {args.max_per_case}")
+        elif args.dataset == "tcga_breast":
+            print(f"Max/slide  : {args.max_per_slide}")
     else:
         print(f"N samples  : {args.n_samples:,}  (synthetic fallback)")
     print(f"Batch size : {args.batch_size}")
@@ -490,6 +493,9 @@ def main():
         if args.dataset == "brain_tumor":
             from datasets.brain_cancer_dataset import BrainTumorDataset
             dataset = BrainTumorDataset(args.data_dir)
+        elif args.dataset == "tcga_breast":
+            from datasets.breast_cancer.tcga_breast_dataset import TCGABreastDataset
+            dataset = TCGABreastDataset(args.data_dir, args.max_per_slide)
         elif args.track == "b":
             from datasets.semicol_dataset import SemiCOLWeakDataset
             dataset = SemiCOLWeakDataset(args.data_dir, args.max_per_slide)
@@ -534,6 +540,8 @@ def main():
         track = "synthetic"
     elif args.dataset == "brain_tumor":
         track = "brain_tumor"
+    elif args.dataset == "tcga_breast":
+        track = "tcga_breast"
     else:
         track = args.track
     class_names = (
