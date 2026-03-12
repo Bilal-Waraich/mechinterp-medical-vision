@@ -102,7 +102,7 @@ def compute_prompt_attribution(
     Tensor [n_active, n_active]
     """
     source_strengths = f[:, active_indices].mean(dim=0)  # [n_active]
-    attribution = source_strengths.unsqueeze(1) * interaction
+    attribution = source_strengths.unsqueeze(1) * interaction.to(source_strengths.device)
     return attribution
 
 
