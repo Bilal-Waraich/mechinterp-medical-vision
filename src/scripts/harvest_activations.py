@@ -46,6 +46,7 @@ import math
 import os
 import sys
 import time
+from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
@@ -396,10 +397,14 @@ def harvest_activations(
                     )
                     patch_ptr += 1
 
-            if (batch_idx + 1) % 50 == 0 or (batch_idx + 1) == len(dataloader):
+            if (batch_idx + 1) % 10 == 0 or (batch_idx + 1) == len(dataloader):
                 elapsed = time.time() - t0
-                print(f"  batch {batch_idx + 1:>5} / {len(dataloader)}  |  "
-                      f"{ptr:>12,} vectors  |  {elapsed:.1f}s")
+                done = batch_idx + 1
+                total = len(dataloader)
+                eta = elapsed / done * (total - done) if done < total else 0
+                ts = datetime.now().strftime("%H:%M:%S")
+                print(f"  [{ts}]  batch {done:>5} / {total}  |  "
+                      f"{ptr:>12,} vectors  |  elapsed={elapsed:.0f}s  eta={eta:.0f}s")
 
     hook_handle.remove()
     activations = activations[:ptr]  # guard: trim if dataset len was off

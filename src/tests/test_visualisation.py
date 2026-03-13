@@ -128,7 +128,7 @@ class TestGraphUtils:
     def test_build_graph_data_keys(self, tiny_activations, tiny_sae, tiny_config):
         gd = build_graph_data(0, tiny_activations, tiny_sae, tiny_config)
         expected_keys = {
-            "active_indices", "attribution", "logit_attribution",
+            "active_indices", "attribution", "edge_attributions", "logit_attribution",
             "feature_strengths", "n_active", "image_idx",
         }
         assert set(gd.keys()) == expected_keys

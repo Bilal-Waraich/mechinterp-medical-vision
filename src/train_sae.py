@@ -34,10 +34,12 @@ from __future__ import annotations
 
 import argparse
 import json
+from datetime import datetime
 from pathlib import Path
 
 import torch
 from safetensors.torch import load_file, save_file
+from torch.cuda.amp import GradScaler, autocast
 from torch.utils.data import DataLoader, TensorDataset
 
 from config import SAEConfig
@@ -221,22 +223,29 @@ def train(cfg: SAEConfig) -> BatchTopKSAE:
         print("[Wandb] wandb not available — console logging only")
 
     # ── Training loop ─────────────────────────────────────────────────────
+    amp_label = "AMP/FP16" if cfg.use_amp else "FP32"
     print(f"\n[Train] Starting — {cfg.steps:,} steps  "
-          f"(checkpoint every {cfg.checkpoint_every:,})\n")
+          f"(checkpoint every {cfg.checkpoint_every:,})  precision={amp_label}\n")
 
+    scaler = GradScaler(enabled=cfg.use_amp)
     model.train()
     data_iter = _infinite()
+    t0_train = datetime.now()
 
     for step in range(1, cfg.steps + 1):
         (x,) = next(data_iter)
         x = x.to(device)
 
-        # -- Forward --
-        output = model(x)
-        loss = output["loss"]
+        # -- Forward (FP16 inside autocast when use_amp=True) --
+        with autocast(enabled=cfg.use_amp):
+            output = model(x)
+            loss = output["loss"]
 
         # -- Backward --
-        loss.backward()
+        scaler.scale(loss).backward()
+
+        # -- Unscale before grad ops so clip + unit-norm work in FP32 --
+        scaler.unscale_(optimizer)
 
         # -- Gradient clipping (before decoder constraint) --
         torch.nn.utils.clip_grad_norm_(model.parameters(), cfg.max_grad_norm)
@@ -246,7 +255,8 @@ def train(cfg: SAEConfig) -> BatchTopKSAE:
         model.make_decoder_weights_and_grad_unit_norm()
 
         # -- Parameter update --
-        optimizer.step()
+        scaler.step(optimizer)
+        scaler.update()
         optimizer.zero_grad()
 
         # ── Metrics ───────────────────────────────────────────────────────
@@ -271,13 +281,17 @@ def train(cfg: SAEConfig) -> BatchTopKSAE:
             wandb.log(metrics, step=step)
 
         if step % 100 == 0 or step == 1:
+            elapsed = (datetime.now() - t0_train).total_seconds()
+            eta = elapsed / step * (cfg.steps - step) if step < cfg.steps else 0
+            ts = datetime.now().strftime("%H:%M:%S")
             print(
-                f"step {step:>6} / {cfg.steps}  |  "
+                f"[{ts}] step {step:>6} / {cfg.steps}  |  "
                 f"loss={metrics['loss/total']:.4f}  "
                 f"recon={metrics['loss/reconstruction']:.4f}  "
                 f"L0={metrics['sparsity/l0']:.1f}/{cfg.k}  "
                 f"dead={metrics['sparsity/dead_latents']:.3f}  "
-                f"EV={metrics['sparsity/explained_variance']:.3f}"
+                f"EV={metrics['sparsity/explained_variance']:.3f}  "
+                f"eta={eta/3600:.1f}h"
             )
 
         # ── Checkpoint ────────────────────────────────────────────────────
@@ -318,6 +332,8 @@ def main() -> None:
     parser.add_argument("--output_dir", type=str, default=None)
     parser.add_argument("--wandb_project", type=str, default=None)
     parser.add_argument("--device", type=str, default=None)
+    parser.add_argument("--use_amp", action="store_true", default=None,
+                        help="Enable mixed-precision (FP16) training via torch.cuda.amp (~2x speedup on Tensor Core GPUs).")
     args = parser.parse_args()
 
     cfg = SAEConfig()

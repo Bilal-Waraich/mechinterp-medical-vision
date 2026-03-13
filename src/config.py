@@ -38,6 +38,7 @@ class SAEConfig:
 
     # ── Device ────────────────────────────────────────────────────────────
     device: str = "cuda:0"
+    use_amp: bool = False       # mixed-precision (FP16) training via torch.cuda.amp
 
     @property
     def d_sae(self) -> int:
