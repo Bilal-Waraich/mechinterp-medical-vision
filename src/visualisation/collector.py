@@ -66,25 +66,34 @@ def compute_feature_stats(
         f"N_eff={N_eff} is not divisible by n_patches={n_patches}"
     )
 
-    # 1. Encode in chunks ──────────────────────────────────────────────────
-    encoded_chunks: list[torch.Tensor] = []
-    for start in tqdm(range(0, N_eff, batch_size), desc="Encoding"):
-        chunk = activations[start : start + batch_size]
-        f = sae.encode(chunk)  # [chunk_size, d_sae]
-        encoded_chunks.append(f.cpu())
+    d_sae = sae.d_sae
 
-    # [N_eff, d_sae] → [n_images, n_patches, d_sae]
-    all_codes = torch.cat(encoded_chunks, dim=0)
-    all_codes = all_codes.reshape(n_images, n_patches, -1)
+    # Pre-allocate output tensors on CPU — avoids materialising N_eff×d_sae
+    feature_max    = torch.zeros(n_images, d_sae)
+    feature_argmax = torch.zeros(n_images, d_sae, dtype=torch.long)
+    feature_mean   = torch.zeros(n_images, d_sae)
 
-    d_sae = all_codes.shape[-1]
+    # Process in image-aligned batches so we never hold more than
+    # images_per_batch × n_patches × d_sae floats in memory at once.
+    images_per_batch = max(1, batch_size // n_patches)
 
-    # 2. Per-image stats ───────────────────────────────────────────────────
-    feature_max, feature_argmax = all_codes.max(dim=1)    # [n_images, d_sae]
-    feature_mean = all_codes.mean(dim=1)                   # [n_images, d_sae]
+    for img_start in tqdm(range(0, n_images, images_per_batch), desc="Encoding"):
+        img_end  = min(img_start + images_per_batch, n_images)
+        tok_start = img_start * n_patches
+        tok_end   = img_end   * n_patches
 
-    # 3. Global stats ──────────────────────────────────────────────────────
-    global_max = feature_max.max(dim=0).values              # [d_sae]
+        chunk = activations[tok_start:tok_end]           # [B*n_patches, d_model]
+        codes = sae.encode(chunk).cpu()                  # [B*n_patches, d_sae]
+        codes = codes.reshape(img_end - img_start, n_patches, d_sae)
+
+        img_max, img_argmax = codes.max(dim=1)           # [B, d_sae]
+        img_mean            = codes.mean(dim=1)          # [B, d_sae]
+
+        feature_max   [img_start:img_end] = img_max
+        feature_argmax[img_start:img_end] = img_argmax
+        feature_mean  [img_start:img_end] = img_mean
+
+    global_max = feature_max.max(dim=0).values           # [d_sae]
 
     return {
         "feature_max": feature_max,
