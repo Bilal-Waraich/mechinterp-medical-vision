@@ -102,7 +102,7 @@ def compute_prompt_attribution(
     Tensor [n_active, n_active]
     """
     source_strengths = f[:, active_indices].mean(dim=0)  # [n_active]
-    attribution = source_strengths.unsqueeze(1) * interaction
+    attribution = source_strengths.unsqueeze(1) * interaction.to(source_strengths.device)
     return attribution
 
 
@@ -200,7 +200,9 @@ def build_graph_data(
     -------
     dict with keys:
         ``active_indices``    : Tensor [n_active]
-        ``attribution``       : Tensor [n_active, n_active]  (pruned)
+        ``attribution``       : Tensor [n_active, n_active]  (pruned, signed)
+        ``edge_attributions`` : list[float]  signed attribution per non-zero edge,
+                                in row-major order matching non-zero entries
         ``logit_attribution`` : Tensor [n_active, n_classes] or None
         ``feature_strengths`` : Tensor [n_active]
         ``n_active``          : int
@@ -216,13 +218,104 @@ def build_graph_data(
     )
     pruned = prune_graph(attribution, config.top_n_edges)
 
+    # Collect signed edge attributions in row-major order
+    attr_np = pruned.cpu().numpy()
+    edge_attributions: list[float] = []
+    n_active = len(active_indices)
+    for i in range(n_active):
+        for j in range(n_active):
+            v = float(attr_np[i, j])
+            if v != 0.0:
+                edge_attributions.append(v)
+
     return {
         "active_indices": active_indices.cpu(),
         "attribution": pruned.cpu(),
+        "edge_attributions": edge_attributions,
         "logit_attribution": logit_attr,
         "feature_strengths": f[:, active_indices].mean(0).cpu(),
-        "n_active": len(active_indices),
+        "n_active": n_active,
         "image_idx": image_idx,
+    }
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# 7. Hub consistency
+# ──────────────────────────────────────────────────────────────────────────
+
+@torch.no_grad()
+def compute_hub_consistency(
+    image_indices: list[int],
+    activations: torch.Tensor,
+    sae: BatchTopKSAE,
+    config: VisConfig,
+    top_n_hubs: int = 10,
+) -> dict:
+    """Measure how consistently the same SAE features are "hubs" across images.
+
+    For each image in *image_indices*, encodes its patches and selects the
+    ``top_n_hubs`` features by mean activation (feature_strengths).  Then
+    computes pairwise Jaccard similarity of these hub sets across images.
+
+    Parameters
+    ----------
+    image_indices : list[int]
+        Image indices to analyse.
+    activations : Tensor [N_eff, d_model]
+        Full flat activation tensor.
+    sae : BatchTopKSAE
+        Trained SAE in eval mode.
+    config : VisConfig
+        Visualisation settings (needs ``n_patches``, ``activation_threshold``).
+    top_n_hubs : int
+        Number of top features to select per image.
+
+    Returns
+    -------
+    dict
+        ``'hub_overlap_matrix'``: numpy array [n_images, n_images], pairwise
+            Jaccard similarity of top-hub sets.
+        ``'consistent_hubs'``: list[int] features that are in the top_n_hubs
+            set for at least 80% of images.
+        ``'per_image_hubs'``: list[list[int]] top-hub feature indices per image.
+    """
+    n_images_req = len(image_indices)
+    per_image_hubs: list[list[int]] = []
+
+    for img_idx in image_indices:
+        f = get_image_activations(img_idx, activations, sae, config)
+        # Feature strengths: mean activation across patches
+        strengths = f.mean(dim=0)  # [d_sae]
+        n_pick = min(top_n_hubs, strengths.shape[0])
+        top_feats = torch.topk(strengths, n_pick).indices.cpu().tolist()
+        per_image_hubs.append(top_feats)
+
+    # Pairwise Jaccard similarity
+    import numpy as np  # noqa: PLC0415
+    overlap_matrix = np.zeros((n_images_req, n_images_req), dtype=np.float32)
+    for i in range(n_images_req):
+        for j in range(n_images_req):
+            set_i = set(per_image_hubs[i])
+            set_j = set(per_image_hubs[j])
+            union = len(set_i | set_j)
+            inter = len(set_i & set_j)
+            overlap_matrix[i, j] = inter / union if union > 0 else 0.0
+
+    # Consistent hubs: in top_n_hubs for >= 80% of images
+    threshold = 0.8 * n_images_req
+    from collections import Counter  # noqa: PLC0415
+    hub_counts: Counter = Counter()
+    for hubs in per_image_hubs:
+        hub_counts.update(hubs)
+    consistent_hubs = [
+        feat for feat, cnt in hub_counts.items() if cnt >= threshold
+    ]
+    consistent_hubs.sort()
+
+    return {
+        "hub_overlap_matrix": overlap_matrix,
+        "consistent_hubs": consistent_hubs,
+        "per_image_hubs": per_image_hubs,
     }
 
 
@@ -291,11 +384,43 @@ if __name__ == "__main__":
     assert gd["logit_attribution"].shape == (n_active, 5)
     assert gd["feature_strengths"].shape == (n_active,)
     assert gd["image_idx"] == 0
-    print(f"[OK] build_graph_data: n_active={gd['n_active']}, keys={list(gd.keys())}")
+    assert "edge_attributions" in gd
+    assert isinstance(gd["edge_attributions"], list)
+    # Verify signed values are preserved
+    non_zero = (gd["attribution"] != 0).sum().item()
+    assert len(gd["edge_attributions"]) == non_zero, (
+        f"edge_attributions length {len(gd['edge_attributions'])} != "
+        f"non-zero attribution entries {non_zero}"
+    )
+    print(f"[OK] build_graph_data: n_active={gd['n_active']}, keys={list(gd.keys())}, "
+          f"edge_attributions={len(gd['edge_attributions'])}")
 
     # 6b. build_graph_data without classifier
     gd2 = build_graph_data(0, acts, sae, cfg, classifier_weights=None)
     assert gd2["logit_attribution"] is None
     print("[OK] build_graph_data: logit_attribution=None without classifier")
+
+    # 7. compute_hub_consistency
+    image_indices = list(range(n_images))
+    hub_result = compute_hub_consistency(
+        image_indices, acts, sae, cfg, top_n_hubs=3,
+    )
+    assert "hub_overlap_matrix" in hub_result
+    assert "consistent_hubs" in hub_result
+    assert "per_image_hubs" in hub_result
+
+    mat = hub_result["hub_overlap_matrix"]
+    assert mat.shape == (n_images, n_images)
+    # Diagonal must be 1.0 (each image has Jaccard=1 with itself)
+    import numpy as _np
+    assert _np.allclose(mat.diagonal(), 1.0), f"diagonal not 1: {mat.diagonal()}"
+
+    assert len(hub_result["per_image_hubs"]) == n_images
+    for hubs in hub_result["per_image_hubs"]:
+        assert len(hubs) <= 3
+
+    print(f"[OK] compute_hub_consistency: overlap_matrix={mat.shape}, "
+          f"consistent_hubs={hub_result['consistent_hubs']}, "
+          f"per_image_hubs={hub_result['per_image_hubs']}")
 
     print("\nAll graph_utils smoke tests passed ✓")

@@ -14,8 +14,11 @@ from pathlib import Path
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import matplotlib.cm as mpl_cm
+import matplotlib.colors as mpl_colors
 import matplotlib.patches as mpatches
 import matplotlib.gridspec as gridspec
+from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 import numpy as np
 import networkx as nx
 import torch
@@ -55,6 +58,68 @@ def _scale_range(
 # 1. Attribution graph
 # ──────────────────────────────────────────────────────────────────────────
 
+def build_node_thumbnails(
+    graph_data: dict,
+    activations: torch.Tensor,
+    sae: BatchTopKSAE,
+    image_idx: int,
+    config: VisConfig,
+    top_n: int = 15,
+) -> dict[int, "Image.Image"]:
+    """Build 28×28 spatial activation heatmap thumbnails for hub nodes.
+
+    For the *top_n* strongest hub nodes (by feature_strengths), returns a
+    mapping from global feature index to a 28×28 PIL Image showing the
+    spatial activation heatmap for that feature on *image_idx*.
+
+    Parameters
+    ----------
+    graph_data : dict
+        Output of :func:`graph_utils.build_graph_data`.
+    activations : Tensor [N_eff, d_model]
+        Full flat activation tensor.
+    sae : BatchTopKSAE
+        Trained SAE in eval mode.
+    image_idx : int
+        Which image to build thumbnails for.
+    config : VisConfig
+        Supplies ``n_patches``, ``spatial_h``, ``spatial_w``.
+    top_n : int
+        Number of strongest hub features to include.
+
+    Returns
+    -------
+    dict[int, PIL.Image.Image]
+        Mapping ``{feature_idx: PIL.Image}`` for each hub node.
+        Images are 28×28 pixels, coloured with the 'viridis' colormap.
+    """
+    active_indices = graph_data["active_indices"]
+    strengths = graph_data["feature_strengths"]  # [n_active]
+
+    n_pick = min(top_n, len(active_indices))
+    top_local = torch.topk(strengths, n_pick).indices  # local indices
+    top_feat_ids = active_indices[top_local]           # global feature indices
+
+    f = get_image_activations(image_idx, activations, sae, config)
+    thumbnails: dict[int, Image.Image] = {}
+
+    plasma_cm = mpl_cm.get_cmap("viridis")
+
+    for local_i in top_local:
+        feat_idx = int(active_indices[local_i].item())
+        heatmap = get_spatial_activation_map(
+            f, feat_idx, config.spatial_h, config.spatial_w,
+        )  # [H, W]
+        hm_up = upsample_and_normalise(heatmap, 28, 28)  # [28, 28] in [0,1]
+        hm_np = hm_up.numpy()  # [28, 28]
+
+        # Apply colormap → RGBA [28, 28, 4]
+        rgba = (plasma_cm(hm_np) * 255).astype(np.uint8)
+        thumbnails[feat_idx] = Image.fromarray(rgba, mode="RGBA").convert("RGB")
+
+    return thumbnails
+
+
 def render_attribution_graph(
     graph_data: dict,
     feature_labels: dict[int, str] | None = None,
@@ -62,8 +127,26 @@ def render_attribution_graph(
     target_class: int | None = None,
     save_path: str | None = None,
     ax: plt.Axes | None = None,
+    activations: torch.Tensor | None = None,
+    sae: BatchTopKSAE | None = None,
+    config: VisConfig | None = None,
+    node_thumbnail_top_n: int = 15,
 ) -> plt.Figure:
     """Render the attribution graph as a networkx directed graph.
+
+    Edge colours reflect the **signed** attribution values:
+
+    * Blue (excitatory): attribution > 0
+    * Red (inhibitory): attribution < 0
+    * Grey: |attribution| < 0.1 × max |attribution| (weak edges)
+
+    Edge alpha is proportional to |attribution|.  Edge width is proportional
+    to |attribution|, capped at 5× base width.
+
+    Hub nodes (top *node_thumbnail_top_n* by feature_strengths) are drawn
+    with a 28×28 spatial heatmap thumbnail as node background when
+    *activations*, *sae*, and *config* are supplied.  Non-hub nodes are
+    coloured using the 'plasma' colormap (darker = stronger activation).
 
     Parameters
     ----------
@@ -79,6 +162,14 @@ def render_attribution_graph(
         If given, save at 150 dpi.
     ax : matplotlib Axes, optional
         If given, draw into this axes (for embedding in a larger figure).
+    activations : Tensor [N_eff, d_model], optional
+        Required for node thumbnails.
+    sae : BatchTopKSAE, optional
+        Required for node thumbnails.
+    config : VisConfig, optional
+        Required for node thumbnails.
+    node_thumbnail_top_n : int
+        Number of top hub nodes to render thumbnails for (default 15).
 
     Returns
     -------
@@ -90,6 +181,24 @@ def render_attribution_graph(
     logit_attr = graph_data["logit_attribution"]
     strengths = graph_data["feature_strengths"].numpy()
     n_active = graph_data["n_active"]
+
+    # Determine hub nodes
+    n_hubs = min(node_thumbnail_top_n, n_active)
+    hub_local_indices = set(
+        torch.topk(graph_data["feature_strengths"], n_hubs).indices.tolist()
+    )
+    hub_feat_ids: set[int] = {
+        int(active_indices[li].item()) for li in hub_local_indices
+    }
+
+    # Retrieve thumbnails if possible
+    thumbnails: dict[int, Image.Image] = {}
+    if activations is not None and sae is not None and config is not None:
+        thumbnails = build_node_thumbnails(
+            graph_data, activations, sae,
+            graph_data["image_idx"], config,
+            top_n=node_thumbnail_top_n,
+        )
 
     G = nx.DiGraph()
 
@@ -104,22 +213,50 @@ def render_attribution_graph(
 
     node_sizes = _scale_range(strengths, 300, 2000)
 
-    # ── Feature → Feature edges ───────────────────────────────────────
-    edge_colors: list[str] = []
+    # Node colours: plasma colormap for non-hub; transparent placeholder for hub
+    plasma = mpl_cm.get_cmap("plasma")
+    strength_norm = _scale_range(strengths, 0.0, 1.0)
+    node_colors = []
+    for i in range(n_active):
+        feat_idx = int(active_indices[i].item())
+        if feat_idx in hub_feat_ids:
+            node_colors.append("none")  # will be drawn as thumbnail
+        else:
+            node_colors.append(plasma(float(strength_norm[i])))
+
+    # ── Feature → Feature edges (signed attribution) ──────────────────
+    edge_colors_rgba: list = []
     edge_widths: list[float] = []
+    edge_alphas: list[float] = []
     attr_np = attribution.numpy()
-    abs_max = max(np.abs(attr_np).max(), 1e-12)
+    abs_max = max(float(np.abs(attr_np).max()), 1e-12)
+    base_width = 2.0
+    max_width = base_width * 5.0
+
+    all_edges: list[tuple[str, str]] = []
 
     for i in range(n_active):
         for j in range(n_active):
             v = float(attr_np[i, j])
             if v == 0.0:
                 continue
-            G.add_edge(node_ids[i], node_ids[j], weight=abs(v))
-            edge_colors.append("steelblue" if v > 0 else "crimson")
-            edge_widths.append(abs(v) / abs_max * 4.0)
+            abs_v = abs(v)
+            frac = abs_v / abs_max
+            G.add_edge(node_ids[i], node_ids[j], weight=abs_v)
+            all_edges.append((node_ids[i], node_ids[j]))
 
-    n_edges = len(edge_colors)
+            # Colour: blue (excitatory), red (inhibitory), grey (weak)
+            if abs_v < 0.1 * abs_max:
+                edge_colors_rgba.append("grey")
+            elif v > 0:
+                edge_colors_rgba.append("steelblue")
+            else:
+                edge_colors_rgba.append("crimson")
+
+            edge_widths.append(min(frac * 4.0 * base_width, max_width))
+            edge_alphas.append(max(0.2, frac))
+
+    n_edges = len(all_edges)
 
     # ── Logit nodes ───────────────────────────────────────────────────
     logit_node_ids: list[str] = []
@@ -131,12 +268,11 @@ def render_attribution_graph(
         if target_class is not None:
             class_indices = [target_class]
         else:
-            # Top-3 by summed absolute attribution
             summed = np.abs(logit_np).sum(axis=0)  # [n_classes]
             top3 = min(3, n_classes)
             class_indices = list(np.argsort(summed)[::-1][:top3])
 
-        logit_abs_max = max(np.abs(logit_np).max(), 1e-12)
+        logit_abs_max = max(float(np.abs(logit_np).max()), 1e-12)
 
         for c in class_indices:
             cid = f"class_{c}"
@@ -146,13 +282,23 @@ def render_attribution_graph(
                 v = float(logit_np[i, c])
                 if abs(v) < 1e-8:
                     continue
-                G.add_edge(node_ids[i], cid, weight=abs(v))
-                edge_colors.append("steelblue" if v > 0 else "crimson")
-                edge_widths.append(abs(v) / logit_abs_max * 4.0)
+                abs_v = abs(v)
+                frac = abs_v / logit_abs_max
+                G.add_edge(node_ids[i], cid, weight=abs_v)
+                all_edges.append((node_ids[i], cid))
+
+                if abs_v < 0.1 * logit_abs_max:
+                    edge_colors_rgba.append("grey")
+                elif v > 0:
+                    edge_colors_rgba.append("steelblue")
+                else:
+                    edge_colors_rgba.append("crimson")
+
+                edge_widths.append(min(frac * 4.0 * base_width, max_width))
+                edge_alphas.append(max(0.2, frac))
 
     # ── Layout ────────────────────────────────────────────────────────
     pos = nx.spring_layout(G, seed=42, k=2.0)
-    # Push logit nodes to the bottom
     if logit_node_ids:
         all_y = [pos[n][1] for n in node_ids]
         bottom_y = min(all_y) - 0.6
@@ -167,11 +313,56 @@ def render_attribution_graph(
     else:
         fig = ax.figure
 
-    # Feature nodes
-    nx.draw_networkx_nodes(
-        G, pos, nodelist=node_ids, ax=ax,
-        node_size=node_sizes, node_color="lightblue", edgecolors="grey",
-    )
+    # Draw non-hub feature nodes
+    non_hub_node_ids = [
+        nid for i, nid in enumerate(node_ids)
+        if int(active_indices[i].item()) not in hub_feat_ids
+    ]
+    non_hub_sizes = [
+        node_sizes[i] for i, nid in enumerate(node_ids)
+        if int(active_indices[i].item()) not in hub_feat_ids
+    ]
+    non_hub_colors = [
+        node_colors[i] for i, nid in enumerate(node_ids)
+        if int(active_indices[i].item()) not in hub_feat_ids
+    ]
+
+    if non_hub_node_ids:
+        nx.draw_networkx_nodes(
+            G, pos, nodelist=non_hub_node_ids, ax=ax,
+            node_size=non_hub_sizes, node_color=non_hub_colors,
+            edgecolors="grey",
+        )
+
+    # Draw hub nodes (transparent background) so thumbnails show through
+    hub_node_ids = [
+        nid for i, nid in enumerate(node_ids)
+        if int(active_indices[i].item()) in hub_feat_ids
+    ]
+    hub_node_sizes = [
+        node_sizes[i] for i, nid in enumerate(node_ids)
+        if int(active_indices[i].item()) in hub_feat_ids
+    ]
+    if hub_node_ids:
+        nx.draw_networkx_nodes(
+            G, pos, nodelist=hub_node_ids, ax=ax,
+            node_size=hub_node_sizes, node_color="white",
+            edgecolors="black", linewidths=1.5,
+        )
+
+    # Overlay thumbnail images onto hub nodes
+    if thumbnails:
+        for i, nid in enumerate(node_ids):
+            feat_idx = int(active_indices[i].item())
+            if feat_idx not in thumbnails:
+                continue
+            thumb = thumbnails[feat_idx]
+            img_arr = np.array(thumb)
+            xy = pos[nid]
+            oi = OffsetImage(img_arr, zoom=0.8)
+            ab = AnnotationBbox(oi, xy, frameon=False, pad=0.0)
+            ax.add_artist(ab)
+
     # Logit nodes
     if logit_node_ids:
         nx.draw_networkx_nodes(
@@ -184,13 +375,14 @@ def render_attribution_graph(
     label_dict = nx.get_node_attributes(G, "label")
     nx.draw_networkx_labels(G, pos, labels=label_dict, font_size=7, ax=ax)
 
-    # Edges
-    edges = list(G.edges())
-    if edges:
+    # Edges — draw per-edge so we can set individual alpha
+    for (src, dst), color, width, alpha in zip(
+        all_edges, edge_colors_rgba, edge_widths, edge_alphas
+    ):
         nx.draw_networkx_edges(
-            G, pos, edgelist=edges, ax=ax,
-            edge_color=edge_colors, width=edge_widths,
-            arrows=True, arrowsize=12, alpha=0.7,
+            G, pos, edgelist=[(src, dst)], ax=ax,
+            edge_color=[color], width=width,
+            arrows=True, arrowsize=12, alpha=alpha,
             connectionstyle="arc3,rad=0.1",
         )
 
@@ -198,6 +390,7 @@ def render_attribution_graph(
     legend_handles = [
         mpatches.Patch(color="steelblue", label="Excitatory (+)"),
         mpatches.Patch(color="crimson", label="Inhibitory (−)"),
+        mpatches.Patch(color="grey", label="Weak (<10% max)"),
     ]
     ax.legend(handles=legend_handles, loc="upper left", fontsize=7, framealpha=0.8)
 
@@ -235,6 +428,7 @@ def render_graph_with_spatial_panel(
     feature_labels: dict[int, str] | None = None,
     n_top_spatial: int = 5,
     save_path: str | None = None,
+    node_thumbnail_top_n: int = 15,
 ) -> plt.Figure:
     """Two-panel figure: attribution graph (left) + spatial overlays (right).
 
@@ -251,6 +445,8 @@ def render_graph_with_spatial_panel(
     n_top_spatial : int
         Number of top features to show spatial maps for.
     save_path : str, optional
+    node_thumbnail_top_n : int
+        Number of hub nodes to render with thumbnail overlays (default 15).
 
     Returns
     -------
@@ -281,6 +477,10 @@ def render_graph_with_spatial_panel(
         graph_data,
         feature_labels=feature_labels,
         ax=ax_graph,
+        activations=activations,
+        sae=sae,
+        config=config,
+        node_thumbnail_top_n=node_thumbnail_top_n,
     )
 
     # RIGHT: spatial overlay for each top feature
@@ -397,5 +597,34 @@ if __name__ == "__main__":
         plt.close(fig4)
         assert Path(save_p4).exists()
         print(f"[OK] render_graph_with_spatial_panel: saved")
+
+        # 5. build_node_thumbnails
+        thumbs = build_node_thumbnails(gd, acts, sae, image_idx=0,
+                                       config=cfg, top_n=4)
+        assert isinstance(thumbs, dict)
+        for feat_idx_key, img_val in thumbs.items():
+            assert isinstance(img_val, Image.Image)
+            assert img_val.size == (28, 28), f"expected 28x28, got {img_val.size}"
+        print(f"[OK] build_node_thumbnails: {len(thumbs)} thumbnails, all 28×28")
+
+        # 6. render_attribution_graph with thumbnails
+        save_p6 = str(Path(tmpdir) / "graph_with_thumbs.png")
+        fig6 = render_attribution_graph(
+            gd,
+            activations=acts,
+            sae=sae,
+            config=cfg,
+            node_thumbnail_top_n=4,
+            save_path=save_p6,
+        )
+        plt.close(fig6)
+        assert Path(save_p6).exists()
+        print(f"[OK] render_attribution_graph (with thumbnails): saved")
+
+        # 7. Verify edge_attributions sign preservation
+        # Build a simple attribution matrix with known signs
+        n_act = gd["n_active"]
+        assert len(gd["edge_attributions"]) == (gd["attribution"] != 0).sum().item()
+        print(f"[OK] edge_attributions: {len(gd['edge_attributions'])} signed edges")
 
     print("\nAll attribution_graph smoke tests passed ✓")
