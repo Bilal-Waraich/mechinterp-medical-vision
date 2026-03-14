@@ -59,8 +59,8 @@ def get_image_activations(
     n_patches = config.n_patches
     start = image_idx * n_patches
     end = start + n_patches
-    patch_acts = activations[start:end]  # [n_patches, d_model]
-    return sae.encode(patch_acts)  # [n_patches, d_sae]
+    patch_acts = activations[start:end].to(sae.W_enc.device)  # [n_patches, d_model]
+    return sae.encode(patch_acts).cpu()  # [n_patches, d_sae]
 
 
 # ──────────────────────────────────────────────────────────────────────────

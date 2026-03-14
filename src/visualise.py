@@ -111,7 +111,7 @@ def _common_setup(args):
     sae = load_sae(args.checkpoint_dir, device=cfg.device)
 
     print(f"Loading activations from {args.activations_path} …")
-    acts, meta = load_activations(args.activations_path, device=cfg.device)
+    acts, meta = load_activations(args.activations_path, device="cpu")
 
     # Override spatial layout from activation metadata
     if "spatial_h" in meta:

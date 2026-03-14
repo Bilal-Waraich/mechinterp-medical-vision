@@ -21,6 +21,10 @@ import matplotlib.gridspec as gridspec
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 import numpy as np
 import networkx as nx
+
+# Patch for numpy 2.0 compatibility when using old networkx versions (<3.3)
+if not hasattr(np, "alltrue"):
+    np.alltrue = np.all
 import torch
 from PIL import Image
 

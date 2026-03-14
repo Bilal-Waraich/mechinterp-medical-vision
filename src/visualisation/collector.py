@@ -82,8 +82,8 @@ def compute_feature_stats(
         tok_start = img_start * n_patches
         tok_end   = img_end   * n_patches
 
-        chunk = activations[tok_start:tok_end]           # [B*n_patches, d_model]
-        codes = sae.encode(chunk).cpu()                  # [B*n_patches, d_sae]
+        chunk = activations[tok_start:tok_end].to(sae.W_enc.device)  # [B*n_patches, d_model]
+        codes = sae.encode(chunk).cpu()                            # [B*n_patches, d_sae]
         codes = codes.reshape(img_end - img_start, n_patches, d_sae)
 
         img_max, img_argmax = codes.max(dim=1)           # [B, d_sae]
