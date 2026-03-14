@@ -313,7 +313,7 @@ def render_attribution_graph(
     # ── Draw ──────────────────────────────────────────────────────────
     own_fig = ax is None
     if own_fig:
-        fig, ax = plt.subplots(1, 1, figsize=(10, 8))
+        fig, ax = plt.subplots(1, 1, figsize=(13, 8))
     else:
         fig = ax.figure
 
@@ -406,6 +406,28 @@ def render_attribution_graph(
         fontweight="bold",
     )
     ax.axis("off")
+
+    # ── Cosine Similarity Panel ───────────────────────────────────────
+    if sae is not None and n_active > 0:
+        from visualisation.graph_utils import compute_decoder_cosine_similarity
+        from mpl_toolkits.axes_grid1 import make_axes_locatable
+
+        cos_sim = compute_decoder_cosine_similarity(sae, active_indices)
+        
+        divider = make_axes_locatable(ax)
+        ax_sim = divider.append_axes("right", size="30%", pad=0.5)
+        
+        cax = ax_sim.imshow(cos_sim.numpy(), cmap="RdBu_r", vmin=-1.0, vmax=1.0)
+        ax_sim.set_title("Decoder cosine\nsimilarity", fontsize=8, fontweight="bold")
+        
+        feat_labels = [labels_map.get(int(active_indices[i].item()), f"{int(active_indices[i].item())}") for i in range(n_active)]
+        
+        ax_sim.set_xticks(range(n_active))
+        ax_sim.set_yticks(range(n_active))
+        ax_sim.set_xticklabels(feat_labels, rotation=90, fontsize=6)
+        ax_sim.set_yticklabels(feat_labels, fontsize=6)
+        
+        fig.colorbar(cax, cax=divider.append_axes("right", size="8%", pad=0.1))
 
     if own_fig:
         fig.tight_layout()

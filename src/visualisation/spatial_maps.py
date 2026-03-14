@@ -72,7 +72,7 @@ def get_spatial_activation_map(
     feature_idx: int,
     spatial_h: int,
     spatial_w: int,
-) -> torch.Tensor:
+) -> torch.Tensor | None:
     """Reshape a single feature's activations into a 2-D spatial map.
 
     Parameters
@@ -83,9 +83,12 @@ def get_spatial_activation_map(
 
     Returns
     -------
-    Tensor [spatial_h, spatial_w]  (raw values, not normalised)
+    Tensor [spatial_h, spatial_w]  (raw values, not normalised), or
+    *None* if the feature has zero activation on every patch.
     """
     spatial = f[:, feature_idx]  # [n_patches]
+    if spatial.max() < 1e-6:
+        return None
     return spatial.reshape(spatial_h, spatial_w)
 
 
@@ -118,7 +121,10 @@ def upsample_and_normalise(
     ).squeeze()  # [target_h, target_w]
 
     lo, hi = up.min(), up.max()
-    normed = (up - lo) / (hi - lo + 1e-8)
+    if hi - lo < 1e-8:
+        # Uniform map (all zero or constant) — return zeros to avoid NaN
+        return torch.zeros(target_h, target_w)
+    normed = (up - lo) / (hi - lo)
     return normed.cpu()
 
 
@@ -152,6 +158,12 @@ def overlay_heatmap(
     img_arr = np.array(img)
     hm = heatmap_norm.numpy()
 
+    # Ensure vmin/vmax are safe for imshow
+    vmin = 0.0
+    vmax = float(hm.max())
+    if vmax < 1e-6:
+        vmax = 1.0  # prevent all-black from colormap
+
     fig, axes = plt.subplots(1, 3, figsize=(12, 4))
 
     # [0] Original
@@ -163,7 +175,8 @@ def overlay_heatmap(
     axes[0].axis("off")
 
     # [1] Heatmap
-    im1 = axes[1].imshow(hm, cmap=cmap, interpolation="none")
+    im1 = axes[1].imshow(hm, cmap=cmap, interpolation="none",
+                         vmin=vmin, vmax=vmax)
     axes[1].set_title("Heatmap", fontsize=9)
     axes[1].axis("off")
 
@@ -172,7 +185,8 @@ def overlay_heatmap(
         axes[2].imshow(img_arr, cmap="gray")
     else:
         axes[2].imshow(img_arr)
-    im2 = axes[2].imshow(hm, cmap=cmap, alpha=alpha, interpolation="none")
+    im2 = axes[2].imshow(hm, cmap=cmap, alpha=alpha, interpolation="none",
+                         vmin=vmin, vmax=vmax)
     axes[2].set_title("Overlay", fontsize=9)
     axes[2].axis("off")
 
@@ -239,20 +253,48 @@ def render_multi_feature_spatial(
         heatmap = get_spatial_activation_map(
             f, feat_idx, config.spatial_h, config.spatial_w
         )
+
+        # Guard: feature has zero activation on this image
+        if heatmap is None:
+            print(f"Feature {feat_idx} has zero activation on image "
+                  f"{image_idx} — try a different image")
+            axes[row, 0].imshow(img_arr)
+            axes[row, 0].axis("off")
+            axes[row, 1].text(
+                0.5, 0.5, "No activation",
+                ha="center", va="center", fontsize=11, color="grey",
+                transform=axes[row, 1].transAxes,
+            )
+            axes[row, 1].axis("off")
+            axes[row, 2].axis("off")
+            lbl = f"Feature {feat_idx}"
+            if feat_idx in labels:
+                lbl += f"  |  {labels[feat_idx]}"
+            axes[row, 0].set_title(lbl, fontsize=9, fontweight="bold", loc="left")
+            continue
+
         hm_norm = upsample_and_normalise(heatmap, img_h, img_w)
         hm_np = hm_norm.numpy()
+
+        # Ensure vmin/vmax are safe for imshow
+        vmax = float(hm_np.max())
+        if vmax < 1e-6:
+            vmax = 1.0
 
         # Col 0: original
         axes[row, 0].imshow(img_arr)
         axes[row, 0].axis("off")
 
         # Col 1: heatmap
-        axes[row, 1].imshow(hm_np, cmap="hot", interpolation="none")
+        axes[row, 1].imshow(hm_np, cmap="hot", interpolation="none",
+                            vmin=0.0, vmax=vmax)
         axes[row, 1].axis("off")
 
         # Col 2: overlay
         axes[row, 2].imshow(img_arr)
-        im = axes[row, 2].imshow(hm_np, cmap="hot", alpha=0.5, interpolation="none")
+        im = axes[row, 2].imshow(hm_np, cmap="hot", alpha=0.5,
+                                 interpolation="none",
+                                 vmin=0.0, vmax=vmax)
         axes[row, 2].axis("off")
         fig.colorbar(im, ax=axes[row, 2], fraction=0.046, pad=0.04)
 
@@ -308,8 +350,13 @@ if __name__ == "__main__":
     assert f.shape == (n_patches, d_sae), f"got {f.shape}"
     print(f"[OK] get_image_activations: shape={f.shape}")
 
-    # 2. get_spatial_activation_map
-    hm = get_spatial_activation_map(f, feature_idx=0, spatial_h=spatial_h, spatial_w=spatial_w)
+    # 2. get_spatial_activation_map — find a feature that actually fires
+    hm = None
+    for fi in range(d_sae):
+        hm = get_spatial_activation_map(f, feature_idx=fi, spatial_h=spatial_h, spatial_w=spatial_w)
+        if hm is not None:
+            break
+    assert hm is not None, "no features fired — check SAE init"
     assert hm.shape == (spatial_h, spatial_w)
     print(f"[OK] get_spatial_activation_map: shape={hm.shape}")
 

@@ -42,6 +42,12 @@ from visualisation.attribution_graph import (
     render_attribution_graph,
     render_graph_with_spatial_panel,
 )
+from visualisation.coactivation import (
+    compute_coactivation_matrix,
+    render_coactivation_heatmap,
+    find_coactivating_pairs,
+)
+from visualisation.html_dashboard import save_dashboard
 
 import matplotlib
 matplotlib.use("Agg")
@@ -96,6 +102,23 @@ def validate_setup(
 # Common setup helper
 # ──────────────────────────────────────────────────────────────────────────
 
+def load_spatial_config(activations_path: str) -> tuple[int, int, int]:
+    """
+    Returns (n_patches, spatial_h, spatial_w).
+    Reads from sidecar _metadata.json if present, else falls back to 196/14/14.
+    """
+    import json
+    from pathlib import Path
+    meta_path = Path(activations_path).parent / \
+                (Path(activations_path).stem + "_metadata.json")
+    if meta_path.exists():
+        meta = json.loads(meta_path.read_text())
+        n = meta["n_patches"]
+        h = meta.get("spatial_h", int(n ** 0.5))
+        w = meta.get("spatial_w", int(n ** 0.5))
+        return n, h, w
+    return 196, 14, 14
+
 def _common_setup(args):
     """Shared boilerplate: build config, load SAE + activations + images."""
     device = getattr(args, "device", "cuda:0")
@@ -113,11 +136,10 @@ def _common_setup(args):
     print(f"Loading activations from {args.activations_path} …")
     acts, meta = load_activations(args.activations_path, device="cpu")
 
-    # Override spatial layout from activation metadata
-    if "spatial_h" in meta:
-        cfg.spatial_h = int(meta["spatial_h"])
-    if "spatial_w" in meta:
-        cfg.spatial_w = int(meta["spatial_w"])
+    # Override spatial layout from sidecar metadata
+    n_patches, h, w = load_spatial_config(args.activations_path)
+    cfg.spatial_h = h
+    cfg.spatial_w = w
 
     image_paths: list[Path] = []
     if cfg.images_dir:
@@ -223,6 +245,7 @@ def cmd_layer3(args):
     fig1 = render_attribution_graph(
         gd,
         target_class=args.target_class,
+        sae=sae,
         save_path=graph_path,
     )
     plt.close(fig1)
@@ -244,6 +267,69 @@ def cmd_layer3(args):
     plt.close(fig2)
     print(f"  ✓ Graph + spatial panel saved to {combo_path}")
 
+
+# ──────────────────────────────────────────────────────────────────────────
+# Subcommand: coactivation
+# ──────────────────────────────────────────────────────────────────────────
+
+def cmd_coactivation(args):
+    Path(args.output_dir).mkdir(parents=True, exist_ok=True)
+    
+    print(f"Loading stats from {args.stats_path} …")
+    try:
+        stats = load_stats(args.stats_path, device="cpu")
+    except Exception as e:
+        print(f"Error loading stats file: {e}")
+        sys.exit(1)
+        
+    top_feats = get_most_active_features(stats, n=args.top_features).tolist()
+    
+    print("Computing co-activation matrix …")
+    coact_matrix = compute_coactivation_matrix(stats, top_k=50, feature_indices=top_feats)
+    
+    save_path = str(Path(args.output_dir) / "coactivation_heatmap.png")
+    fig = render_coactivation_heatmap(coact_matrix, top_feats, save_path=save_path)
+    plt.close(fig)
+    print(f"  ✓ Saved heatmap to {save_path}")
+    
+    pairs = find_coactivating_pairs(coact_matrix, top_feats, threshold=0.0)
+    print("\nTop 20 co-activating pairs:")
+    for i in range(min(20, len(pairs))):
+        f1, f2, score = pairs[i]
+        print(f"  F{f1} & F{f2}: {score:.3f}")
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# Subcommand: dashboard
+# ──────────────────────────────────────────────────────────────────────────
+
+def cmd_dashboard(args):
+    cfg, sae, acts, image_paths = _common_setup(args)
+    
+    print(f"Loading stats from {args.stats_path} …")
+    try:
+        stats = load_stats(args.stats_path, device="cpu")
+    except Exception as e:
+        print(f"Error loading stats file: {e}")
+        sys.exit(1)
+        
+    top_feats = get_most_active_features(stats, n=args.top_n).tolist()
+    
+    out_path = Path(args.output)
+    save_dashboard(
+        feature_indices=top_feats,
+        stats=stats,
+        sae=sae,
+        images_dir=Path(args.images_dir),
+        output_path=out_path,
+        spatial_h=cfg.spatial_h,
+        spatial_w=cfg.spatial_w,
+        context_patches=2,
+        top_k_patches=9,
+        n_coactivation_rows=10,
+        coactivation_top_k=50,
+        verbose=True
+    )
 
 # ──────────────────────────────────────────────────────────────────────────
 # Subcommand: all
@@ -371,6 +457,22 @@ def build_parser() -> argparse.ArgumentParser:
     sp_all.add_argument("--images_dir", type=str, required=True)
     sp_all.add_argument("--output_dir", type=str, default="data/vis_outputs")
     sp_all.set_defaults(func=cmd_all)
+
+    # ── coactivation ──────────────────────────────────────────────────
+    sp_coact = sub.add_parser("coactivation", help="Render feature co-activation heatmap.")
+    sp_coact.add_argument("--stats_path", type=str, required=True)
+    sp_coact.add_argument("--top_features", type=int, default=50)
+    sp_coact.add_argument("--output_dir", type=str, required=True)
+    sp_coact.set_defaults(func=cmd_coactivation)
+
+    # ── dashboard ─────────────────────────────────────────────────────
+    sp_dash = sub.add_parser("dashboard", help="Export interactive HTML dashboard.")
+    _add_common(sp_dash)
+    sp_dash.add_argument("--images_dir", type=str, required=True)
+    sp_dash.add_argument("--stats_path", type=str, required=True)
+    sp_dash.add_argument("--top_n", type=int, default=50)
+    sp_dash.add_argument("--output", type=str, required=True)
+    sp_dash.set_defaults(func=cmd_dashboard)
 
     return p
 

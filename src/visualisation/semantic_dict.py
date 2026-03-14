@@ -127,10 +127,11 @@ def render_semantic_dictionary(
     ncols = 3
     nrows = max(1, (n_show + ncols - 1) // ncols)
 
-    fig, axes = plt.subplots(nrows, ncols, figsize=(3 * ncols, 3 * nrows + 0.8))
-    axes = axes.flat if hasattr(axes, "flat") else [axes]
+    fig = plt.figure(figsize=(3 * ncols, 3 * nrows + 3.0))
+    gs = gridspec.GridSpec(nrows + 1, ncols, figure=fig, hspace=0.4, wspace=0.3)
 
-    for i, ax in enumerate(axes):
+    for i in range(nrows * ncols):
+        ax = fig.add_subplot(gs[i // ncols, i % ncols])
         if i >= n_show:
             ax.axis("off")
             continue
@@ -151,6 +152,24 @@ def render_semantic_dictionary(
         ax.imshow(crop)
         ax.set_title(f"act={act_val:.3f}", fontsize=8)
         ax.axis("off")
+
+    # Histogram below the grid
+    ax_hist = fig.add_subplot(gs[nrows, :])
+    col = feature_max[:, feature_idx].float().cpu().numpy()
+    gmax = float(stats["global_max"][feature_idx].item())
+
+    if gmax == 0.0:
+        ax_hist.text(0.5, 0.5, "dead feature", ha="center", va="center", fontsize=12, color="red")
+        ax_hist.axis("off")
+    else:
+        ax_hist.hist(col, bins=40, color="steelblue", edgecolor="none")
+        ax_hist.set_xlabel("max activation per image", fontsize=9)
+        ax_hist.set_ylabel("count", fontsize=9)
+        mean_val = float(col.mean())
+        std_val = float(col.std())
+        ax_hist.set_title(f"F{feature_idx} activation distribution  (mean={mean_val:.2f}, std={std_val:.2f})", fontsize=10)
+        ax_hist.axvline(mean_val, color="red", linestyle="--", linewidth=1.5, label="mean")
+        ax_hist.legend(fontsize=8)
 
     # Figure title
     title = f"Feature {feature_idx}"
@@ -379,7 +398,8 @@ def render_semantic_dictionary_v2(
         query_norm = F.normalize(query.unsqueeze(0), dim=-1)  # [1, d_model]
         sims = (query_norm @ normed.T).squeeze(0)  # [d_sae]
         sims[feature_idx] = -2.0  # exclude self
-        top10 = torch.topk(sims, 10)
+        n_top = min(10, sims.shape[0])
+        top10 = torch.topk(sims, n_top)
 
     top10_vals = top10.values.cpu().numpy()
     top10_idxs = top10.indices.cpu().numpy()
@@ -387,13 +407,13 @@ def render_semantic_dictionary_v2(
 
     # Flip so highest similarity is at top
     ax_sim.barh(
-        list(range(10))[::-1], top10_vals,
+        list(range(n_top))[::-1], top10_vals,
         color="coral", edgecolor="none",
     )
-    ax_sim.set_yticks(list(range(10))[::-1])
+    ax_sim.set_yticks(list(range(n_top))[::-1])
     ax_sim.set_yticklabels(labels_bar, fontsize=7)
     ax_sim.set_xlabel("Cosine similarity", fontsize=8)
-    ax_sim.set_title("Top-10 similar decoder atoms\n(cosine sim)", fontsize=8)
+    ax_sim.set_title(f"Top-{n_top} similar decoder atoms\n(cosine sim)", fontsize=8)
     ax_sim.tick_params(labelsize=7)
 
     # ── Super-title ───────────────────────────────────────────────────────
@@ -548,18 +568,19 @@ def render_feature_card(
         query_norm = F.normalize(query.unsqueeze(0), dim=-1)
         sims = (query_norm @ normed_dec.T).squeeze(0)  # [d_sae]
         sims[feature_idx] = -2.0  # exclude self
-        top15 = torch.topk(sims, 15)
+        n_top = min(15, sims.shape[0])
+        top15 = torch.topk(sims, n_top)
 
     top15_vals = top15.values.cpu().numpy()
     top15_idxs = top15.indices.cpu().numpy()
     labels_bar = [f"F{int(i)}" for i in top15_idxs]
 
-    y_pos = list(range(15))[::-1]
+    y_pos = list(range(n_top))[::-1]
     ax_sim.barh(y_pos, top15_vals, color="coral", edgecolor="none")
     ax_sim.set_yticks(y_pos)
     ax_sim.set_yticklabels(labels_bar, fontsize=7)
     ax_sim.set_xlabel("Cosine similarity", fontsize=8)
-    ax_sim.set_title("Top-15 similar decoder atoms", fontsize=9, fontweight="bold")
+    ax_sim.set_title(f"Top-{n_top} similar decoder atoms", fontsize=9, fontweight="bold")
     ax_sim.tick_params(labelsize=7)
 
     # ── BOTTOM RIGHT: universality stacked bar ────────────────────────────

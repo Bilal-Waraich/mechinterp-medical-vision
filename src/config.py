@@ -1,10 +1,19 @@
-"""SAE training configuration."""
+"""SAE training configuration.
+
+# pm_index=0: d_model=256,   spatial=28x28, n_patches=784
+# pm_index=1: d_model=512,   spatial=14x14, n_patches=196  <- current
+# pm_index=2: d_model=1024,  spatial=7x7,   n_patches=49   <- target
+# pm_index=3: d_model=1024,  spatial=7x7,   n_patches=49   <- target
+"""
 
 from dataclasses import dataclass
 
 
 @dataclass
 class SAEConfig:
+    pm_index: int = 1
+    n_patches: int = 196
+
     # ── Model dimensions ──────────────────────────────────────────────────
     d_model: int = 384
     expansion_factor: int = 4
@@ -20,6 +29,8 @@ class SAEConfig:
 
     # ── Optimiser ─────────────────────────────────────────────────────────
     lr: float = 2e-4
+    lr_warmup_steps: int = 1000     # linear warmup steps (0 to disable)
+    lr_schedule: str = "cosine"     # "constant" | "cosine"
     beta1: float = 0.9
     beta2: float = 0.999
     max_grad_norm: float = 1.0     # gradient clipping threshold
@@ -44,3 +55,22 @@ class SAEConfig:
     def d_sae(self) -> int:
         """Dictionary size = d_model * expansion_factor."""
         return self.d_model * self.expansion_factor
+
+    @classmethod
+    def for_pm_index(cls, pm_index: int, **kwargs) -> "SAEConfig":
+        """
+        Returns SAEConfig with correct d_model and n_patches for the given pm_index.
+        Values confirmed from UMedPT PyramidEncoder source in Task 1.
+        """
+        d_model_map  = {0: 256, 1: 512,  2: 1024, 3: 1024}
+        n_patches_map = {0: 784, 1: 196,  2: 49, 3: 49}
+        
+        # Note on expansion_factor: if d_model >= 1024, keep expansion_factor=4 
+        # giving d_sae=4096. This keeps the overcomplete ratio consistent across layers.
+        
+        return cls(
+            pm_index=pm_index,
+            d_model=d_model_map[pm_index],
+            n_patches=n_patches_map[pm_index],
+            **kwargs
+        )

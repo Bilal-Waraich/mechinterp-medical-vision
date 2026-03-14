@@ -89,6 +89,12 @@ def compute_feature_stats(
         img_max, img_argmax = codes.max(dim=1)           # [B, d_sae]
         img_mean            = codes.mean(dim=1)          # [B, d_sae]
 
+        if img_argmax.max() >= n_patches:
+            raise ValueError(
+                f"Validation failed: feature_argmax exceeded n_patches={n_patches}. "
+                f"Check that spatial dimensions in metadata match the hooked PM layer!"
+            )
+
         feature_max   [img_start:img_end] = img_max
         feature_argmax[img_start:img_end] = img_argmax
         feature_mean  [img_start:img_end] = img_mean

@@ -73,6 +73,13 @@ def compute_interaction_matrix(
     """
     W_dec_active = sae.W_dec[active_indices]       # [n_active, d_model]
     W_enc_active = sae.W_enc[:, active_indices]    # [d_model, n_active]
+
+    # Shape verification — catch indexing bugs early
+    assert W_dec_active.shape == (len(active_indices), sae.d_model), \
+        f"W_dec_active shape {W_dec_active.shape} wrong"
+    assert W_enc_active.shape == (sae.d_model, len(active_indices)), \
+        f"W_enc_active shape {W_enc_active.shape} wrong"
+
     interaction = W_dec_active @ W_enc_active       # [n_active, n_active]
     interaction.fill_diagonal_(0.0)
     return interaction.cpu()
@@ -102,6 +109,8 @@ def compute_prompt_attribution(
     Tensor [n_active, n_active]
     """
     source_strengths = f[:, active_indices].mean(dim=0)  # [n_active]
+    assert (source_strengths >= 0).all(), \
+        "source_strengths has negative values — check SAE forward pass"
     attribution = source_strengths.unsqueeze(1) * interaction.to(source_strengths.device)
     return attribution
 
@@ -228,6 +237,14 @@ def build_graph_data(
             if v != 0.0:
                 edge_attributions.append(v)
 
+    # Diagnostic: excitatory vs inhibitory edge ratio (printed once per call)
+    n_pos = (pruned > 0).sum().item()
+    n_neg = (pruned < 0).sum().item()
+    total_edges = n_pos + n_neg
+    if total_edges > 0:
+        print(f"Attribution matrix: {n_pos} excitatory, {n_neg} inhibitory edges "
+              f"({100*n_pos/(total_edges):.0f}% excitatory)")
+
     return {
         "active_indices": active_indices.cpu(),
         "attribution": pruned.cpu(),
@@ -237,6 +254,35 @@ def build_graph_data(
         "n_active": n_active,
         "image_idx": image_idx,
     }
+
+
+@torch.no_grad()
+def compute_decoder_cosine_similarity(
+    sae: BatchTopKSAE,
+    active_indices: torch.Tensor,
+) -> torch.Tensor:
+    """Compute pairwise cosine similarity between active decoder atoms.
+    
+    Self-similarity (diagonal) is zeroed out.
+    
+    Parameters
+    ----------
+    sae : BatchTopKSAE
+    active_indices : Tensor [n_active]
+    
+    Returns
+    -------
+    Tensor [n_active, n_active] on CPU
+    """
+    W_dec_active = sae.W_dec[active_indices]  # [n_active, d_model]
+    
+    # Cosine similarity using a gram matrix on normalized vectors
+    # W_dec rows should already be unit norm, but let's be safe
+    W_dec_normalized = torch.nn.functional.normalize(W_dec_active, p=2, dim=-1)
+    cos_sim = W_dec_normalized @ W_dec_normalized.T  # [n_active, n_active]
+    
+    cos_sim.fill_diagonal_(0.0)
+    return cos_sim.cpu()
 
 
 # ──────────────────────────────────────────────────────────────────────────

@@ -34,6 +34,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 from datetime import datetime
 from pathlib import Path
 
@@ -52,6 +53,21 @@ try:
     _WANDB_AVAILABLE = True
 except ImportError:
     _WANDB_AVAILABLE = False
+
+
+# ── LR schedule ───────────────────────────────────────────────────────────────
+
+def make_lr_lambda(warmup_steps: int, total_steps: int, schedule: str):
+    def lr_lambda(step: int) -> float:
+        if step < warmup_steps:
+            return float(step) / max(1, warmup_steps)  # linear 0 → 1
+        if schedule == "constant":
+            return 1.0
+        # Cosine decay: 1 → 0.1 over remaining steps
+        progress = (step - warmup_steps) / max(1, total_steps - warmup_steps)
+        cosine = 0.5 * (1.0 + math.cos(math.pi * progress))
+        return 0.1 + 0.9 * cosine
+    return lr_lambda
 
 
 # ── Metric helpers ────────────────────────────────────────────────────────────
@@ -106,6 +122,8 @@ def save_checkpoint(model: BatchTopKSAE, cfg: SAEConfig, step: int) -> Path:
         "batch_size": cfg.batch_size,
         "steps": cfg.steps,
         "activations_path": cfg.activations_path,
+        "lr_warmup_steps": cfg.lr_warmup_steps,
+        "lr_schedule": cfg.lr_schedule,
         "step": step,
     }
     (ckpt_dir / "cfg.json").write_text(json.dumps(cfg_dict, indent=2))
@@ -186,12 +204,28 @@ def train(cfg: SAEConfig) -> BatchTopKSAE:
     print(f"[Model] BatchTopKSAE  d_model={cfg.d_model}  d_sae={cfg.d_sae}  k={cfg.k}")
     print(f"[Model] Parameters: {n_params:,}")
 
+    # ── Initialise b_dec to training data mean (CHANGE 3) ─────────────────
+    with torch.no_grad():
+        n_sample = min(10_000, len(acts))
+        sample = acts[:n_sample].to(model.b_dec.device)
+        model.b_dec.data = sample.mean(dim=0)
+    print(f"[Init] b_dec initialised to data mean  (norm={model.b_dec.data.norm():.3f})")
+
     # ── Optimiser (Adam with configurable betas, matching reference) ──────
     optimizer = torch.optim.Adam(
         model.parameters(),
         lr=cfg.lr,
         betas=(cfg.beta1, cfg.beta2),
     )
+
+    # ── LR scheduler: warmup + optional cosine decay (CHANGE 4) ──────────
+    from torch.optim.lr_scheduler import LambdaLR  # noqa: PLC0415
+
+    scheduler = LambdaLR(
+        optimizer,
+        lr_lambda=make_lr_lambda(cfg.lr_warmup_steps, cfg.steps, cfg.lr_schedule),
+    )
+    print(f"[LR]   schedule={cfg.lr_schedule}  warmup={cfg.lr_warmup_steps} steps")
 
     # ── Output dir ────────────────────────────────────────────────────────
     Path(cfg.output_dir).mkdir(parents=True, exist_ok=True)
@@ -258,6 +292,7 @@ def train(cfg: SAEConfig) -> BatchTopKSAE:
         scaler.step(optimizer)
         scaler.update()
         optimizer.zero_grad()
+        scheduler.step()
 
         # ── Metrics ───────────────────────────────────────────────────────
         with torch.no_grad():
@@ -265,6 +300,8 @@ def train(cfg: SAEConfig) -> BatchTopKSAE:
             dead_frac = (
                 output["num_dead_features"].float() / cfg.d_sae
             ).item()
+
+        current_lr = scheduler.get_last_lr()[0]
 
         metrics = {
             "loss/total": output["loss"].item(),
@@ -275,6 +312,7 @@ def train(cfg: SAEConfig) -> BatchTopKSAE:
             "sparsity/l1_norm": output["l1_norm"].item(),
             "sparsity/dead_latents": dead_frac,
             "sparsity/explained_variance": ev,
+            "lr": current_lr,
         }
 
         if use_wandb:
@@ -291,6 +329,7 @@ def train(cfg: SAEConfig) -> BatchTopKSAE:
                 f"L0={metrics['sparsity/l0']:.1f}/{cfg.k}  "
                 f"dead={metrics['sparsity/dead_latents']:.3f}  "
                 f"EV={metrics['sparsity/explained_variance']:.3f}  "
+                f"lr={current_lr:.2e}  "
                 f"eta={eta/3600:.1f}h"
             )
 
@@ -314,6 +353,8 @@ def main() -> None:
         description="Train BatchTopK SAE on pre-harvested UMedPT activations",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
+    parser.add_argument("--config", type=str, default=None,
+                        help="Path to JSON config file. Overrides defaults.")
     parser.add_argument("--d_model", type=int, default=None)
     parser.add_argument("--expansion_factor", type=int, default=None)
     parser.add_argument("--k", type=int, default=None)
@@ -322,6 +363,10 @@ def main() -> None:
     parser.add_argument("--aux_penalty", type=float, default=None)
     parser.add_argument("--l1_coeff", type=float, default=None)
     parser.add_argument("--lr", type=float, default=None)
+    parser.add_argument("--lr_warmup_steps", type=int, default=None)
+    parser.add_argument("--lr_schedule", type=str, default=None,
+                        choices=["constant", "cosine"],
+                        help="LR schedule: 'constant' or 'cosine' (with warmup).")
     parser.add_argument("--beta1", type=float, default=None)
     parser.add_argument("--beta2", type=float, default=None)
     parser.add_argument("--max_grad_norm", type=float, default=None)
@@ -337,8 +382,17 @@ def main() -> None:
     args = parser.parse_args()
 
     cfg = SAEConfig()
+    
+    if args.config:
+        import json
+        with open(args.config, "r") as f:
+            j = json.load(f)
+            for k, v in j.items():
+                if hasattr(cfg, k):
+                    setattr(cfg, k, v)
+                    
     for field, value in vars(args).items():
-        if value is not None:
+        if field != "config" and value is not None:
             setattr(cfg, field, value)
 
     print("=" * 60)
@@ -351,6 +405,7 @@ def main() -> None:
     print(f"  n_batches_to_dead: {cfg.n_batches_to_dead}")
     print(f"  aux_penalty      : {cfg.aux_penalty:.4f}")
     print(f"  lr               : {cfg.lr}  betas=({cfg.beta1},{cfg.beta2})")
+    print(f"  lr_schedule      : {cfg.lr_schedule}  warmup={cfg.lr_warmup_steps}")
     print(f"  max_grad_norm    : {cfg.max_grad_norm}")
     print(f"  batch_size       : {cfg.batch_size}")
     print(f"  steps            : {cfg.steps:,}")
