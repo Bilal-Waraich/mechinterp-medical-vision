@@ -31,20 +31,58 @@ from visualisation.spatial_maps import get_image_activations  # noqa: E402
 def get_active_features(
     f: torch.Tensor,
     threshold: float = 0.0,
+    min_active_features: int = 5,
+    max_active_features: int = 80,
 ) -> torch.Tensor:
     """Return indices of features that fired on at least one patch.
+
+    Uses a mean-based threshold: a feature must fire above 10% of the
+    max activation seen on this image to count as active.  The raw
+    *threshold* parameter is kept for backward compatibility but is
+    effectively superseded by the 10%-of-max rule.
+
+    If more than *max_active_features* pass the threshold, only the
+    strongest (by mean activation) are kept.
 
     Parameters
     ----------
     f : Tensor [n_patches, d_sae]
     threshold : float
+        Legacy threshold (still applied as a floor).
+    min_active_features : int
+        Minimum number of features to return (uses top-k if fewer pass threshold).
+    max_active_features : int
+        Maximum number of features to return.
 
     Returns
     -------
     Tensor [n_active]  (int64 indices, sorted)
     """
-    active_mask = (f > threshold).any(dim=0)  # [d_sae]
-    return active_mask.nonzero(as_tuple=False).squeeze(-1)
+    # 10%-of-image-max adaptive threshold
+    image_max = f.max().item()
+    adaptive_threshold = max(threshold, 0.1 * image_max)
+
+    active_mask = (f > adaptive_threshold).any(dim=0)  # [d_sae]
+    active_indices = active_mask.nonzero(as_tuple=False).squeeze(-1)
+
+    # Handle edge cases (scalar or empty)
+    if active_indices.ndim == 0:
+        active_indices = active_indices.unsqueeze(0)
+
+    # If too few features pass the adaptive threshold, fall back to top-k
+    if len(active_indices) < min_active_features:
+        strengths = f.mean(dim=0)  # [d_sae]
+        k = min(min_active_features, strengths.shape[0])
+        active_indices = torch.topk(strengths, k=k).indices
+
+    # If too many features, keep only the strongest
+    if len(active_indices) > max_active_features:
+        strengths = f[:, active_indices].mean(dim=0)
+        topk = torch.topk(strengths, k=max_active_features)
+        active_indices = active_indices[topk.indices]
+
+    # Return sorted
+    return active_indices.sort().values
 
 
 # ──────────────────────────────────────────────────────────────────────────
@@ -56,11 +94,19 @@ def compute_interaction_matrix(
     sae: BatchTopKSAE,
     active_indices: torch.Tensor,
 ) -> torch.Tensor:
-    """Compute pairwise write→read interactions among active features.
+    """Compute pairwise decoder cosine similarity among active features.
 
-    ``interaction[i, j] = W_dec[active_i] · W_enc[:, active_j]``
+    ``interaction[i, j] = cosine_similarity(W_dec[active_i], W_dec[active_j])``
 
-    Diagonal (self-interaction) entries are zeroed out.
+    Using decoder-decoder similarity rather than W_dec·W_enc because encoder
+    columns in a trained BatchTopK SAE grow in the negative direction to
+    suppress competing features, which causes W_dec·W_enc to produce nearly
+    all-negative off-diagonal entries.  Decoder cosine similarity directly
+    measures whether two features' output directions are aligned (+) or
+    opposing (−) in activation space, and has a naturally balanced sign
+    distribution.
+
+    Diagonal (self-similarity = 1.0) entries are zeroed out.
 
     Parameters
     ----------
@@ -71,16 +117,16 @@ def compute_interaction_matrix(
     -------
     Tensor [n_active, n_active]  on CPU
     """
-    W_dec_active = sae.W_dec[active_indices]       # [n_active, d_model]
-    W_enc_active = sae.W_enc[:, active_indices]    # [d_model, n_active]
+    W_dec_active = sae.W_dec[active_indices]  # [n_active, d_model]
 
-    # Shape verification — catch indexing bugs early
-    assert W_dec_active.shape == (len(active_indices), sae.d_model), \
-        f"W_dec_active shape {W_dec_active.shape} wrong"
-    assert W_enc_active.shape == (sae.d_model, len(active_indices)), \
-        f"W_enc_active shape {W_enc_active.shape} wrong"
+    # W_dec rows are kept unit-norm during training; normalise defensively
+    normed = torch.nn.functional.normalize(W_dec_active, p=2, dim=-1)
+    interaction = normed @ normed.T  # [n_active, n_active], values in [-1, 1]
 
-    interaction = W_dec_active @ W_enc_active       # [n_active, n_active]
+    print(f"[DEBUG graph] W_dec={sae.W_dec.shape}, active_indices={active_indices.shape}")
+    print(f"[DEBUG graph] interaction: min={interaction.min():.3f}, max={interaction.max():.3f}, "
+          f"frac_positive={(interaction > 0).float().mean():.2%}")
+
     interaction.fill_diagonal_(0.0)
     return interaction.cpu()
 

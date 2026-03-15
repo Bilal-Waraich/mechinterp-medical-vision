@@ -454,11 +454,12 @@ def main():
     ap.add_argument("--data_dir",      type=str, default=None,
                     help="Path to dataset root. If omitted, synthetic data is used.")
     ap.add_argument("--dataset",       type=str, default="semicol",
-                    choices=["semicol", "brain_tumor", "tcga_breast"],
+                    choices=["semicol", "brain_tumor", "tcga_breast", "pneumonia"],
                     help="Which dataset to load from --data_dir: "
                          "'semicol' (SemiCOL colorectal), "
-                         "'brain_tumor' (Kaggle brain-tumor-classification-mri Training/), or "
-                         "'tcga_breast' (TCGA-BRCA SVS WSIs with OncoTree histological labels).")
+                         "'brain_tumor' (Kaggle brain-tumor-classification-mri Training/), "
+                         "'tcga_breast' (TCGA-BRCA SVS WSIs with OncoTree histological labels), or "
+                         "'pneumonia' (RSNA Pneumonia Detection Challenge DICOM files).")
     # SemiCOL-specific options (ignored when --dataset brain_tumor)
     ap.add_argument("--track",         type=str, default="b", choices=["a", "b"],
                     help="SemiCOL track: 'b'=weak WSI (SAE training), 'a'=manual masks (validation).")
@@ -510,6 +511,9 @@ def main():
         elif args.dataset == "tcga_breast":
             from datasets.breast_cancer.tcga_breast_dataset import TCGABreastDataset
             dataset = TCGABreastDataset(args.data_dir, args.max_per_slide)
+        elif args.dataset == "pneumonia":
+            from datasets.pneumonia_dataset import PneumoniaDataset
+            dataset = PneumoniaDataset(args.data_dir)
         elif args.track == "b":
             from datasets.semicol_dataset import SemiCOLWeakDataset
             dataset = SemiCOLWeakDataset(args.data_dir, args.max_per_slide)
