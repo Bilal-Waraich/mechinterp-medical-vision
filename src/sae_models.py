@@ -2,7 +2,7 @@
 
 Architecture
 ------------
-  Encoder : acts = F.relu((x - b_dec) @ W_enc)
+  Encoder : acts = F.relu((x - b_dec) @ W_enc + b_enc)
   Sparsity: BatchTopK — select top k*B values globally across the flattened batch
   Decoder : x_hat = acts_topk @ W_dec + b_dec
 
@@ -80,6 +80,7 @@ class BatchTopKSAE(nn.Module):
 
         # ── Encoder parameters ────────────────────────────────────────────
         self.W_enc = nn.Parameter(torch.empty(d_model, d_sae))
+        self.b_enc = nn.Parameter(torch.zeros(d_sae))
 
         # b_dec is subtracted before encoding and added after decoding.
         self.b_dec = nn.Parameter(torch.zeros(d_model))
@@ -99,12 +100,54 @@ class BatchTopKSAE(nn.Module):
 
     # ── Initialisation ─────────────────────────────────────────────────────
 
+    @classmethod
+    def load_from_checkpoint(cls, path: str) -> "BatchTopKSAE":
+        """Load a BatchTopKSAE from a checkpoint file.
+
+        Handles both old checkpoints (no b_enc key) and new ones gracefully.
+        """
+        state_dict = torch.load(path, map_location="cpu")
+
+        # Infer dimensions from saved tensors
+        # W_enc shape: [d_model, d_sae]
+        # W_dec shape: [d_sae,   d_model]
+        W_enc = state_dict["W_enc"]
+        W_dec = state_dict["W_dec"]
+        d_model = W_enc.shape[0]
+        d_sae   = W_enc.shape[1]
+
+        # Infer k from config if saved, else default to 48
+        k = state_dict.get("k", 48)
+        if isinstance(k, torch.Tensor):
+            k = k.item()
+
+        sae = cls(d_model=d_model, d_sae=d_sae, k=k)
+
+        sae.W_enc.data = W_enc
+        sae.W_dec.data = W_dec
+        sae.b_dec.data = state_dict["b_dec"]
+
+        # Graceful fallback for old checkpoints without b_enc
+        if "b_enc" in state_dict:
+            sae.b_enc.data = state_dict["b_enc"]
+        # else: b_enc stays as zeros from __init__ — backward compatible
+
+        sae.eval()
+        return sae
+
     def _init_weights(self) -> None:
         nn.init.kaiming_uniform_(self.W_enc)
-        # Initialise W_dec as the transpose of W_enc (as in reference), then normalize
         with torch.no_grad():
+            # Normalise decoder columns to unit norm first
             self.W_dec.data = self.W_enc.data.T.clone()
-            self.W_dec.data = F.normalize(self.W_dec.data, dim=-1)
+            self.W_dec.data /= (
+                self.W_dec.data.norm(dim=-1, keepdim=True).clamp(min=1e-8)
+            )
+            # Scale to 0.1 (Anthropic heuristic: SAE grows into reconstruction)
+            self.W_dec.data *= 0.1
+            # Keep W_enc as transpose of scaled W_dec for symmetric init
+            self.W_enc.data = self.W_dec.data.T.clone().contiguous()
+        nn.init.zeros_(self.b_enc)
 
     # ── Decoder constraint ─────────────────────────────────────────────────
 
@@ -153,23 +196,33 @@ class BatchTopKSAE(nn.Module):
     ) -> torch.Tensor:
         """Reconstruct the residual using dead features to revive them.
 
-        Takes the top top_k_aux dead features and trains them to explain
-        the portion of the input that the main features failed to capture.
+        Uses k_aux = d_model // 2 (paper heuristic) and adaptive scaling
+        based on the number of dead features.  The reconstruction target
+        is the *detached* residual (x - x_hat) so gradients flow only
+        through the dead features, not the main reconstruction.
         """
         dead = self.num_batches_not_active >= self.n_batches_to_dead
-        if dead.sum() == 0:
+        num_dead = int(dead.sum())
+        if num_dead == 0:
             return torch.tensor(0.0, dtype=x.dtype, device=x.device)
 
-        residual = x.float() - x_reconstruct.float()
-        n_aux = min(int(self.top_k_aux), int(dead.sum()))
+        # Detach residual — gradients only through dead features
+        residual = (x.float() - x_reconstruct.float()).detach()
+
+        # k_aux = d_model // 2 (paper heuristic, not fixed 512)
+        k_aux = self.d_model // 2
+        # Adaptive scale: reduce aux loss when few features are dead
+        scale = min(num_dead / max(k_aux, 1), 1.0)
+        k_aux = min(k_aux, num_dead)
 
         acts_dead = acts[:, dead]  # [B, n_dead]
-        acts_topk_aux = torch.topk(acts_dead, n_aux, dim=-1)
+        acts_topk_aux = torch.topk(acts_dead, k_aux, dim=-1)
         acts_aux = torch.zeros_like(acts_dead).scatter(
             -1, acts_topk_aux.indices, acts_topk_aux.values
         )
         x_reconstruct_aux = acts_aux @ self.W_dec[dead]
-        return self.aux_penalty * (x_reconstruct_aux.float() - residual).pow(2).mean()
+        aux_loss = (x_reconstruct_aux.float() - residual).pow(2).mean()
+        return self.aux_penalty * scale * aux_loss
 
     # ── Encode / Decode helpers ────────────────────────────────────────────
 
@@ -180,7 +233,7 @@ class BatchTopKSAE(nn.Module):
         size including single samples at inference time.
         """
         x_cent = x - self.b_dec
-        acts = F.relu(x_cent @ self.W_enc)
+        acts = F.relu(x_cent @ self.W_enc + self.b_enc)
         topk_vals = torch.topk(acts, self.k, dim=-1)
         return torch.zeros_like(acts).scatter(-1, topk_vals.indices, topk_vals.values)
 
@@ -212,7 +265,7 @@ class BatchTopKSAE(nn.Module):
         """
         # 1. Encode with ReLU (following reference: acts = relu(x_cent @ W_enc))
         x_cent = x - self.b_dec
-        acts = F.relu(x_cent @ self.W_enc)  # [B, d_sae]
+        acts = F.relu(x_cent @ self.W_enc + self.b_enc)  # [B, d_sae]
 
         # 2. BatchTopK: global top-(k*B) selection across the flattened batch
         B = x.shape[0]

@@ -8,6 +8,7 @@ attribution edges to class nodes and a companion spatial-overlay panel.
 
 from __future__ import annotations
 
+import math
 import sys
 from pathlib import Path
 
@@ -56,6 +57,66 @@ def _scale_range(
     if vmax - vmin < 1e-12:
         return np.full_like(vals, (lo + hi) / 2)
     return lo + (vals - vmin) / (vmax - vmin) * (hi - lo)
+
+
+def _hub_layout(
+    G: nx.DiGraph,
+    feature_strengths: torch.Tensor,
+    active_indices: torch.Tensor,
+) -> dict:
+    """Place top hub nodes (by strength) in an inner ring, rest in outer ring.
+
+    Hub threshold: top 10 nodes by activation strength.
+    """
+    pos = {}
+    idx_to_strength = {
+        active_indices[i].item(): feature_strengths[i].item()
+        for i in range(len(active_indices))
+    }
+    nodes = list(G.nodes())
+    # Sort by strength (feature nodes have a strength entry, logit nodes get 0)
+    nodes_sorted = sorted(
+        nodes, key=lambda n: idx_to_strength.get(n, 0), reverse=True
+    )
+    n_hub = min(10, len(nodes_sorted))
+    hub_nodes = nodes_sorted[:n_hub]
+    periph_nodes = nodes_sorted[n_hub:]
+
+    # Inner ring for hubs
+    for i, n in enumerate(hub_nodes):
+        angle = 2 * math.pi * i / max(1, n_hub)
+        pos[n] = (0.35 * math.cos(angle), 0.35 * math.sin(angle))
+
+    # Outer ring for peripheral
+    for i, n in enumerate(periph_nodes):
+        angle = 2 * math.pi * i / max(1, len(periph_nodes))
+        pos[n] = (math.cos(angle), math.sin(angle))
+
+    return pos
+
+
+def get_node_dataset_color(
+    feat_idx: int,
+    stats: dict,
+    images_dir: Path,
+) -> str:
+    """Return the dataset badge colour for the dataset this feature
+    fires on most (plurality of its top-20 activating images)."""
+    from visualisation.html_dashboard import infer_dataset_name, DATASET_COLORS
+    fmax = stats["feature_max"][:, feat_idx]
+    if isinstance(fmax, torch.Tensor):
+        fmax_t = fmax.cpu()
+    else:
+        fmax_t = torch.from_numpy(fmax)
+    top20 = torch.topk(fmax_t, k=min(20, len(fmax_t))).indices.tolist()
+    image_paths = sorted(images_dir.glob("*"))
+    counts: dict[str, int] = {}
+    for img_idx in top20:
+        if img_idx < len(image_paths):
+            ds = infer_dataset_name(image_paths[img_idx])
+            counts[ds] = counts.get(ds, 0) + 1
+    dominant = max(counts, key=counts.get) if counts else "unknown"
+    return DATASET_COLORS.get(dominant, "#888888")
 
 
 # ──────────────────────────────────────────────────────────────────────────
@@ -134,7 +195,9 @@ def render_attribution_graph(
     activations: torch.Tensor | None = None,
     sae: BatchTopKSAE | None = None,
     config: VisConfig | None = None,
-    node_thumbnail_top_n: int = 15,
+    node_thumbnail_top_n: int = 10,
+    stats: dict | None = None,
+    images_dir: Path | None = None,
 ) -> plt.Figure:
     """Render the attribution graph as a networkx directed graph.
 
@@ -217,7 +280,7 @@ def render_attribution_graph(
 
     node_sizes = _scale_range(strengths, 300, 2000)
 
-    # Node colours: plasma colormap for non-hub; transparent placeholder for hub
+    # Node colours: dataset colour if stats available, else plasma colormap
     plasma = mpl_cm.get_cmap("plasma")
     strength_norm = _scale_range(strengths, 0.0, 1.0)
     node_colors = []
@@ -225,6 +288,10 @@ def render_attribution_graph(
         feat_idx = int(active_indices[i].item())
         if feat_idx in hub_feat_ids:
             node_colors.append("none")  # will be drawn as thumbnail
+        elif stats is not None and images_dir is not None:
+            node_colors.append(
+                get_node_dataset_color(feat_idx, stats, images_dir)
+            )
         else:
             node_colors.append(plasma(float(strength_norm[i])))
 
@@ -301,8 +368,10 @@ def render_attribution_graph(
                 edge_widths.append(min(frac * 4.0 * base_width, max_width))
                 edge_alphas.append(max(0.2, frac))
 
-    # ── Layout ────────────────────────────────────────────────────────
-    pos = nx.spring_layout(G, seed=42, k=2.0)
+    # ── Layout ────────────────────────────────────────────────────────────
+    # Map node IDs to integer indices for _hub_layout (it expects ints)
+    # We use feature int IDs for feature nodes, and string IDs for logit nodes
+    pos = _hub_layout(G, graph_data["feature_strengths"], active_indices)
     if logit_node_ids:
         all_y = [pos[n][1] for n in node_ids]
         bottom_y = min(all_y) - 0.6
@@ -313,45 +382,59 @@ def render_attribution_graph(
     # ── Draw ──────────────────────────────────────────────────────────
     own_fig = ax is None
     if own_fig:
-        fig, ax = plt.subplots(1, 1, figsize=(10, 8))
+        fig, ax = plt.subplots(1, 1, figsize=(13, 8))
     else:
         fig = ax.figure
 
     # Draw non-hub feature nodes
     non_hub_node_ids = [
-        nid for i, nid in enumerate(node_ids)
+        nid
+        for i, nid in enumerate(node_ids)
         if int(active_indices[i].item()) not in hub_feat_ids
     ]
     non_hub_sizes = [
-        node_sizes[i] for i, nid in enumerate(node_ids)
+        node_sizes[i]
+        for i, nid in enumerate(node_ids)
         if int(active_indices[i].item()) not in hub_feat_ids
     ]
     non_hub_colors = [
-        node_colors[i] for i, nid in enumerate(node_ids)
+        node_colors[i]
+        for i, nid in enumerate(node_ids)
         if int(active_indices[i].item()) not in hub_feat_ids
     ]
 
     if non_hub_node_ids:
         nx.draw_networkx_nodes(
-            G, pos, nodelist=non_hub_node_ids, ax=ax,
-            node_size=non_hub_sizes, node_color=non_hub_colors,
+            G,
+            pos,
+            nodelist=non_hub_node_ids,
+            ax=ax,
+            node_size=non_hub_sizes,
+            node_color=non_hub_colors,
             edgecolors="grey",
         )
 
     # Draw hub nodes (transparent background) so thumbnails show through
     hub_node_ids = [
-        nid for i, nid in enumerate(node_ids)
+        nid
+        for i, nid in enumerate(node_ids)
         if int(active_indices[i].item()) in hub_feat_ids
     ]
     hub_node_sizes = [
-        node_sizes[i] for i, nid in enumerate(node_ids)
+        node_sizes[i]
+        for i, nid in enumerate(node_ids)
         if int(active_indices[i].item()) in hub_feat_ids
     ]
     if hub_node_ids:
         nx.draw_networkx_nodes(
-            G, pos, nodelist=hub_node_ids, ax=ax,
-            node_size=hub_node_sizes, node_color="white",
-            edgecolors="black", linewidths=1.5,
+            G,
+            pos,
+            nodelist=hub_node_ids,
+            ax=ax,
+            node_size=hub_node_sizes,
+            node_color="white",
+            edgecolors="black",
+            linewidths=1.5,
         )
 
     # Overlay thumbnail images onto hub nodes
@@ -370,8 +453,13 @@ def render_attribution_graph(
     # Logit nodes
     if logit_node_ids:
         nx.draw_networkx_nodes(
-            G, pos, nodelist=logit_node_ids, ax=ax,
-            node_size=800, node_color="lightyellow", node_shape="s",
+            G,
+            pos,
+            nodelist=logit_node_ids,
+            ax=ax,
+            node_size=800,
+            node_color="lightyellow",
+            node_shape="s",
             edgecolors="grey",
         )
 
@@ -384,9 +472,15 @@ def render_attribution_graph(
         all_edges, edge_colors_rgba, edge_widths, edge_alphas
     ):
         nx.draw_networkx_edges(
-            G, pos, edgelist=[(src, dst)], ax=ax,
-            edge_color=[color], width=width,
-            arrows=True, arrowsize=12, alpha=alpha,
+            G,
+            pos,
+            edgelist=[(src, dst)],
+            ax=ax,
+            edge_color=[color],
+            width=width,
+            arrows=True,
+            arrowsize=12,
+            alpha=alpha,
             connectionstyle="arc3,rad=0.1",
         )
 
@@ -406,6 +500,50 @@ def render_attribution_graph(
         fontweight="bold",
     )
     ax.axis("off")
+
+    # ── Cosine Similarity Panel ───────────────────────────────────────
+    # Only render when n_active is small enough to produce a legible grid.
+    # For large active sets, restrict to the top hub nodes only.
+    _COS_PANEL_MAX = 40  # above this, switch to hub-only view
+    if sae is not None and n_active > 0:
+        from visualisation.graph_utils import compute_decoder_cosine_similarity
+        from mpl_toolkits.axes_grid1 import make_axes_locatable
+
+        if n_active <= _COS_PANEL_MAX:
+            panel_indices = active_indices
+            panel_labels = [
+                labels_map.get(int(active_indices[i].item()), f"{int(active_indices[i].item())}")
+                for i in range(n_active)
+            ]
+        else:
+            # Hub-only fallback: top hub nodes by activation strength
+            hub_local = torch.topk(
+                graph_data["feature_strengths"] if "feature_strengths" in graph_data
+                else torch.zeros(n_active),
+                k=min(node_thumbnail_top_n, n_active),
+            ).indices
+            panel_indices = active_indices[hub_local]
+            panel_labels = [
+                labels_map.get(int(panel_indices[i].item()), f"{int(panel_indices[i].item())}")
+                for i in range(len(panel_indices))
+            ]
+
+        cos_sim = compute_decoder_cosine_similarity(sae, panel_indices)
+        n_panel = len(panel_indices)
+
+        divider = make_axes_locatable(ax)
+        ax_sim = divider.append_axes("right", size="30%", pad=0.5)
+
+        title_suffix = " (hubs)" if n_active > _COS_PANEL_MAX else ""
+        cax = ax_sim.imshow(cos_sim.numpy(), cmap="RdBu_r", vmin=-1.0, vmax=1.0)
+        ax_sim.set_title(f"Decoder cosine\nsimilarity{title_suffix}", fontsize=8, fontweight="bold")
+
+        ax_sim.set_xticks(range(n_panel))
+        ax_sim.set_yticks(range(n_panel))
+        ax_sim.set_xticklabels(panel_labels, rotation=90, fontsize=6)
+        ax_sim.set_yticklabels(panel_labels, fontsize=6)
+
+        fig.colorbar(cax, cax=divider.append_axes("right", size="8%", pad=0.1))
 
     if own_fig:
         fig.tight_layout()
@@ -432,7 +570,9 @@ def render_graph_with_spatial_panel(
     feature_labels: dict[int, str] | None = None,
     n_top_spatial: int = 5,
     save_path: str | None = None,
-    node_thumbnail_top_n: int = 15,
+    node_thumbnail_top_n: int = 10,
+    stats: dict | None = None,
+    images_dir: Path | None = None,
 ) -> plt.Figure:
     """Two-panel figure: attribution graph (left) + spatial overlays (right).
 
@@ -485,6 +625,8 @@ def render_graph_with_spatial_panel(
         sae=sae,
         config=config,
         node_thumbnail_top_n=node_thumbnail_top_n,
+        stats=stats,
+        images_dir=images_dir,
     )
 
     # RIGHT: spatial overlay for each top feature

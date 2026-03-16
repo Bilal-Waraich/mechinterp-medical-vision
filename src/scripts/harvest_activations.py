@@ -245,7 +245,8 @@ def _find_patch_merging_layers(encoder: nn.Module):
     pm_layers = [
         (i, m) for i, m in enumerate(features) if isinstance(m, PatchMergingV2)
     ]
-    labels = {0: "Stage 1→2", 1: "Stage 2→3", 2: "Stage 3→4"}
+    pm_layers.append((len(features) - 1, features[-1]))  # pm_index=3 (Stage 4)
+    labels = {0: "Stage 1→2", 1: "Stage 2→3", 2: "Stage 3→4", 3: "Stage 4 (Final)"}
     for n, (fi, _) in enumerate(pm_layers):
         print(f"[Hook]  PM-{n}  {labels.get(n, '')}  features[{fi}]")
     return pm_layers
@@ -271,13 +272,14 @@ def register_hook(encoder: nn.Module, pm_index: int = DEFAULT_PM_INDEX):
         )
 
     feat_idx, pm_module = pm_layers[pm_index]
-    stage = {0: "Stage 1→2", 1: "Stage 2→3", 2: "Stage 3→4"}.get(pm_index, f"PM-{pm_index}")
+    stage = {0: "Stage 1→2", 1: "Stage 2→3", 2: "Stage 3→4", 3: "Stage 4 (Final)"}.get(pm_index, f"PM-{pm_index}")
     print(f"[Hook]  Registered on  {stage}  (features[{feat_idx}])")
 
     captured: dict = {}
 
     def _hook(module, input, output):
-        # output: (B, H', W', C')  —  Swin NHWC internal format
+        # output: (B, H', W', C')  —  Swin NHWC internal format (PM2/PM3) or (B, C, H', W')?
+        # Swin features are usually (B, H, W, C)
         captured["feat"] = output.detach().cpu()
 
     handle = pm_module.register_forward_hook(_hook)
@@ -442,7 +444,9 @@ def main():
     ap.add_argument("--batch_size",  type=int, default=DEFAULT_BATCH_SIZE)
     ap.add_argument("--image_size",  type=int, default=DEFAULT_IMAGE_SIZE)
     ap.add_argument("--pm_index",    type=int, default=DEFAULT_PM_INDEX,
-                    help="PatchMerging layer to hook: 0=Stage1→2  1=Stage2→3  2=Stage3→4")
+                    help="PatchMerging layer to hook: 0=Stage1→2  1=Stage2→3  2=Stage3→4  3=Stage4")
+    ap.add_argument("--d_model",     type=int, default=None,
+                    help="Expected d_model. If None, auto-detected from pm_index.")
     ap.add_argument("--output",      default=DEFAULT_OUTPUT_PATH)
     ap.add_argument("--device",
                     default="cuda:0" if torch.cuda.is_available() else "cpu")
@@ -450,11 +454,12 @@ def main():
     ap.add_argument("--data_dir",      type=str, default=None,
                     help="Path to dataset root. If omitted, synthetic data is used.")
     ap.add_argument("--dataset",       type=str, default="semicol",
-                    choices=["semicol", "brain_tumor", "tcga_breast"],
+                    choices=["semicol", "brain_tumor", "tcga_breast", "pneumonia"],
                     help="Which dataset to load from --data_dir: "
                          "'semicol' (SemiCOL colorectal), "
-                         "'brain_tumor' (Kaggle brain-tumor-classification-mri Training/), or "
-                         "'tcga_breast' (TCGA-BRCA SVS WSIs with OncoTree histological labels).")
+                         "'brain_tumor' (Kaggle brain-tumor-classification-mri Training/), "
+                         "'tcga_breast' (TCGA-BRCA SVS WSIs with OncoTree histological labels), or "
+                         "'pneumonia' (RSNA Pneumonia Detection Challenge DICOM files).")
     # SemiCOL-specific options (ignored when --dataset brain_tumor)
     ap.add_argument("--track",         type=str, default="b", choices=["a", "b"],
                     help="SemiCOL track: 'b'=weak WSI (SAE training), 'a'=manual masks (validation).")
@@ -466,6 +471,11 @@ def main():
                     help="If set, saves each input patch as {idx:07d}.png here. "
                          "Required for visualise.py spatial overlays.")
     args = ap.parse_args()
+    
+    D_MODEL_MAP = {0: 256, 1: 512, 2: 1024, 3: 1024}
+    N_PATCHES_MAP = {0: 784, 1: 196, 2: 49, 3: 49}
+    if args.d_model is None:
+        args.d_model = D_MODEL_MAP[args.pm_index]
 
     device = torch.device(args.device)
     print(f"{'='*60}")
@@ -501,6 +511,9 @@ def main():
         elif args.dataset == "tcga_breast":
             from datasets.breast_cancer.tcga_breast_dataset import TCGABreastDataset
             dataset = TCGABreastDataset(args.data_dir, args.max_per_slide)
+        elif args.dataset == "pneumonia":
+            from datasets.pneumonia_dataset import PneumoniaDataset
+            dataset = PneumoniaDataset(args.data_dir)
         elif args.track == "b":
             from datasets.semicol_dataset import SemiCOLWeakDataset
             dataset = SemiCOLWeakDataset(args.data_dir, args.max_per_slide)
@@ -588,6 +601,20 @@ def main():
         str(out_path),
         metadata=metadata,
     )
+    
+    meta_path = out_path.parent / (out_path.stem + "_metadata.json")
+    try:
+        with open(meta_path, "w") as f:
+            _json.dump({
+                "pm_index":  args.pm_index,
+                "d_model":   args.d_model,
+                "n_patches": int(info["spatial_h"] * info["spatial_w"]),
+                "n_images":  int(info["n_images"]),
+                "spatial_h": int(info["spatial_h"]),
+                "spatial_w": int(info["spatial_w"])
+            }, f, indent=2)
+    except Exception as e:
+        print(f"Failed to write metadata json: {e}")
 
     size_mb = out_path.stat().st_size / 1e6
     print(f"Saved → {out_path}  ({size_mb:.1f} MB)")

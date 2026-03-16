@@ -1,0 +1,14 @@
+{
+    "pm_index": 2,
+    "d_model": 1024,
+    "n_patches": 49,
+    "expansion_factor": 4,
+    "k": 48,
+    "lr": 2e-4,
+    "lr_warmup_steps": 1000,
+    "lr_schedule": "cosine",
+    "batch_size": 2048,
+    "steps": 50000,
+    "aux_penalty": 0.03125,
+    "l1_coeff": 2e-4
+}

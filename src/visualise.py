@@ -42,6 +42,12 @@ from visualisation.attribution_graph import (
     render_attribution_graph,
     render_graph_with_spatial_panel,
 )
+from visualisation.coactivation import (
+    compute_coactivation_matrix,
+    render_coactivation_heatmap,
+    find_coactivating_pairs,
+)
+from visualisation.html_dashboard import save_dashboard
 
 import matplotlib
 matplotlib.use("Agg")
@@ -96,6 +102,23 @@ def validate_setup(
 # Common setup helper
 # ──────────────────────────────────────────────────────────────────────────
 
+def load_spatial_config(activations_path: str) -> tuple[int, int, int]:
+    """
+    Returns (n_patches, spatial_h, spatial_w).
+    Reads from sidecar _metadata.json if present, else falls back to 196/14/14.
+    """
+    import json
+    from pathlib import Path
+    meta_path = Path(activations_path).parent / \
+                (Path(activations_path).stem + "_metadata.json")
+    if meta_path.exists():
+        meta = json.loads(meta_path.read_text())
+        n = meta["n_patches"]
+        h = meta.get("spatial_h", int(n ** 0.5))
+        w = meta.get("spatial_w", int(n ** 0.5))
+        return n, h, w
+    return 196, 14, 14
+
 def _common_setup(args):
     """Shared boilerplate: build config, load SAE + activations + images."""
     device = getattr(args, "device", "cuda:0")
@@ -113,11 +136,10 @@ def _common_setup(args):
     print(f"Loading activations from {args.activations_path} …")
     acts, meta = load_activations(args.activations_path, device="cpu")
 
-    # Override spatial layout from activation metadata
-    if "spatial_h" in meta:
-        cfg.spatial_h = int(meta["spatial_h"])
-    if "spatial_w" in meta:
-        cfg.spatial_w = int(meta["spatial_w"])
+    # Override spatial layout from sidecar metadata
+    n_patches, h, w = load_spatial_config(args.activations_path)
+    cfg.spatial_h = h
+    cfg.spatial_w = w
 
     image_paths: list[Path] = []
     if cfg.images_dir:
@@ -210,6 +232,15 @@ def cmd_layer3(args):
     cfg, sae, acts, image_paths = _common_setup(args)
     validate_setup(cfg, sae, acts, image_paths)
 
+    # Optionally load stats for dataset-colour node colouring
+    stats = None
+    img_dir = None
+    if getattr(args, "stats_path", None):
+        stats = load_stats(args.stats_path, device="cpu")
+        print(f"  ✓ Stats loaded from {args.stats_path}")
+    if getattr(args, "images_dir", None):
+        img_dir = Path(args.images_dir)
+
     img_idx = args.image_idx
     print(f"Building attribution graph for image {img_idx} …")
     gd = build_graph_data(img_idx, acts, sae, cfg)
@@ -223,7 +254,10 @@ def cmd_layer3(args):
     fig1 = render_attribution_graph(
         gd,
         target_class=args.target_class,
+        sae=sae,
         save_path=graph_path,
+        stats=stats,
+        images_dir=img_dir,
     )
     plt.close(fig1)
     print(f"  ✓ Graph saved to {graph_path}")
@@ -240,10 +274,232 @@ def cmd_layer3(args):
         config=cfg,
         graph_data=gd,
         save_path=combo_path,
+        stats=stats,
+        images_dir=img_dir,
     )
     plt.close(fig2)
     print(f"  ✓ Graph + spatial panel saved to {combo_path}")
 
+
+# ──────────────────────────────────────────────────────────────────────────
+# Subcommand: label-views
+# ──────────────────────────────────────────────────────────────────────────
+
+def cmd_label_views(args):
+    from visualisation.view_labeller import label_dataset_views
+    label_dataset_views(Path(args.images_dir), save_path=Path(args.output))
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# Subcommand: ablate
+# ──────────────────────────────────────────────────────────────────────────
+
+def cmd_ablate(args):
+    from visualisation.ablation import run_patch_ablation, render_ablation_figure
+
+    cfg, sae, acts, image_paths = _common_setup(args)
+
+    n_patches, spatial_h, spatial_w = load_spatial_config(args.activations_path)
+
+    result = run_patch_ablation(
+        feature_idx=args.feature_idx,
+        image_idx=args.image_idx,
+        sae=sae,
+        flat_activations=acts,
+        n_patches=n_patches,
+        spatial_h=spatial_h,
+        spatial_w=spatial_w,
+        mode=args.mode,
+    )
+
+    print(f"Baseline activation : {result['baseline_act']:.3f}")
+    print(f"Most important patches: {result['most_important_patches']}")
+
+    if image_paths:
+        save_path = str(
+            Path(args.output_dir)
+            / f"ablation_F{args.feature_idx}_img{args.image_idx}_{args.mode}.png"
+        )
+        fig = render_ablation_figure(
+            result, image_paths[args.image_idx],
+            spatial_h=spatial_h, spatial_w=spatial_w,
+            save_path=save_path,
+        )
+        plt.close(fig)
+        print(f"  Saved to {save_path}")
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# Subcommand: faithfulness
+# ──────────────────────────────────────────────────────────────────────────
+
+def cmd_faithfulness(args) -> None:
+    import json
+    from pathlib import Path
+    from safetensors.torch import load_file as st_load
+    from visualisation.ablation import (
+        compute_feature_faithfulness_profile,
+        render_faithfulness_figure,
+    )
+
+    out_dir = Path(args.output_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    # Load SAE
+    import json as _json
+    sae = load_sae(args.checkpoint_dir, device="cpu")
+    sae.eval()
+
+    # Load cfg.json for spatial dims
+    _cfg_path = Path(args.checkpoint_dir) / "cfg.json"
+    _cfg_dict = _json.loads(_cfg_path.read_text()) if _cfg_path.exists() else {}
+
+    # Load activations
+    acts_tensors = st_load(args.activations_path)
+    key = next(iter(acts_tensors))
+    flat_acts = acts_tensors[key]  # [N*n_patches, d_model]
+
+    # Load stats
+    stats = torch.load(args.stats_path, map_location="cpu")
+    if isinstance(stats, dict) and all(isinstance(v, torch.Tensor) for v in stats.values()):
+        stats = {k: v.numpy() for k, v in stats.items()}
+
+    # Load spatial config
+    spatial_h = int(_cfg_dict.get("spatial_h", 14))
+    spatial_w = int(_cfg_dict.get("spatial_w", 14))
+    n_patches = spatial_h * spatial_w
+
+    # Load classifier weights (or use SAE proxy)
+    if args.use_sae_proxy:
+        # Self-faithfulness: treat feature activations as logits
+        # Use W_dec as a [d_sae, d_model] proxy classifier
+        classifier_weights = sae.W_dec.detach()   # [d_sae, d_model]
+        classifier_bias = None
+        print("Using SAE decoder as proxy classifier (--use_sae_proxy)")
+    else:
+        weights_dict = torch.load(args.classifier_weights_path, map_location="cpu")
+        # Try common key names
+        cw = None
+        for key in ("weight", "W", "classifier.weight", "head.weight"):
+            if key in weights_dict:
+                cw = weights_dict[key]
+                break
+        if cw is None:
+            # Fallback: use first tensor
+            cw = next(iter(weights_dict.values()))
+        classifier_weights = cw.float()
+
+        cb = None
+        for key in ("bias", "b", "classifier.bias", "head.bias"):
+            if key in weights_dict:
+                cb = weights_dict[key].float()
+                break
+        classifier_bias = cb
+
+    # Compute profile
+    profile = compute_feature_faithfulness_profile(
+        feature_idx=args.feature_idx,
+        stats=stats,
+        sae=sae,
+        flat_activations=flat_acts,
+        classifier_weights=classifier_weights,
+        classifier_bias=classifier_bias,
+        n_patches=n_patches,
+        spatial_h=spatial_h,
+        spatial_w=spatial_w,
+        top_k_patches=args.top_k_patches,
+        n_images=args.n_images,
+    )
+
+    # Print summary
+    print(f"F{args.feature_idx} Faithfulness Profile")
+    print(f"  Evaluated on: {profile['n_evaluated']} images")
+    print(f"  Mean faithfulness: {profile.get('mean_faithfulness', 0):.4f}")
+    print(f"  Std faithfulness:  {profile.get('std_faithfulness', 0):.4f}")
+    print(f"  Mean cosine sim:   {profile.get('mean_cosine_sim', 0):.4f}")
+    print(f"  Mean NMSE:         {profile.get('mean_nmse', 0):.4f}")
+    print(f"  Verdict: {profile.get('overall_interpretation', 'N/A')}")
+
+    # Render figure
+    fig_path = out_dir / f"faithfulness_F{args.feature_idx}.png"
+    render_faithfulness_figure(profile, save_path=str(fig_path))
+    print(f"  Figure saved: {fig_path}")
+
+    # Save JSON
+    json_path = out_dir / f"faithfulness_F{args.feature_idx}.json"
+    json_path.write_text(json.dumps(profile, indent=2))
+    print(f"  JSON saved:   {json_path}")
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# Subcommand: coactivation
+# ──────────────────────────────────────────────────────────────────────────
+
+def cmd_coactivation(args):
+    Path(args.output_dir).mkdir(parents=True, exist_ok=True)
+    
+    print(f"Loading stats from {args.stats_path} …")
+    try:
+        stats = load_stats(args.stats_path, device="cpu")
+    except Exception as e:
+        print(f"Error loading stats file: {e}")
+        sys.exit(1)
+        
+    top_feats = get_most_active_features(stats, n=args.top_features).tolist()
+    
+    print("Computing co-activation matrix …")
+    coact_matrix = compute_coactivation_matrix(stats, top_k=50, feature_indices=top_feats)
+    
+    save_path = str(Path(args.output_dir) / "coactivation_heatmap.png")
+    fig = render_coactivation_heatmap(coact_matrix, top_feats, save_path=save_path)
+    plt.close(fig)
+    print(f"  ✓ Saved heatmap to {save_path}")
+    
+    pairs = find_coactivating_pairs(coact_matrix, top_feats, threshold=0.0)
+    print("\nTop 20 co-activating pairs:")
+    for i in range(min(20, len(pairs))):
+        f1, f2, score = pairs[i]
+        print(f"  F{f1} & F{f2}: {score:.3f}")
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# Subcommand: dashboard
+# ──────────────────────────────────────────────────────────────────────────
+
+def cmd_dashboard(args):
+    cfg, sae, acts, image_paths = _common_setup(args)
+    
+    print(f"Loading stats from {args.stats_path} …")
+    try:
+        stats = load_stats(args.stats_path, device="cpu")
+    except Exception as e:
+        print(f"Error loading stats file: {e}")
+        sys.exit(1)
+        
+    top_feats = get_most_active_features(stats, n=args.top_n).tolist()
+
+    view_labels = None
+    if getattr(args, "view_labels_path", None):
+        import json
+        view_labels = json.loads(Path(args.view_labels_path).read_text())
+
+    out_path = Path(args.output)
+    save_dashboard(
+        feature_indices=top_feats,
+        stats=stats,
+        sae=sae,
+        images_dir=Path(args.images_dir),
+        output_path=out_path,
+        spatial_h=cfg.spatial_h,
+        spatial_w=cfg.spatial_w,
+        context_patches=2,
+        top_k_patches=9,
+        n_coactivation_rows=10,
+        coactivation_top_k=50,
+        verbose=True,
+        activations=acts,
+        view_labels=view_labels,
+    )
 
 # ──────────────────────────────────────────────────────────────────────────
 # Subcommand: all
@@ -304,6 +560,26 @@ def cmd_all(args):
         plt.close(fig)
         print(f"  ✓ Image {img_idx}: {combo_path}")
 
+    # ── 4. HTML dashboard: top-50 features ───────────────────────────────
+    dashboard_path = base / "dashboard.html"
+    print(f"\nRendering HTML dashboard — top-50 features …")
+    top50 = get_most_active_features(stats, n=50).tolist()
+    save_dashboard(
+        feature_indices=top50,
+        stats=stats,
+        sae=sae,
+        images_dir=Path(cfg.images_dir),
+        output_path=dashboard_path,
+        spatial_h=cfg.spatial_h,
+        spatial_w=cfg.spatial_w,
+        context_patches=2,
+        top_k_patches=9,
+        n_coactivation_rows=10,
+        coactivation_top_k=50,
+        verbose=True,
+        activations=acts,
+    )
+
     print(f"\n{'═' * 60}")
     print(f"  All visualisations saved to {base}")
     print(f"{'═' * 60}")
@@ -362,15 +638,65 @@ def build_parser() -> argparse.ArgumentParser:
     sp_l3.add_argument("--images_dir", type=str, required=True)
     sp_l3.add_argument("--image_idx", type=int, required=True)
     sp_l3.add_argument("--target_class", type=int, default=None)
+    sp_l3.add_argument("--stats_path", type=str, default=None,
+                       help="Path to stats.pt (enables dataset-colour nodes).")
     sp_l3.add_argument("--output_dir", type=str, default="data/vis_outputs/attribution_graphs")
     sp_l3.set_defaults(func=cmd_layer3)
 
+    # ── label-views ───────────────────────────────────────────────────
+    sp_lv = sub.add_parser("label-views", help="Label brain MRI images by view orientation (axial/sagittal/coronal).")
+    sp_lv.add_argument("--images_dir", type=str, required=True)
+    sp_lv.add_argument("--output", type=str, required=True, help="Path to save labels JSON.")
+    sp_lv.set_defaults(func=cmd_label_views)
+
+    # ── ablate ────────────────────────────────────────────────────────
+    sp_abl = sub.add_parser("ablate", help="Patch deletion/insertion ablation test for a single feature.")
+    _add_common(sp_abl)
+    sp_abl.add_argument("--images_dir", type=str, required=True)
+    sp_abl.add_argument("--feature_idx", type=int, required=True)
+    sp_abl.add_argument("--image_idx",   type=int, required=True)
+    sp_abl.add_argument("--mode", type=str, default="deletion", choices=["deletion", "insertion"])
+    sp_abl.add_argument("--output_dir", type=str, default="data/vis_outputs/ablation")
+    sp_abl.set_defaults(func=cmd_ablate)
+
+    # ── faithfulness ──────────────────────────────────────────────────
+    sp_faith = sub.add_parser("faithfulness",
+        help="Compute mechanistic faithfulness scores for a feature.")
+    sp_faith.add_argument("--feature_idx",  type=int, required=True)
+    sp_faith.add_argument("--checkpoint_dir",      required=True)
+    sp_faith.add_argument("--activations_path",    required=True)
+    sp_faith.add_argument("--stats_path",          required=True)
+    sp_faith.add_argument("--classifier_weights_path", default=None)
+    sp_faith.add_argument("--use_sae_proxy", action="store_true", default=False,
+        help="Use SAE decoder as proxy classifier (when no head available).")
+    sp_faith.add_argument("--n_images",    type=int, default=10)
+    sp_faith.add_argument("--top_k_patches", type=int, default=5)
+    sp_faith.add_argument("--output_dir",  required=True)
+    sp_faith.set_defaults(func=cmd_faithfulness)
+
     # ── all ───────────────────────────────────────────────────────────
-    sp_all = sub.add_parser("all", help="Run collect → layer1 → layer3 pipeline.")
+    sp_all = sub.add_parser("all", help="Run collect -> layer1 -> layer3 pipeline.")
     _add_common(sp_all)
     sp_all.add_argument("--images_dir", type=str, required=True)
     sp_all.add_argument("--output_dir", type=str, default="data/vis_outputs")
     sp_all.set_defaults(func=cmd_all)
+
+    # ── coactivation ──────────────────────────────────────────────────
+    sp_coact = sub.add_parser("coactivation", help="Render feature co-activation heatmap.")
+    sp_coact.add_argument("--stats_path", type=str, required=True)
+    sp_coact.add_argument("--top_features", type=int, default=50)
+    sp_coact.add_argument("--output_dir", type=str, required=True)
+    sp_coact.set_defaults(func=cmd_coactivation)
+
+    # ── dashboard ─────────────────────────────────────────────────────
+    sp_dash = sub.add_parser("dashboard", help="Export interactive HTML dashboard.")
+    _add_common(sp_dash)
+    sp_dash.add_argument("--images_dir", type=str, required=True)
+    sp_dash.add_argument("--stats_path", type=str, required=True)
+    sp_dash.add_argument("--top_n", type=int, default=50)
+    sp_dash.add_argument("--output", type=str, required=True)
+    sp_dash.add_argument("--view_labels_path", type=str, default=None)
+    sp_dash.set_defaults(func=cmd_dashboard)
 
     return p
 
