@@ -43,6 +43,7 @@ dependencies = [
     "universal-pathlib",     
     "pydantic-settings",
     "albumentations",
+    "umap-learn>=0.5.0",
 ]
 
 [project.optional-dependencies]
