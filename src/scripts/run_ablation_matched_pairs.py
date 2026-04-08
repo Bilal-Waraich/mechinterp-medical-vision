@@ -100,7 +100,7 @@ def is_positional_feature(
             jaccards.append(intersection / union if union > 0 else 0.0)
 
     mean_jaccard = float(np.mean(jaccards))
-    return mean_jaccard > 0.8, mean_jaccard
+    return mean_jaccard > 0.5, mean_jaccard
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────
