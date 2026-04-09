@@ -1,4 +1,4 @@
-"""
+r"""
 Central path configuration for all analysis scripts.
 
 Edit the paths in each dataset section below, then all scripts will
@@ -8,9 +8,15 @@ Storage root on the file server:
     \\fileserver\share\deep_learning\output\UMed-SAE\batch-topk\layer-2
 """
 
+import os
 from pathlib import Path
 
-_L2 = Path(r"\\fileserver\share\deep_learning\output\UMed-SAE\batch-topk\layer-2")
+# Auto-detect environment: Docker (Linux) mounts the volume at /deep_learning/output,
+# local Windows uses the network share directly.
+if os.name == "nt":
+    _L2 = Path(r"\\fileserver\share\deep_learning\output\UMed-SAE\batch-topk\layer-2")
+else:
+    _L2 = Path("/deep_learning/output/UMed-SAE/batch-topk/layer-2")
 
 # ── Dataset configs ────────────────────────────────────────────────────────
 # breast stats is None — generate with:
