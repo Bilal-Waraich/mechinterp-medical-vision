@@ -1,9 +1,9 @@
 """SAE training configuration.
 
 # pm_index=0: d_model=256,   spatial=28x28, n_patches=784
-# pm_index=1: d_model=512,   spatial=14x14, n_patches=196  <- current
-# pm_index=2: d_model=1024,  spatial=7x7,   n_patches=49   <- target
-# pm_index=3: d_model=1024,  spatial=7x7,   n_patches=49   <- target
+# pm_index=1: d_model=512,   spatial=14x14, n_patches=196
+# pm_index=2: d_model=1024,  spatial=7x7,   n_patches=49   <- default (universality experiments)
+# pm_index=3: d_model=1024,  spatial=7x7,   n_patches=49
 """
 
 from dataclasses import dataclass
@@ -11,18 +11,21 @@ from dataclasses import dataclass
 
 @dataclass
 class SAEConfig:
-    pm_index: int = 1
-    n_patches: int = 196
+    pm_index: int = 2
+    n_patches: int = 49
 
     # ── Model dimensions ──────────────────────────────────────────────────
-    d_model: int = 384
+    d_model: int = 1024
     expansion_factor: int = 4
 
     # ── Sparsity ──────────────────────────────────────────────────────────
     k: int = 32                     # target active features per token
 
     # ── Dead feature handling (auxiliary loss) ────────────────────────────
-    n_batches_to_dead: int = 10     # consecutive inactive batches → dead
+    n_batches_to_dead: int = 25     # consecutive inactive batches → dead
+                                    # (increased from 10: rare diseases in mixed
+                                    # datasets may not appear in 10 consecutive
+                                    # batches, causing premature feature recycling)
     top_k_aux: int = 512            # dead features used in aux reconstruction
     aux_penalty: float = 1 / 32    # weight of the auxiliary loss term
     l1_coeff: float = 2e-4         # L1 sparsity penalty coefficient
@@ -39,6 +42,10 @@ class SAEConfig:
     batch_size: int = 2048
     steps: int = 50_000
     checkpoint_every: int = 5_000
+
+    # ── Stratified sampling ───────────────────────────────────────────────
+    stratified: bool = True         # enforce equal batch composition across datasets
+                                    # requires dataset_ids tensor in activations file
 
     # ── Paths ─────────────────────────────────────────────────────────────
     activations_path: str = "data/dummy_activations.safetensors"
@@ -72,5 +79,5 @@ class SAEConfig:
             pm_index=pm_index,
             d_model=d_model_map[pm_index],
             n_patches=n_patches_map[pm_index],
-            **kwargs
+            **kwargs,
         )

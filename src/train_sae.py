@@ -41,10 +41,104 @@ from pathlib import Path
 import torch
 from safetensors.torch import load_file, save_file
 from torch.cuda.amp import GradScaler, autocast
-from torch.utils.data import DataLoader, TensorDataset
+from torch.utils.data import DataLoader, TensorDataset, Dataset, Sampler
 
 from config import SAEConfig
 from sae_models import BatchTopKSAE
+
+
+# ── Stratified sampling ───────────────────────────────────────────────────────
+
+class StratifiedActivationDataset(Dataset):
+    """Wraps a flat activation tensor with dataset_ids for stratified sampling.
+
+    Parameters
+    ----------
+    activations  : [N, d_model] float32
+    dataset_ids  : [N] int32 — integer dataset index per token
+    """
+
+    def __init__(self, activations: torch.Tensor, dataset_ids: torch.Tensor) -> None:
+        self.activations = activations
+        self.dataset_ids = dataset_ids
+
+    def __len__(self) -> int:
+        return len(self.activations)
+
+    def __getitem__(self, idx: int) -> tuple[torch.Tensor, torch.Tensor]:
+        return self.activations[idx], self.dataset_ids[idx]
+
+
+class StratifiedBatchSampler(Sampler):
+    """Yields batches with equal representation from each dataset.
+
+    Each batch contains ``batch_size // n_datasets`` tokens from every dataset.
+    TB (dataset_id=3) is sampled with replacement so it can keep pace with
+    larger datasets. All others are sampled without replacement per epoch.
+
+    Parameters
+    ----------
+    dataset_ids   : [N] int32 tensor
+    batch_size    : total tokens per batch (must be divisible by n_datasets)
+    n_steps       : number of batches to yield (training steps)
+    tb_dataset_id : dataset index that is oversampled (default 3)
+    seed          : random seed
+    """
+
+    def __init__(
+        self,
+        dataset_ids: torch.Tensor,
+        batch_size: int,
+        n_steps: int,
+        tb_dataset_id: int = 3,
+        seed: int = 0,
+    ) -> None:
+        unique_ids = dataset_ids.unique().tolist()
+        n_datasets = len(unique_ids)
+        assert batch_size % n_datasets == 0, (
+            f"batch_size={batch_size} must be divisible by n_datasets={n_datasets}"
+        )
+        self.per_ds = batch_size // n_datasets
+        self.n_steps = n_steps
+        self.tb_id = tb_dataset_id
+        self.seed = seed
+
+        # Build index lists per dataset
+        self.indices_per_ds: dict[int, list[int]] = {}
+        for uid in unique_ids:
+            self.indices_per_ds[int(uid)] = (dataset_ids == uid).nonzero(as_tuple=True)[0].tolist()
+
+    def __len__(self) -> int:
+        return self.n_steps
+
+    def __iter__(self):
+        import random as _random
+        rng = _random.Random(self.seed)
+
+        # Per-epoch shuffled pools for non-TB datasets
+        pools: dict[int, list[int]] = {}
+        for uid, idxs in self.indices_per_ds.items():
+            pools[uid] = list(idxs)
+            rng.shuffle(pools[uid])
+        pointers: dict[int, int] = {uid: 0 for uid in pools}
+
+        for _ in range(self.n_steps):
+            batch: list[int] = []
+            for uid, idxs in self.indices_per_ds.items():
+                if uid == self.tb_id:
+                    # TB: sample with replacement
+                    batch.extend(rng.choices(idxs, k=self.per_ds))
+                else:
+                    ptr = pointers[uid]
+                    pool = pools[uid]
+                    # Refill pool when exhausted (new epoch for this dataset)
+                    if ptr + self.per_ds > len(pool):
+                        rng.shuffle(pool)
+                        ptr = 0
+                    batch.extend(pool[ptr : ptr + self.per_ds])
+                    pointers[uid] = ptr + self.per_ds
+            rng.shuffle(batch)
+            yield batch
 
 # ── Optional wandb ────────────────────────────────────────────────────────────
 
@@ -176,15 +270,43 @@ def train(cfg: SAEConfig) -> BatchTopKSAE:
             f"Pass --d_model {acts.shape[1]} or re-harvest with the correct hook."
         )
 
-    dataset = TensorDataset(acts)
-    loader = DataLoader(
-        dataset,
-        batch_size=cfg.batch_size,
-        shuffle=True,
-        drop_last=True,
-        pin_memory=(device.type == "cuda"),
-        num_workers=0,
-    )
+    # ── Stratified or plain DataLoader ────────────────────────────────────
+    dataset_ids: torch.Tensor | None = raw.get("dataset_ids", None)
+
+    if cfg.stratified and dataset_ids is not None:
+        n_datasets = int(dataset_ids.max().item()) + 1
+        print(f"[Data] Stratified sampling: {n_datasets} datasets, "
+              f"{cfg.batch_size // n_datasets} tokens/dataset/batch")
+        train_dataset = StratifiedActivationDataset(acts, dataset_ids)
+        sampler = StratifiedBatchSampler(
+            dataset_ids=dataset_ids,
+            batch_size=cfg.batch_size,
+            n_steps=cfg.steps,
+            tb_dataset_id=3,
+            seed=0,
+        )
+        loader = DataLoader(
+            train_dataset,
+            batch_sampler=sampler,
+            pin_memory=(device.type == "cuda"),
+            num_workers=0,
+        )
+        _stratified = True
+    else:
+        if cfg.stratified and dataset_ids is None:
+            print("[Data] WARNING: stratified=True but no dataset_ids in file. "
+                  "Falling back to shuffled DataLoader.")
+        plain_dataset = TensorDataset(acts)
+        loader = DataLoader(
+            plain_dataset,
+            batch_size=cfg.batch_size,
+            shuffle=True,
+            drop_last=True,
+            pin_memory=(device.type == "cuda"),
+            num_workers=0,
+        )
+        dataset_ids = None
+        _stratified = False
 
     def _infinite():
         while True:
@@ -204,12 +326,24 @@ def train(cfg: SAEConfig) -> BatchTopKSAE:
     print(f"[Model] BatchTopKSAE  d_model={cfg.d_model}  d_sae={cfg.d_sae}  k={cfg.k}")
     print(f"[Model] Parameters: {n_params:,}")
 
-    # ── Initialise b_dec to training data mean (CHANGE 3) ─────────────────
+    # ── Initialise b_dec ──────────────────────────────────────────────────
+    # If activations were per-dataset centred (harvest_all.py default), the
+    # global mean is near zero and we initialise b_dec to zero accordingly.
+    # If not centred, fall back to global data mean.
     with torch.no_grad():
         n_sample = min(10_000, len(acts))
         sample = acts[:n_sample].to(model.b_dec.device)
-        model.b_dec.data = sample.mean(dim=0)
-    print(f"[Init] b_dec initialised to data mean  (norm={model.b_dec.data.norm():.3f})")
+        global_mean = sample.mean(dim=0)
+        global_mean_norm = global_mean.norm().item()
+        if global_mean_norm < 0.1 * (cfg.d_model ** 0.5):
+            # Data already centred — initialise to zero
+            model.b_dec.data.zero_()
+            print(f"[Init] b_dec initialised to zero (data is centred, "
+                  f"global_mean_norm={global_mean_norm:.3f})")
+        else:
+            model.b_dec.data = global_mean
+            print(f"[Init] b_dec initialised to data mean "
+                  f"(norm={global_mean_norm:.3f})")
 
     # ── Optimiser (Adam with configurable betas, matching reference) ──────
     optimizer = torch.optim.Adam(
@@ -267,7 +401,13 @@ def train(cfg: SAEConfig) -> BatchTopKSAE:
     t0_train = datetime.now()
 
     for step in range(1, cfg.steps + 1):
-        (x,) = next(data_iter)
+        batch = next(data_iter)
+        if _stratified:
+            x, _batch_ds_ids = batch
+            _batch_ds_ids = _batch_ds_ids.to(device)
+        else:
+            (x,) = batch
+            _batch_ds_ids = None
         x = x.to(device)
 
         # -- Forward (FP16 inside autocast when use_amp=True) --
@@ -317,6 +457,25 @@ def train(cfg: SAEConfig) -> BatchTopKSAE:
 
         if use_wandb:
             wandb.log(metrics, step=step)
+
+        # ── Per-dataset batch fraction (verify stratification) ────────────
+        if _stratified and _batch_ds_ids is not None and step % 500 == 0:
+            total = _batch_ds_ids.shape[0]
+            fracs = {
+                int(uid): (_batch_ds_ids == uid).sum().item() / total
+                for uid in _batch_ds_ids.unique().tolist()
+            }
+            ds_names = {0: "chexpert", 1: "rsna", 2: "siim", 3: "tb"}
+            frac_str = "  ".join(
+                f"{ds_names.get(k, str(k))}={v:.2f}" for k, v in sorted(fracs.items())
+            )
+            print(f"[Stratification] step {step}  batch fracs: {frac_str}")
+            if use_wandb:
+                wandb.log(
+                    {f"stratification/{ds_names.get(k, str(k))}": v
+                     for k, v in fracs.items()},
+                    step=step,
+                )
 
         if step % 100 == 0 or step == 1:
             elapsed = (datetime.now() - t0_train).total_seconds()
@@ -379,6 +538,8 @@ def main() -> None:
     parser.add_argument("--device", type=str, default=None)
     parser.add_argument("--use_amp", action="store_true", default=None,
                         help="Enable mixed-precision (FP16) training via torch.cuda.amp (~2x speedup on Tensor Core GPUs).")
+    parser.add_argument("--no_stratified", action="store_true", default=False,
+                        help="Disable stratified sampling (use plain shuffled DataLoader).")
     args = parser.parse_args()
 
     cfg = SAEConfig()
@@ -392,8 +553,11 @@ def main() -> None:
                     setattr(cfg, k, v)
                     
     for field, value in vars(args).items():
-        if field != "config" and value is not None:
+        if field not in ("config", "no_stratified") and value is not None:
             setattr(cfg, field, value)
+
+    if args.no_stratified:
+        cfg.stratified = False
 
     print("=" * 60)
     print("BatchTopK SAE Trainer  (bartbussmann/BatchTopK reference)")
