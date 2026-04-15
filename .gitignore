@@ -12,3 +12,4 @@ __pycache__/
 *.pyo
 data/
 output*.txt
+thesis-reference.md

@@ -21,6 +21,8 @@ def run_patch_ablation(
     baseline_value: float = 0.0,
 ) -> dict:
     acts = flat_activations[image_idx*n_patches : (image_idx+1)*n_patches].clone()
+    if hasattr(sae, "W_enc"):
+        acts = acts.to(sae.W_enc.device)
     with torch.no_grad():
         f_baseline = sae.encode(acts)
         baseline_act = f_baseline[:, feature_idx].mean().item()
@@ -159,12 +161,16 @@ def compute_faithfulness_score(
         flat_acts_t = flat_activations.float()
 
     acts = flat_acts_t[image_idx * n_patches : (image_idx + 1) * n_patches].clone()
+    if hasattr(sae, "W_enc"):
+        acts = acts.to(sae.W_enc.device)
 
     with torch.no_grad():
         # Step 1: baseline logits via mean pooling
         pooled_baseline = acts.mean(dim=0)              # [d_model]
+        classifier_weights = classifier_weights.to(pooled_baseline.device)
         logits_baseline = pooled_baseline @ classifier_weights.T
         if classifier_bias is not None:
+            classifier_bias = classifier_bias.to(pooled_baseline.device)
             logits_baseline = logits_baseline + classifier_bias
 
         # Step 2: determine target class
@@ -305,6 +311,108 @@ def compute_feature_faithfulness_profile(
         "mean_nmse":              round(float(np.mean(nmses)), 4),
         "per_image":              results,
         "overall_interpretation": overall,
+    }
+
+
+def compute_feature_ablation(
+    feature_idx: int,
+    image_idx: int,
+    sae,
+    flat_activations: torch.Tensor,
+    n_patches: int = 196,
+) -> dict:
+    """Zero a single SAE feature across all patches and measure reconstruction disruption.
+
+    Unlike patch ablation (which zeros input patches and measures feature activation change),
+    this operates entirely in latent space: zeros feature_idx in the sparse codes and decodes
+    back, measuring how much the reconstruction degrades. No classifier weights required.
+
+    Steps
+    -----
+    1. Encode image patches -> sparse latent z  [n_patches, d_sae]
+    2. Baseline reconstruction: sae.decode(z) -> x_hat
+    3. Zero feature_idx in z across all patches -> z_ablated
+    4. Ablated reconstruction: sae.decode(z_ablated) -> x_hat_ablated
+    5. delta_l2 = mean over patches of ||x_hat - x_hat_ablated||_2
+    6. relative_disruption = delta_l2 / (mean ||x_hat||_2 + 1e-8)
+
+    Returns
+    -------
+    dict with keys: feature_idx, image_idx, mean_feature_activation,
+    baseline_l2, ablated_l2, delta_l2, relative_disruption
+    """
+    acts = flat_activations[image_idx * n_patches : (image_idx + 1) * n_patches].clone()
+    if hasattr(sae, "W_enc"):
+        acts = acts.to(sae.W_enc.device)
+
+    with torch.no_grad():
+        z = sae.encode(acts)                          # [n_patches, d_sae]
+        mean_feature_act = float(z[:, feature_idx].mean().item())
+
+        x_hat = sae.decode(z)                         # [n_patches, d_model]
+        baseline_l2 = float(x_hat.norm(dim=1).mean().item())
+
+        z_ablated = z.clone()
+        z_ablated[:, feature_idx] = 0.0
+        x_hat_ablated = sae.decode(z_ablated)         # [n_patches, d_model]
+
+        delta_l2 = float((x_hat - x_hat_ablated).norm(dim=1).mean().item())
+        ablated_l2 = float(x_hat_ablated.norm(dim=1).mean().item())
+        relative_disruption = delta_l2 / (baseline_l2 + 1e-8)
+
+    return {
+        "feature_idx":             feature_idx,
+        "image_idx":               image_idx,
+        "mean_feature_activation": round(mean_feature_act, 4),
+        "baseline_l2":             round(baseline_l2, 4),
+        "ablated_l2":              round(ablated_l2, 4),
+        "delta_l2":                round(delta_l2, 4),
+        "relative_disruption":     round(relative_disruption, 6),
+    }
+
+
+def compute_feature_ablation_profile(
+    feature_idx: int,
+    sae,
+    flat_activations: torch.Tensor,
+    image_indices: list[int],
+    n_patches: int = 196,
+) -> dict:
+    """Run compute_feature_ablation over multiple images and aggregate.
+
+    Args
+    ----
+    feature_idx      : SAE feature to ablate.
+    sae              : Loaded BatchTopKSAE in eval mode.
+    flat_activations : [N_eff, d_model] activation tensor.
+    image_indices    : List of image indices (e.g. top-activating images for this feature).
+    n_patches        : Patches per image.
+
+    Returns
+    -------
+    dict with per_image results and aggregated mean/std of relative_disruption.
+    """
+    per_image = []
+    for img_idx in image_indices:
+        r = compute_feature_ablation(
+            feature_idx=feature_idx,
+            image_idx=img_idx,
+            sae=sae,
+            flat_activations=flat_activations,
+            n_patches=n_patches,
+        )
+        per_image.append(r)
+
+    disruptions = [r["relative_disruption"] for r in per_image]
+    mean_acts = [r["mean_feature_activation"] for r in per_image]
+
+    return {
+        "feature_idx":              feature_idx,
+        "n_images":                 len(per_image),
+        "mean_relative_disruption": round(float(np.mean(disruptions)), 6),
+        "std_relative_disruption":  round(float(np.std(disruptions)), 6),
+        "mean_feature_activation":  round(float(np.mean(mean_acts)), 4),
+        "per_image":                per_image,
     }
 
 
