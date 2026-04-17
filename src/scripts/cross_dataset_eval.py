@@ -4,17 +4,42 @@ Cross-dataset evaluation: compute SAE feature universality across multiple datas
 Processes each dataset's activations through the trained SAE separately (memory-efficient),
 then concatenates per-image feature stats and renders the universality dashboard.
 
+This script implements a **simplified universality proxy** based on the fraction of a
+feature's top-K activating images that belong to each dataset.  It is used for fast
+exploratory analysis and visualisation (Steps 5+7 of the universality pipeline).
+
+For the full TD-3 two-level universality metric (docs/methodology.md §1.4), use
+``src/scripts/universality_eval.py`` instead (TO BE BUILT):
+  - Level 1: per-token activation frequency ≥1% on ≥2 datasets + canonical class match
+  - Level 2: per-dataset activation centroids in d_model space, cosine sim ≥0.70
+
+NOTE: The ``--activations`` flag expects ``PATH:LABEL`` pairs.  For Matryoshka jobs
+(which produce 4 separate per-dataset files), pass each file separately:
+  --activations $BASE/activations_chexpert.safetensors:chexpert
+  --activations $BASE/activations_rsna.safetensors:rsna
+  --activations $BASE/activations_siim.safetensors:siim_covid
+  --activations $BASE/activations_tb.safetensors:tb
+
+For BatchTopK jobs (single merged file with dataset_ids), first split by dataset_id
+or run scanner_latent_audit.py directly on the merged file.
+
 Usage
 -----
 python src/scripts/cross_dataset_eval.py \\
-    --checkpoint_dir /deep_learning/output/.../colon-sae/track_b/checkpoints/step_0200000 \\
-    --activations /deep_learning/output/.../colon-sae/track_b/activations_track_b.safetensors:semicol_b \\
-    --activations /deep_learning/output/.../colon-sae/activations_track_a.safetensors:semicol_a \\
-    --activations /deep_learning/output/.../brain-sae/activations.safetensors:brain_tumor \\
-    --activations /deep_learning/output/.../sae-tcga-breast/activations.safetensors:tcga_breast \\
-    --output_dir /deep_learning/output/.../universality \\
+    --checkpoint_dir /deep_learning/output/UMed-SAE/matryoshka/layer-2/xray-conglomerate/xray_v1/checkpoints/step_0200000 \\
+    --activations /deep_learning/output/UMed-SAE/matryoshka/layer-2/xray-conglomerate/xray_v1/activations_chexpert.safetensors:chexpert \\
+    --activations /deep_learning/output/UMed-SAE/matryoshka/layer-2/xray-conglomerate/xray_v1/activations_rsna.safetensors:rsna \\
+    --activations /deep_learning/output/UMed-SAE/matryoshka/layer-2/xray-conglomerate/xray_v1/activations_siim.safetensors:siim_covid \\
+    --activations /deep_learning/output/UMed-SAE/matryoshka/layer-2/xray-conglomerate/xray_v1/activations_tb.safetensors:tb \\
+    --output_dir /deep_learning/output/UMed-SAE/matryoshka/layer-2/xray-conglomerate/xray_v1/universality \\
     --top_features 50 \\
     --device cuda:0
+
+See also
+--------
+docs/methodology.md §1.4 — full universality pipeline and implementation status
+src/scripts/scanner_latent_audit.py — scanner latent pre-filter (run before this)
+src/scripts/universality_eval.py — TD-3 Level 1+2 metric (TO BE BUILT)
 """
 
 from __future__ import annotations

@@ -32,9 +32,10 @@ class VisConfig:
 
     # ── Swin spatial layout ───────────────────────────────────────────────
     # Must match the pm_index used during harvest.
-    # pm_index=1 (default): d_model=512, spatial_h=14, spatial_w=14
-    spatial_h: int = 14
-    spatial_w: int = 14
+    # pm_index=2 (xray conglomerate, default): d_model=1024, spatial_h=7, spatial_w=7
+    # pm_index=1 (legacy individual-dataset): d_model=512, spatial_h=14, spatial_w=14
+    spatial_h: int = 7
+    spatial_w: int = 7
 
     # ── Visualisation settings ────────────────────────────────────────────
     top_k_images: int = 9

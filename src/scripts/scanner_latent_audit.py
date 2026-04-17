@@ -36,6 +36,39 @@ Usage
       --output_dir      data/audit \\
       --threshold       0.80 \\
       --device          cuda:0
+
+Input format
+------------
+The ``--activations`` file must contain both ``activations`` and ``dataset_ids``
+tensors.  BatchTopK jobs produce this format directly (single merged file).
+
+Matryoshka jobs produce 4 separate per-dataset files WITHOUT a ``dataset_ids``
+tensor.  To run the audit on a Matryoshka checkpoint, concatenate the 4 files
+first:
+
+  python -c "
+  from safetensors.torch import load_file, save_file
+  import torch
+  files = [
+      ('chexpert',  'activations_chexpert.safetensors'),
+      ('rsna',      'activations_rsna.safetensors'),
+      ('siim_covid','activations_siim.safetensors'),
+      ('tb',        'activations_tb.safetensors'),
+  ]
+  acts, ids = [], []
+  for ds_id, (name, path) in enumerate(files):
+      d = load_file(path)
+      acts.append(d['activations'])
+      ids.append(torch.full((d['activations'].shape[0],), ds_id, dtype=torch.int32))
+  save_file({'activations': torch.cat(acts), 'dataset_ids': torch.cat(ids)},
+            'activations_merged.safetensors')
+  "
+
+See also
+--------
+docs/methodology.md §1.3 — scanner audit rationale and pipeline position
+src/scripts/cross_dataset_eval.py — simplified universality proxy (run after audit)
+src/scripts/universality_eval.py — TD-3 Level 1+2 metric (TO BE BUILT)
 """
 from __future__ import annotations
 
