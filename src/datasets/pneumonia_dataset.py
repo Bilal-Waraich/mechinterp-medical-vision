@@ -55,28 +55,43 @@ class PneumoniaDataset(Dataset):
 
     class_names: list[str] = ["xray"]
 
-    def __init__(self, data_dir: str | Path) -> None:
+    def __init__(
+        self,
+        data_dir: str | Path,
+        n_samples: int | None = None,
+        seed: int = 42,
+    ) -> None:
         data_dir = Path(data_dir)
         if not data_dir.exists():
             raise FileNotFoundError(f"data_dir does not exist: {data_dir}")
 
-        self.image_paths = sorted(data_dir.glob("*.dcm"))
-        if not self.image_paths:
-            # Fallback: accept pre-converted PNG/JPEG exports
-            for ext in ("*.png", "*.jpg", "*.jpeg"):
-                self.image_paths = sorted(data_dir.glob(ext))
-                if self.image_paths:
+        # Collect paths lazily — stop early once we have enough to avoid
+        # statting all ~26k DICOM files on slow NFS mounts.
+        limit = n_samples if n_samples is not None else 10_000_000
+        paths: list[Path] = []
+        for ext in ("*.dcm", "*.png", "*.jpg", "*.jpeg"):
+            for p in data_dir.glob(ext):
+                paths.append(p)
+                if len(paths) >= limit * 4:  # oversample then subsample for randomness
                     break
+            if paths:
+                break
 
-        if not self.image_paths:
+        if not paths:
             raise RuntimeError(
                 f"No DICOM or image files found in {data_dir}. "
                 f"Expected *.dcm files from the RSNA Pneumonia Detection Challenge."
             )
 
+        if n_samples is not None and len(paths) > n_samples:
+            import random as _random
+            rng = _random.Random(seed)
+            paths = rng.sample(paths, n_samples)
+
+        self.image_paths = paths
         self.labels: list[int] = [0] * len(self.image_paths)
 
-        print(f"[PneumoniaDataset] {len(self.image_paths):,} images from {data_dir}")
+        print(f"[PneumoniaDataset] {len(self.image_paths):,} images from {data_dir}", flush=True)
 
     def __len__(self) -> int:
         return len(self.image_paths)

@@ -56,6 +56,10 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, Dataset
 
+# Ensure all print() calls flush immediately — critical for Nomad log streaming
+import functools
+print = functools.partial(print, flush=True)
+
 try:
     from safetensors.torch import save_file
 except ImportError:
@@ -186,7 +190,7 @@ def harvest_one_dataset(
         dataset,
         batch_size=batch_size,
         shuffle=False,
-        num_workers=8,
+        num_workers=2,
         pin_memory=(device.type == "cuda"),
         drop_last=False,
     )
@@ -287,9 +291,11 @@ def build_datasets(args) -> list[tuple[str, Dataset]]:
     if args.rsna_dir:
         print(f"[Dataset] RSNA        -> {args.rsna_dir}")
         from datasets.pneumonia_dataset import PneumoniaDataset
-        # PneumoniaDataset does not yet support n_samples; wrap with SubsetDataset
-        ds = PneumoniaDataset(args.rsna_dir)
-        result.append(("rsna", _maybe_subsample(ds, args.n_samples, args.seed)))
+        result.append(("rsna", PneumoniaDataset(
+            args.rsna_dir,
+            n_samples=args.n_samples,
+            seed=args.seed,
+        )))
 
     if args.siim_dir:
         print(f"[Dataset] SIIM-COVID  -> {args.siim_dir}")
@@ -371,27 +377,71 @@ def main():
     print()
 
     # 1. Datasets
+    print(f"[Step 1/4] Building dataset loaders...")
     datasets = build_datasets(args)
-    print(f"\n[Datasets] {len(datasets)} dataset(s): {[n for n, _ in datasets]}\n")
+    print(f"[Step 1/4] Done — {len(datasets)} dataset(s): {[n for n, _ in datasets]}\n")
 
     # 2. Encoder + hook
+    print(f"[Step 2/4] Loading encoder checkpoint...")
     encoder = load_encoder(args.checkpoint, args.device)
     hook_handle, captured = register_hook(encoder, args.pm_index)
+    print(f"[Step 2/4] Encoder ready.\n")
 
-    # 3. Harvest each dataset
+    # 3. Harvest each dataset (with per-dataset partial checkpoints for resume)
     all_acts:      list[torch.Tensor] = []
     all_labels:    list[torch.Tensor] = []
     all_patch_ids: list[torch.Tensor] = []
     all_ds_ids:    list[torch.Tensor] = []
     all_infos:     list[dict]         = []
 
+    out_path = Path(args.output)
+    partial_dir = out_path.parent / "_partials"
+    partial_dir.mkdir(parents=True, exist_ok=True)
+
+    print(f"[Step 3/4] Harvesting activations for {len(datasets)} dataset(s)...")
+    print(f"[Step 3/4] Partial checkpoints: {partial_dir}")
     t_total = time.time()
-    for ds_name, dataset in datasets:
-        ds_idx = DATASET_INDEX.get(ds_name, len(all_acts))
-        acts, lbls, pids, dsids, info = harvest_one_dataset(
-            encoder, dataset, captured, device, d_model,
-            args.batch_size, ds_name, ds_idx,
-        )
+    for ds_i, (ds_name, dataset) in enumerate(datasets):
+        partial_path = partial_dir / f"{out_path.stem}.{ds_name}.partial.safetensors"
+
+        if partial_path.exists():
+            print(f"\n[Step 3/4] Dataset {ds_i+1}/{len(datasets)}: {ds_name} — loading from partial checkpoint")
+            from safetensors.torch import load_file as _load_file
+            from safetensors import safe_open as _safe_open
+            data = _load_file(str(partial_path))
+            acts  = data["activations"]
+            lbls  = data["labels"]
+            pids  = data["patch_ids"]
+            dsids = data["dataset_ids"]
+            with _safe_open(str(partial_path), framework="pt") as _f:
+                _meta = _f.metadata() or {}
+            info  = {
+                "name":        ds_name,
+                "n_images":    int(_meta.get("n_images", 0)),
+                "n_effective": acts.shape[0],
+                "spatial_h":   int(_meta.get("spatial_h", 0)),
+                "spatial_w":   int(_meta.get("spatial_w", 0)),
+            }
+            print(f"[{ds_name}]  loaded {acts.shape[0]:,} tokens from partial checkpoint")
+        else:
+            print(f"\n[Step 3/4] Dataset {ds_i+1}/{len(datasets)}: {ds_name} ({len(dataset):,} images)")
+            ds_idx = DATASET_INDEX.get(ds_name, len(all_acts))
+            acts, lbls, pids, dsids, info = harvest_one_dataset(
+                encoder, dataset, captured, device, d_model,
+                args.batch_size, ds_name, ds_idx,
+            )
+            # Save partial (uncentered) so a later crash doesn't lose this work
+            save_file(
+                {"activations": acts, "labels": lbls, "patch_ids": pids, "dataset_ids": dsids},
+                str(partial_path),
+                metadata={
+                    "n_images":  str(info["n_images"]),
+                    "spatial_h": str(info["spatial_h"]),
+                    "spatial_w": str(info["spatial_w"]),
+                },
+            )
+            print(f"[{ds_name}]  partial checkpoint saved → {partial_path.name}")
+
         all_acts.append(acts)
         all_labels.append(lbls)
         all_patch_ids.append(pids)
@@ -401,18 +451,20 @@ def main():
     hook_handle.remove()
 
     # 4. Per-dataset centering (concern #8: cross-dataset b_dec drift)
+    print(f"\n[Step 4/4] Post-processing and saving...")
     dataset_means: list[list[float]] = []
     if not args.no_centering:
-        print("\n[Centering] Applying per-dataset activation centering...")
+        print("[Step 4/4] Applying per-dataset activation centering...")
         all_acts, dataset_means = center_activations(all_acts)
         for info, mean_vec in zip(all_infos, dataset_means):
             mean_norm = (sum(v * v for v in mean_vec) ** 0.5)
             print(f"  {info['name']:15s}  mean_norm={mean_norm:.4f}")
     else:
-        print("\n[Centering] Skipped (--no_centering flag set).")
+        print("[Step 4/4] Centering skipped (--no_centering flag set).")
         dataset_means = [[] for _ in all_infos]
 
     # 5. Concatenate
+    print("[Step 4/4] Concatenating tensors...")
     activations = torch.cat(all_acts,      dim=0)
     labels      = torch.cat(all_labels,    dim=0)
     patch_ids   = torch.cat(all_patch_ids, dim=0)
@@ -431,7 +483,6 @@ def main():
     print(f"{'='*60}\n")
 
     # 6. Save
-    out_path = Path(args.output)
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
     spatial_h = all_infos[0]["spatial_h"]

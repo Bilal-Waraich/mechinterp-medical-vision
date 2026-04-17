@@ -105,7 +105,8 @@ class SIIMCovidDataset(Dataset):
         n_with_boxes = sum(1 for r in self.bbox_records if r["boxes"])
         print(
             f"[SIIMCovidDataset] {len(self.image_paths):,} images "
-            f"({n_with_boxes:,} with bboxes)  from {data_dir}"
+            f"({n_with_boxes:,} with bboxes)  from {data_dir}",
+            flush=True,
         )
 
     # ── Dataset protocol ──────────────────────────────────────────────────
@@ -166,10 +167,18 @@ class SIIMCovidDataset(Dataset):
                 }
 
         # 3. Resolve file paths under train/
+        # Build a stem→path index once so we never rglob per-image on NFS.
         train_dir = data_dir / "train"
+        print(f"[SIIMCovidDataset] Indexing files under {train_dir} ...", flush=True)
+        path_index: dict[str, Path] = {}
+        for p in train_dir.rglob("*"):
+            if p.suffix.lower() in (".dcm", ".jpg", ".jpeg", ".png"):
+                path_index[p.stem] = p
+        print(f"[SIIMCovidDataset] Indexed {len(path_index):,} files.", flush=True)
+
         records = []
         for img_id, rec in image_records.items():
-            path = _find_image_path(train_dir, img_id)
+            path = path_index.get(img_id)
             if path is None:
                 continue
 
