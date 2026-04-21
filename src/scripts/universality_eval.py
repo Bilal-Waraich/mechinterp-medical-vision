@@ -144,6 +144,10 @@ def load_dataset_activations(
         raw = load_file(str(args.merged_activations))
         acts_all = raw["activations"].float()
         ds_ids   = raw["dataset_ids"].long()
+        # dataset_ids may be stored per-image; repeat to match patch-level activations
+        if ds_ids.shape[0] != acts_all.shape[0]:
+            patches_per_img = acts_all.shape[0] // ds_ids.shape[0]
+            ds_ids = ds_ids.repeat_interleave(patches_per_img)
         names    = args.dataset_names
         datasets = []
         for i, name in enumerate(names):

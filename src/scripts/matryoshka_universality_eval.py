@@ -117,14 +117,16 @@ def encode_all_scales(
 
     Output: {k_i: Tensor [N, d_sae] on CPU}.
     """
-    per_k: Dict[int, List[torch.Tensor]] = {k: [] for k in sae.k_schedule}
     n = acts.shape[0]
+    out: Dict[int, torch.Tensor] = {
+        k: torch.empty(n, sae.d_sae, dtype=torch.float32) for k in sae.k_schedule
+    }
     for i in range(0, n, batch):
-        chunk = acts[i : i + batch].to(device)
+        end = min(i + batch, n)
+        chunk = acts[i:end].to(device)
         for k in sae.k_schedule:
-            z = sae.encode(chunk, k=k).cpu()
-            per_k[k].append(z)
-    return {k: torch.cat(per_k[k], dim=0) for k in per_k}
+            out[k][i:end] = sae.encode(chunk, k=k).cpu()
+    return out
 
 
 def codes_to_per_image(z: torch.Tensor, patches: int = PATCHES_PER_IMG) -> torch.Tensor:
@@ -447,16 +449,16 @@ def main() -> int:
         cursor += n_img
 
     # ── Encode at every scale ────────────────────────────────────────────────
-    z_per_scale: Dict[int, Dict[str, torch.Tensor]] = {k: {} for k in k_schedule}
+    # Only keep token-level codes for k_max (needed for scanner audit + frequency).
+    # Lower-k token codes are discarded immediately after img_per_scale is computed.
+    z_max_per_ds: Dict[str, torch.Tensor] = {}
     img_per_scale: Dict[int, Dict[str, np.ndarray]] = {k: {} for k in k_schedule}
     for name in dataset_names:
         print(f"[encode] {name}")
         per_k = encode_all_scales(sae, raw_acts[name], device, batch=args.batch_size)
         for k in k_schedule:
-            z_per_scale[k][name] = per_k[k]
             img_per_scale[k][name] = codes_to_per_image(per_k[k]).numpy()
-
-    z_max_per_ds = z_per_scale[k_max]
+        z_max_per_ds[name] = per_k[k_max]
     img_max_per_ds = img_per_scale[k_max]
 
     # ── Stage 0 — Scanner audit ──────────────────────────────────────────────
@@ -467,6 +469,7 @@ def main() -> int:
     ])
     z_max_all = torch.cat([z_max_per_ds[n] for n in dataset_names], dim=0)
     aurocs = scanner_audit(z_max_all, dataset_ids, len(dataset_names), rng)
+    del z_max_all
     scanner_flagged = set(int(i) for i in np.where(aurocs > args.auroc_thr)[0])
     print(f"  flagged {len(scanner_flagged)} / {d_sae} latents (AUROC > {args.auroc_thr})")
 
@@ -478,6 +481,7 @@ def main() -> int:
     # ── Stage 1 — Activation frequency ───────────────────────────────────────
     print("[stage 1] activation frequency")
     freq = activation_frequency(z_max_per_ds)
+    del z_max_per_ds  # token-level codes no longer needed after frequency
     level1: List[int] = []
     for f in range(d_sae):
         if f in scanner_flagged:
@@ -499,6 +503,7 @@ def main() -> int:
         img_max_per_ds, raw_acts, level1, t=args.t_top,
     )
     level2 = [f for f, c in min_cos.items() if c >= args.cos_thr]
+    del raw_acts  # no longer needed after stage 2
     print(f"  L2 confirmed: {len(level2)}")
 
     write_csv(out / "stage2_semantic.csv",
