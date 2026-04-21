@@ -18,9 +18,12 @@ Any dataset whose ``--*_dir`` flag is omitted is silently skipped.
 Output tensors
 --------------
   activations  [N_total, d_model]  float32  RMS-normalised, per-dataset-centred
-  labels       [N_patches]         int32    canonical group index (-1 if unknown)
-  patch_ids    [N_patches]         int32    image index within each dataset
-  dataset_ids  [N_patches]         int32    0=chexpert, 1=rsna, 2=siim_covid, 3=tb
+  labels       [N_total]           int32    per-token: canonical group index of
+                                            the source image (-1 if unknown)
+  patch_ids    [N_total]           int32    per-token: index of the source image
+                                            within its dataset
+  dataset_ids  [N_total]           int32    per-token: 0=chexpert, 1=rsna,
+                                            2=siim_covid, 3=tb
 
 Metadata keys
 -------------
@@ -181,9 +184,9 @@ def harvest_one_dataset(
     Returns
     -------
     activations  [N_eff, d_model]  — RMS-normalised, NOT yet centred
-    labels       [N_images]        int32
-    patch_ids    [N_images]        int32
-    dataset_ids  [N_images]        int32
+    labels       [N_eff]           int32  per-token (image label broadcast to every patch)
+    patch_ids    [N_eff]           int32  per-token (image index broadcast to every patch)
+    dataset_ids  [N_eff]           int32  per-token
     info         dict
     """
     loader = DataLoader(
@@ -229,20 +232,29 @@ def harvest_one_dataset(
                       f"{ptr:>10,} tokens  {elapsed:.0f}s")
 
     activations = activations[:ptr]
-    n_patches = len(dataset)
+    n_images = len(dataset)
+    n_tokens = activations.shape[0]
+    assert n_images * n_spatial == n_tokens, (
+        f"{dataset_name}: {n_tokens} tokens does not equal "
+        f"{n_images} images x {n_spatial} patches/image"
+    )
 
-    labels = (
+    per_image_labels = (
         torch.tensor(dataset.labels, dtype=torch.int32)
         if hasattr(dataset, "labels") and dataset.labels
-        else torch.full((n_patches,), -1, dtype=torch.int32)
+        else torch.full((n_images,), -1, dtype=torch.int32)
     )
-    patch_ids   = torch.arange(n_patches, dtype=torch.int32)
-    dataset_ids = torch.full((n_patches,), dataset_idx, dtype=torch.int32)
+    # All three auxiliary tensors are per-token so that every row of
+    # `activations` has a corresponding row of metadata.  Consumers that want
+    # per-image granularity can recover it by taking every n_spatial-th entry.
+    labels      = per_image_labels.repeat_interleave(n_spatial)
+    patch_ids   = torch.arange(n_images, dtype=torch.int32).repeat_interleave(n_spatial)
+    dataset_ids = torch.full((n_tokens,), dataset_idx, dtype=torch.int32)
 
     info = {
         "name":        dataset_name,
-        "n_images":    n_patches,
-        "n_effective": activations.shape[0],
+        "n_images":    n_images,
+        "n_effective": n_tokens,
         "spatial_h":   H_feat,
         "spatial_w":   W_feat,
     }
@@ -415,6 +427,15 @@ def main():
             dsids = data["dataset_ids"]
             with _safe_open(str(partial_path), framework="pt") as _f:
                 _meta = _f.metadata() or {}
+            # Reject pre-Bug-A partial checkpoints (per-image dataset_ids etc.).
+            # Delete the stale partial and re-harvest rather than silently reuse.
+            if dsids.shape[0] != acts.shape[0]:
+                raise RuntimeError(
+                    f"{partial_path}: auxiliary tensors are per-image "
+                    f"(dataset_ids len={dsids.shape[0]}, activations len={acts.shape[0]}) "
+                    f"— this partial was written by a pre-Bug-A harvest_all.py. "
+                    f"Delete {partial_path.name} and re-harvest."
+                )
             info  = {
                 "name":        ds_name,
                 "n_images":    int(_meta.get("n_images", 0)),

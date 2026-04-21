@@ -144,10 +144,13 @@ def load_dataset_activations(
         raw = load_file(str(args.merged_activations))
         acts_all = raw["activations"].float()
         ds_ids   = raw["dataset_ids"].long()
-        # dataset_ids may be stored per-image; repeat to match patch-level activations
         if ds_ids.shape[0] != acts_all.shape[0]:
-            patches_per_img = acts_all.shape[0] // ds_ids.shape[0]
-            ds_ids = ds_ids.repeat_interleave(patches_per_img)
+            raise ValueError(
+                f"dataset_ids length {ds_ids.shape[0]} != activations length "
+                f"{acts_all.shape[0]}.  This merged file was produced by a "
+                f"pre-Bug-A harvest_all.py (dataset_ids stored per-image).  "
+                f"Re-harvest with the current harvest_all.py."
+            )
         names    = args.dataset_names
         datasets = []
         for i, name in enumerate(names):
