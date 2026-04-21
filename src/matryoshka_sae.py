@@ -138,13 +138,22 @@ class MatryoshkaSAE(nn.Module):
 
     @classmethod
     def load_from_checkpoint(cls, path: str) -> "MatryoshkaSAE":
-        """Load a MatryoshkaSAE from a .pt state_dict checkpoint."""
-        state_dict = torch.load(path, map_location="cpu")
-        d_model = state_dict["W_enc"].shape[0]
-        d_sae   = state_dict["W_enc"].shape[1]
-        k_schedule = state_dict.get("k_schedule", [32])
-        if isinstance(k_schedule, torch.Tensor):
-            k_schedule = k_schedule.tolist()
+        """Load from a checkpoint directory (sae_weights.safetensors + cfg.json) or a .pt file."""
+        from pathlib import Path
+        p = Path(path)
+        if p.is_dir():
+            import json
+            from safetensors.torch import load_file
+            cfg = json.loads((p / "cfg.json").read_text())
+            state_dict = load_file(str(p / "sae_weights.safetensors"), device="cpu")
+            k_schedule = cfg.get("k_schedule", [cfg.get("k", 32)])
+            d_model, d_sae = cfg["d_model"], cfg["d_sae"]
+        else:
+            state_dict = torch.load(path, map_location="cpu")
+            k_schedule = state_dict.get("k_schedule", [32])
+            if isinstance(k_schedule, torch.Tensor):
+                k_schedule = k_schedule.tolist()
+            d_model, d_sae = state_dict["W_enc"].shape[0], state_dict["W_enc"].shape[1]
         sae = cls(d_model=d_model, d_sae=d_sae, k_schedule=k_schedule)
         sae.load_state_dict({k: v for k, v in state_dict.items()
                              if k not in ("k_schedule",)}, strict=False)

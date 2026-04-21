@@ -109,7 +109,9 @@ def get_node_dataset_color(
     else:
         fmax_t = torch.from_numpy(fmax)
     top20 = torch.topk(fmax_t, k=min(20, len(fmax_t))).indices.tolist()
-    image_paths = sorted(images_dir.glob("*"))
+    # Support flat image dirs and one-level-deep patient dirs (DICOM layout)
+    image_paths = sorted(p for p in images_dir.rglob("*")
+                         if p.suffix.lower() in {".png", ".jpg", ".jpeg"})
     counts: dict[str, int] = {}
     for img_idx in top20:
         if img_idx < len(image_paths):
