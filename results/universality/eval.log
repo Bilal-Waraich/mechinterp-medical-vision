@@ -1,0 +1,24 @@
+[device] cuda:0
+[load] /deep_learning/output/UMed-SAE/matryoshka/layer-2/xray-conglomerate/xray_v1/checkpoints/step_0200000
+[sae] d_sae=4096, k_schedule=[6, 12, 24, 48]
+[load] chexpert: /deep_learning/output/UMed-SAE/matryoshka/layer-2/xray-conglomerate/xray_v1/activations_chexpert.safetensors
+[load] rsna: /deep_learning/output/UMed-SAE/matryoshka/layer-2/xray-conglomerate/xray_v1/activations_rsna.safetensors
+[load] siim_covid: /deep_learning/output/UMed-SAE/matryoshka/layer-2/xray-conglomerate/xray_v1/activations_siim.safetensors
+[load] tb: /deep_learning/output/UMed-SAE/matryoshka/layer-2/xray-conglomerate/xray_v1/activations_tb.safetensors
+[datasets] ['chexpert', 'rsna', 'siim_covid', 'tb']
+[encode] chexpert
+[encode] rsna
+[encode] siim_covid
+[encode] tb
+[stage 0] scanner audit
+  flagged 0 / 4096 latents (AUROC > 0.8)
+[stage 1] activation frequency
+  L1 candidates: 827
+[stage 2] semantic consistency
+  L2 confirmed: 206
+[stage 3] split audit
+  split pairs: 0; retained after ancestor trace: 206
+[stage 4] prefix stability
+  prefix-stable universal latents: 188
+[done] wrote /deep_learning/output/UMed-SAE/matryoshka/layer-2/xray-conglomerate/xray_v1/universality_matryoshka
+ocalError: local variable 'raw_acts' referenced before assignment

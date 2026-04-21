@@ -1,0 +1,31 @@
+{
+  "d_sae": 4096,
+  "k_schedule": [
+    6,
+    12,
+    24,
+    48
+  ],
+  "datasets": [
+    "chexpert",
+    "rsna",
+    "siim_covid",
+    "tb"
+  ],
+  "n_scanner_flagged": 0,
+  "n_level1_candidates": 827,
+  "n_level2_confirmed": 206,
+  "n_split_pairs": 0,
+  "n_after_split": 206,
+  "n_universal": 188,
+  "thresholds": {
+    "t_top": 50,
+    "freq_thr": 0.01,
+    "min_ds": 2,
+    "cos_thr": 0.7,
+    "split_thr": 0.5,
+    "anc_thr": 0.4,
+    "stability_thr": 0.4,
+    "auroc_thr": 0.8
+  }
+}
