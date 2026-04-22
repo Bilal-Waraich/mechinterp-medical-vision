@@ -26,12 +26,12 @@ or run scanner_latent_audit.py directly on the merged file.
 Usage
 -----
 python src/scripts/cross_dataset_eval.py \\
-    --checkpoint_dir /deep_learning/output/UMed-SAE/matryoshka/layer-2/xray-conglomerate/xray_v1/checkpoints/step_0200000 \\
-    --activations /deep_learning/output/UMed-SAE/matryoshka/layer-2/xray-conglomerate/xray_v1/activations_chexpert.safetensors:chexpert \\
-    --activations /deep_learning/output/UMed-SAE/matryoshka/layer-2/xray-conglomerate/xray_v1/activations_rsna.safetensors:rsna \\
-    --activations /deep_learning/output/UMed-SAE/matryoshka/layer-2/xray-conglomerate/xray_v1/activations_siim.safetensors:siim_covid \\
-    --activations /deep_learning/output/UMed-SAE/matryoshka/layer-2/xray-conglomerate/xray_v1/activations_tb.safetensors:tb \\
-    --output_dir /deep_learning/output/UMed-SAE/matryoshka/layer-2/xray-conglomerate/xray_v1/universality \\
+    --checkpoint_dir /deep_learning/output/UMed-SAE/batch-topk/layer-2/xray-conglomerate/xray_v1/checkpoints/step_0200000 \\
+    --activations /deep_learning/output/UMed-SAE/batch-topk/layer-2/xray-conglomerate/xray_v1/activations_chexpert.safetensors:chexpert \\
+    --activations /deep_learning/output/UMed-SAE/batch-topk/layer-2/xray-conglomerate/xray_v1/activations_rsna.safetensors:rsna \\
+    --activations /deep_learning/output/UMed-SAE/batch-topk/layer-2/xray-conglomerate/xray_v1/activations_siim.safetensors:siim_covid \\
+    --activations /deep_learning/output/UMed-SAE/batch-topk/layer-2/xray-conglomerate/xray_v1/activations_tb.safetensors:tb \\
+    --output_dir /deep_learning/output/UMed-SAE/batch-topk/layer-2/xray-conglomerate/xray_v1/universality \\
     --top_features 50 \\
     --device cuda:0
 
@@ -52,6 +52,7 @@ from pathlib import Path
 from typing import Optional
 
 import torch
+from safetensors import safe_open
 from safetensors.torch import load_file
 from tqdm.auto import tqdm
 
@@ -81,7 +82,7 @@ def extract_feature_max(
 
     Args:
         activations_path: Path to a ``activations_*.safetensors`` file produced
-            by ``harvest_activations.py``.
+            by ``src/conglomerate/harvest_all.py``.
         sae: Loaded BatchTopKSAE (already on ``device``).
         device: Torch device.
         batch_size: Token-level batch size for SAE inference.
@@ -95,15 +96,22 @@ def extract_feature_max(
 
     raw = load_file(str(activations_path))
     acts: torch.Tensor = raw["activations"].to(torch.float32)
-    meta = {k: v for k, v in raw.items() if k != "activations"}
+
+    # Spatial shape lives in the safetensors metadata header (string values),
+    # NOT in the tensor dict returned by load_file().  Read it via safe_open.
+    with safe_open(str(activations_path), framework="pt") as _f:
+        meta = dict(_f.metadata() or {})
 
     n_eff, d_model = acts.shape
-    n_patches = int(meta.get("spatial_h", b"14")) * int(meta.get("spatial_w", b"14"))
-    # metadata values are byte-strings in safetensors
     try:
         n_patches = int(meta["spatial_h"]) * int(meta["spatial_w"])
-    except (KeyError, ValueError):
-        n_patches = 196  # default: Stage 2→3, 14×14
+    except (KeyError, ValueError, TypeError) as e:
+        raise RuntimeError(
+            f"{activations_path}: missing or invalid spatial_h / spatial_w in "
+            f"safetensors metadata ({e}).  This file was harvested by a version "
+            f"that did not record the spatial grid; re-harvest with the current "
+            f"harvest_all.py."
+        )
 
     n_images = n_eff // n_patches
     d_sae = sae.d_sae

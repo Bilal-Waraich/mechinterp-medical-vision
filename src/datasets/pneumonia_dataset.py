@@ -19,7 +19,7 @@ Normalisation: pixel array scaled to [0, 1] float32 then replicated to
 Images are resized to 224×224 with LANCZOS resampling.
 No background filter — chest X-rays always contain content.
 
-Usage in harvest_activations.py:
+Usage in harvest_all.py:
     from datasets.pneumonia_dataset import PneumoniaDataset
     dataset = PneumoniaDataset(data_dir)
 """

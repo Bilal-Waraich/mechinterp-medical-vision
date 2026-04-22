@@ -49,6 +49,17 @@ density per token (Gao et al., 2024). Features below 0.01% are in the
 dead/noise band; features above 10% encode generic anatomy. The 1% threshold
 sits in the interpretable medium-density band.
 
+**Class-match operationalisation:** For each (latent, dataset) pair, the
+*dominant canonical class* is the mode of the canonical labels among the top
+``class_match_top_k`` images (default 50) ranked by the latent's per-image
+`feature_max`. Images whose filename stem is missing from the dataset's label
+CSV are excluded from the mode (rather than silently counted as `no_finding`,
+which would bias the result toward the majority class). A latent clears the
+class-match gate when every active dataset agrees on its dominant class; any
+disagreement, or a dataset with no labelled image in its top-K, rejects the
+latent. When no `--label_csv` flag is supplied the class-match gate is
+skipped and Level 1 falls back to frequency-only.
+
 **Token counts at pm_index=2 (7×7 = 49 tokens/image):**
 
 | Dataset | Images | Tokens | 1% threshold |
@@ -104,7 +115,10 @@ Shenzhen China (TB) — a latent that passes both properties is implicitly
 robust to demographic, epidemiological, and institutional variation.
 
 **Status:** ✅ Implemented in `src/scripts/universality_eval.py` —
-`compute_centroids_per_dataset()` + `apply_level2_filter()`.
+`compute_centroids_per_dataset()` + `apply_level2_filter()`. The class-match
+clause of Property 1 is enforced by `apply_level1_filter()` when the optional
+`dominant_class` dictionary is passed (built from the `--label_csv` inputs via
+`compute_dominant_canonical_class()`).
 
 ---
 
@@ -117,14 +131,30 @@ overlap). A confirmed universal latent must show statistically significant
 positive r (p < 0.05 after Bonferroni correction for the number of candidates
 tested).
 
+**Bonferroni implementation:** Pearson r and its two-sided p-value come from
+`scipy.stats.pearsonr`. Bonferroni thresholds are derived from the
+`--bonferroni_alpha` flag (default α = 0.05):
+
+```
+α_pooled  = α / n_confirmed
+α_per_ds  = α / (n_confirmed × n_bbox_datasets)
+```
+
+A latent passes spatial grounding when its pooled p-value is below
+``α_pooled`` **and** its pooled r is positive. Per-dataset pass/fail flags use
+``α_per_ds`` and appear as `{ds}_pass` columns in `universal_candidates.csv`.
+The corrected thresholds, test counts, and number of passes are persisted under
+`spatial_bonferroni` in `universality_summary.json` for reproducibility.
+
 **Rationale:** Without spatial grounding, a latent that passes Properties 1+2
 could be firing on a consistent anatomical or geometric artifact (rib grid, lung
 border, cardiac silhouette) rather than on pathology. Spatial grounding
 distinguishes a genuine pathology-encoding feature from a universal artifact.
 
 **Status:** ✅ Implemented in `src/scripts/universality_eval.py` —
-`load_bbox_csv()`, `compute_patch_bbox_overlap()`, `run_spatial_grounding()`.
-Requires `--rsna_bbox_csv` and/or `--siim_bbox_csv` at runtime.
+`load_bbox_csv()`, `compute_patch_bbox_overlap()`, `run_spatial_grounding()`
+(returns a `(per_latent_results, bonferroni_summary)` tuple). Requires
+`--rsna_bbox_csv` and/or `--siim_bbox_csv` at runtime.
 
 ---
 
@@ -153,18 +183,26 @@ monosemantic but clinically uninterpretable (e.g., a consistent rib shadow
 artifact). The scanner audit (Section 1.3) handles the latter case.
 
 **Status:** ✅ Co-activation matrix implemented in
-`src/visualisation/universality.py:compute_co_activation_matrix()`. Split
-detection heuristic (same canonical class + high correlation) not yet automated.
+`src/visualisation/universality.py:compute_co_activation_matrix()` (Pearson)
+and `src/visualisation/coactivation.py:compute_coactivation_matrix()`
+(Jaccard of top-K image sets). Split-pair detection runs automatically at the
+end of the pipeline via `universality_eval.run_split_detection()` — any pair
+of confirmed latents with Jaccard ≥ `--split_jaccard_threshold` (default 0.50)
+is reported in `split_pairs.json` and counted in `universality_summary.json`
+as `n_split_pairs`. A companion `co_activation_heatmap.png` of the confirmed
+latents is written to the output directory.
 
 ---
 
 ### 1.3 Scanner audit (pre-filter)
 
 Before universality analysis, latents encoding scanner/acquisition artifacts
-rather than pathology are identified and excluded. A logistic regression probe
-is trained from each latent's per-token activation magnitude to predict
-`dataset_id`. Latents with macro-averaged one-vs-rest AUROC > 0.80 are flagged
-as **scanner latents** and excluded from Properties 1–4 testing.
+rather than pathology are identified and excluded. A multinomial logistic
+regression probe is fitted per latent from the latent's per-token activation
+magnitude to `dataset_id`; one-vs-rest AUROC is read off from the probe's
+`predict_proba` scores and macro-averaged across datasets. Latents with macro
+AUROC > 0.80 are flagged as **scanner latents** and excluded from Properties
+1–4 testing.
 
 **Rationale:** A latent that fires universally because every image from dataset A
 looks the same (exposure setting, edge enhancement, DICOM post-processing)
@@ -172,10 +210,19 @@ would pass the frequency threshold but carry no clinical meaning. Excluding
 scanner latents before universality analysis ensures that confirmed universal
 features cannot be explained by acquisition confounds.
 
-**Status:** ✅ Implemented in `src/scripts/scanner_latent_audit.py`. Works with
-the merged `activations.safetensors` format (BatchTopK jobs). For Matryoshka
-jobs, which produce 4 separate per-dataset files, a concatenation step is
-needed before running the audit.
+**Balanced subsample:** CheXpert contributes roughly 15× as many tokens as TB
+after spatial expansion, so a random sample would effectively probe only the
+large datasets. The implementation therefore draws a balanced subsample —
+`--probe_sample_size // n_datasets` tokens per dataset (default 25 000 per
+dataset, 100 000 total) — once up front and fits every latent on that same
+sample. The probe's training/evaluation set, seed, and subsample size are
+persisted in `scanner_latent_audit.json` (`probe_sample_size`, `probe_seed`)
+so the audit is reproducible.
+
+**Status:** ✅ Implemented in `src/scripts/scanner_latent_audit.py`. Requires
+the merged `activations.safetensors` format produced by
+`src/conglomerate/harvest_all.py` (must contain both `activations` and
+`dataset_ids` tensors).
 
 ---
 
@@ -221,51 +268,99 @@ trained SAE results when `--trained_summary` is provided.
 
 ---
 
+### 1.6 Activation–label alignment (image stems)
+
+Downstream analyses that join activations to label CSVs (Property 1 class
+match, cross-dataset probe) or to bounding-box CSVs (Property 3) need a key
+that identifies *which image* each activation row came from. A positional
+alignment (the i-th image in the activation file = the i-th row in the CSV)
+would be fragile: CSV row order depends on the data provider's export, while
+activation order depends on each `Dataset` class's iteration order.
+
+Instead, `src/conglomerate/harvest_all.py` records each dataset's filename
+stems in harvest order and saves them in the merged `.safetensors` metadata
+header as a single JSON field:
+
+```json
+"image_stems": {
+  "chexpert":   ["patient00001_study1_view1_frontal", ...],
+  "rsna":       ["00aecb01-a116-45a2-956c-08d7fa55433c", ...],
+  "siim_covid": ["ff0879eb20ed_study", ...],
+  "tb":         ["CHNCXR_0001_0", ...]
+}
+```
+
+Downstream scripts read the stems via `safetensors.safe_open(...).metadata()`
+and look each stem up in the CSV keyed by `Path(image_id).stem`, so the
+activation ↔ label join is exact even when the CSV has been reordered,
+filtered, or had rows added. The activation file's own shape-mismatch guard
+(`dataset_ids.shape[0] != activations.shape[0]`) additionally rejects files
+produced by older harvesters that stored per-image rather than per-token
+metadata.
+
+---
+
 ### 1.7 Operational pipeline
 
-Given four trained SAE checkpoints (BatchTopK and Matryoshka at pm_index=2 and
-pm_index=3), the universality analysis proceeds as:
+Given a trained BatchTopK SAE checkpoint at pm_index=2 or pm_index=3, the
+universality analysis proceeds as:
 
 ```
 Step 1 — Scanner audit
   script : src/scripts/scanner_latent_audit.py
   input  : SAE checkpoint + activations.safetensors (with dataset_ids)
+  flags  : --probe_sample_size N   (balanced per-dataset subsample)
+           --threshold 0.80        (macro AUROC cut-off)
   output : scanner_latent_audit.json  (flagged indices excluded from all analysis)
   status : ✅ implemented
 
 Step 2 — Level 1 frequency check + canonical class match
   script : src/scripts/universality_eval.py
-  input  : SAE checkpoint + per-dataset activation files
-           (optional) --label_csv per dataset for canonical class match
+  input  : SAE checkpoint + merged activations (or 4 per-dataset files)
+           (optional) --label_csv DATASET:PATH per dataset
+             ↳ when supplied, enforces the Property 1 class-match gate
            (optional) --scanner_audit to exclude flagged latents
   output : universal_candidates.csv, universality_summary.json
-  status : ✅ implemented  (compute_frequency_per_dataset + apply_level1_filter)
+  status : ✅ implemented  (compute_frequency_per_dataset
+                             + compute_per_image_max
+                             + compute_dominant_canonical_class
+                             + apply_level1_filter)
 
 Step 3 — Level 2 direction check
   script : src/scripts/universality_eval.py  (same run as Step 2)
-  input  : Level 1 candidates + per-dataset activation files
+  input  : Level 1 candidates + activations
   output : confirmed_latent_frequencies.json + cosine sim columns in CSV
   status : ✅ implemented  (compute_centroids_per_dataset + apply_level2_filter)
 
-Step 4 — Spatial grounding
-  script : src/scripts/universality_eval.py  (same run, optional flags)
-  input  : --rsna_bbox_csv + --siim_bbox_csv
-  output : per-candidate Pearson r columns in universal_candidates.csv
-  status : ✅ implemented  (load_bbox_csv + compute_patch_bbox_overlap
-                             + run_spatial_grounding)
-
-Step 5 — Cross-dataset probe
-  script : src/scripts/universality_eval.py  (same run, optional flags)
-  input  : --label_csv per dataset
+Step 4 — Cross-dataset probe
+  script : src/scripts/universality_eval.py  (same run)
+  input  : --label_csv per dataset (shares the per-image feature_max
+           computed in Step 2, so train/test image identity is consistent
+           with the Level 1 gate)
   output : per-candidate leave-one-out AUROC columns in CSV
   status : ✅ implemented  (run_cross_dataset_probe)
 
-Step 6 — Co-activation / split detection
-  script : src/scripts/cross_dataset_eval.py
-  input  : combined feature_max [n_total_images, d_sae] + dataset_labels
-  output : co-activation heatmap + universality proxy dashboard
-  status : ✅ heatmap + Jaccard split detection implemented
-           (visualisation/coactivation.py:find_coactivating_pairs)
+Step 5 — Spatial grounding (Bonferroni-corrected)
+  script : src/scripts/universality_eval.py  (same run)
+  input  : --rsna_bbox_csv + --siim_bbox_csv
+           --bonferroni_alpha  (family-wise α, default 0.05)
+  output : per-candidate {ds}_r / {ds}_p / {ds}_pass and
+           pooled_r / pooled_p / pooled_pass columns in CSV,
+           Bonferroni summary (α_pooled, α_per_ds, pass counts)
+           under `spatial_bonferroni` in universality_summary.json
+  status : ✅ implemented  (load_bbox_csv + compute_patch_bbox_overlap
+                             + run_spatial_grounding using
+                             scipy.stats.pearsonr)
+
+Step 6 — Split detection (Property 4)
+  script : src/scripts/universality_eval.py  (same run)
+  input  : confirmed latents + per-image feature_max
+           --split_jaccard_threshold (default 0.50)
+           --split_top_k             (default 50)
+  output : split_pairs.json, co_activation_heatmap.png,
+           n_split_pairs in universality_summary.json
+  status : ✅ implemented  (run_split_detection via
+                             visualisation/coactivation.py)
 
 Step 7 — Null baseline
   script : src/scripts/null_baseline_eval.py
@@ -275,48 +370,12 @@ Step 7 — Null baseline
 
 Step 8 — Qualitative inspection
   script : src/scripts/inspect_universal_latents.py
-  input  : universality_summary.json (from Step 2) + activation files
+  input  : confirmed_latent_frequencies.json (from Step 2/3) + activations
            + image directories (optional, for patch crops and ablation)
   output : per-latent/ frequency_bar.png, semantic_grid.png,
            patch_ablation.png + index.md
   status : ✅ implemented  (render_semantic_grid + render_ablation_panel
                              + render_frequency_bar)
-```
-
----
-
-### 1.8 Matryoshka-specific analysis
-
-The Matryoshka SAE architecture (k_schedule = [6, 12, 24, 48]) imposes nested
-sparsity: features active at k=6 are always a subset of features active at
-k=12, and so on. By construction, the k=6 shell should contain the most
-universal features — those that survive the strictest sparsity budget.
-
-The universality analysis is repeated separately for each shell by masking the
-SAE codes to only the top-k features at each level. The empirical universality
-rate in the k=6 shell is expected to exceed that in the k=48 shell; if this
-does not hold, it is evidence that the Matryoshka nesting constraint alone is
-insufficient to produce universality.
-
-**Shell chosen for primary analysis:** k=24 (second-tightest budget). k=6 is
-too sparse to reliably cover multi-finding images and rare pathologies (TB has
-only 700 images); k=24 retains enough features while still being clearly below
-k=48, giving a meaningful universality contrast.
-
-**Status:** ✅ Implemented via `--matryoshka_shell 24` flag on
-`universality_eval.py`. `MatryoshkaSAE.encode()` already accepts a `k`
-argument; the flag monkey-patches the default so all downstream functions
-transparently use the shell budget. Example:
-
-```
-python src/scripts/universality_eval.py \
-    --checkpoint_dir  .../matryoshka/layer-2/.../checkpoints/step_0200000 \
-    --activations     .../activations_chexpert.safetensors:chexpert \
-    --activations     .../activations_rsna.safetensors:rsna \
-    --activations     .../activations_siim.safetensors:siim_covid \
-    --activations     .../activations_tb.safetensors:tb \
-    --matryoshka_shell 24 \
-    --output_dir      .../universality/shell_k24
 ```
 
 ---

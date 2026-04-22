@@ -10,7 +10,7 @@ Training follows the bartbussmann/BatchTopK reference:
 
 Pipeline
 --------
-  1. harvest_activations.py  →  data/dummy_activations.safetensors
+  1. src/conglomerate/harvest_all.py  →  data/xray_activations.safetensors
   2. python src/train_sae.py   (this script)
   3. Checkpoints written to data/checkpoints/step_XXXXXXX/
 
@@ -256,7 +256,7 @@ def train(cfg: SAEConfig) -> BatchTopKSAE:
     if not acts_path.exists():
         raise FileNotFoundError(
             f"Activations file not found: {acts_path.resolve()}\n"
-            f"Run src/scripts/harvest_activations.py first."
+            f"Run src/conglomerate/harvest_all.py first."
         )
 
     print(f"[Data] Loading {acts_path} ...")

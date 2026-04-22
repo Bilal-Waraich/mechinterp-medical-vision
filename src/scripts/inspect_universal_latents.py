@@ -331,9 +331,16 @@ def parse_args() -> argparse.Namespace:
                          "from universality_eval.py.")
     ap.add_argument("--checkpoint_dir", required=True,
                     help="SAE checkpoint directory.")
-    ap.add_argument("--activations", action="append", required=True,
-                    metavar="PATH:LABEL",
-                    help="Per-dataset activation safetensors and label. Repeat per dataset.")
+    # Activation inputs — mutually exclusive formats, matching universality_eval.py.
+    grp = ap.add_mutually_exclusive_group(required=True)
+    grp.add_argument("--activations", action="append", metavar="PATH:LABEL",
+                     help="Per-dataset activation safetensors and label. Repeat per dataset.")
+    grp.add_argument("--merged_activations", metavar="PATH",
+                     help="Single merged activations file with dataset_ids tensor "
+                          "(BatchTopK format).")
+    ap.add_argument("--dataset_names", nargs="+",
+                    default=["chexpert", "rsna", "siim_covid", "tb"],
+                    help="Dataset names in dataset_id order (merged format only).")
     ap.add_argument("--images_dir", action="append", default=[],
                     metavar="PATH:LABEL",
                     help="Directory of original images for a dataset. Repeat per dataset. "
@@ -395,12 +402,28 @@ def main() -> None:
 
     # ── Load activations ─────────────────────────────────────────────────
     datasets: list[tuple[str, torch.Tensor]] = []
-    for entry in args.activations:
-        path, label = entry.rsplit(":", 1)
-        raw  = load_file(str(path))
-        acts = raw["activations"].float()
-        datasets.append((label, acts))
-        print(f"  {label}: {acts.shape[0]:,} tokens")
+    if args.merged_activations:
+        raw = load_file(str(args.merged_activations))
+        acts_all = raw["activations"].float()
+        ds_ids   = raw["dataset_ids"].long()
+        if ds_ids.shape[0] != acts_all.shape[0]:
+            raise ValueError(
+                f"dataset_ids length {ds_ids.shape[0]} != activations length "
+                f"{acts_all.shape[0]}.  Merged file was produced by a pre-Bug-A "
+                f"harvest_all.py.  Re-harvest with the current version."
+            )
+        for i, name in enumerate(args.dataset_names):
+            mask = ds_ids == i
+            acts = acts_all[mask]
+            datasets.append((name, acts))
+            print(f"  {name}: {acts.shape[0]:,} tokens")
+    else:
+        for entry in args.activations:
+            path, label = entry.rsplit(":", 1)
+            raw  = load_file(str(path))
+            acts = raw["activations"].float()
+            datasets.append((label, acts))
+            print(f"  {label}: {acts.shape[0]:,} tokens")
 
     # ── Load image directories ────────────────────────────────────────────
     image_dirs: dict[str, list[Path]] = {}

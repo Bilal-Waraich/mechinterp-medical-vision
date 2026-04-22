@@ -29,7 +29,9 @@ Metadata keys
 -------------
   d_model, spatial_h, spatial_w, pm_index, n_images_total,
   n_effective_total, dataset_names (JSON), dataset_counts (JSON),
-  dataset_means (JSON list of lists — per-dataset mean vectors for reproducibility)
+  dataset_means (JSON list of lists — per-dataset mean vectors for reproducibility),
+  image_stems (JSON {dataset_name: [stem, ...]} — harvest-order filename stems,
+               used by downstream scripts to align activations with label CSVs)
 
 Usage
 -----
@@ -53,7 +55,6 @@ import sys
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
 
 import torch
 import torch.nn as nn
@@ -187,7 +188,7 @@ def harvest_one_dataset(
     labels       [N_eff]           int32  per-token (image label broadcast to every patch)
     patch_ids    [N_eff]           int32  per-token (image index broadcast to every patch)
     dataset_ids  [N_eff]           int32  per-token
-    info         dict
+    info         dict  — includes ``image_stems`` (list[str] in harvest order)
     """
     loader = DataLoader(
         dataset,
@@ -251,12 +252,24 @@ def harvest_one_dataset(
     patch_ids   = torch.arange(n_images, dtype=torch.int32).repeat_interleave(n_spatial)
     dataset_ids = torch.full((n_tokens,), dataset_idx, dtype=torch.int32)
 
+    # Image stems in harvest order — used downstream to align per-image
+    # activations with label CSVs and bbox CSVs by filename.
+    image_stems: list[str] = (
+        [Path(p).stem for p in dataset.image_paths]
+        if hasattr(dataset, "image_paths")
+        else [str(i) for i in range(n_images)]
+    )
+    assert len(image_stems) == n_images, (
+        f"{dataset_name}: got {len(image_stems)} image stems but {n_images} images"
+    )
+
     info = {
         "name":        dataset_name,
         "n_images":    n_images,
         "n_effective": n_tokens,
         "spatial_h":   H_feat,
         "spatial_w":   W_feat,
+        "image_stems": image_stems,
     }
     print(f"[{dataset_name}]  done — {activations.shape[0]:,} activation vectors")
     return activations, labels, patch_ids, dataset_ids, info
@@ -331,17 +344,6 @@ def build_datasets(args) -> list[tuple[str, Dataset]]:
         )
 
     return result
-
-
-def _maybe_subsample(dataset: Dataset, n_samples: int | None, seed: int) -> Dataset:
-    """Wrap dataset in a random subset if n_samples < len(dataset)."""
-    if n_samples is None or n_samples >= len(dataset):
-        return dataset
-    import random as _random
-    rng = _random.Random(seed)
-    indices = rng.sample(range(len(dataset)), n_samples)
-    from torch.utils.data import Subset
-    return Subset(dataset, indices)
 
 
 # ── main ──────────────────────────────────────────────────────────────────────
@@ -436,12 +438,23 @@ def main():
                     f"— this partial was written by a pre-Bug-A harvest_all.py. "
                     f"Delete {partial_path.name} and re-harvest."
                 )
+            # image_stems is required on partials written by the current
+            # harvest_all.py.  If missing, the partial was produced by an
+            # older version — reject it so a re-harvest produces a file
+            # that downstream alignment-sensitive scripts can consume.
+            if "image_stems" not in _meta:
+                raise RuntimeError(
+                    f"{partial_path}: partial checkpoint lacks 'image_stems' metadata "
+                    f"— it was written by an older harvest_all.py that did not store "
+                    f"per-image filename stems.  Delete {partial_path.name} and re-harvest."
+                )
             info  = {
                 "name":        ds_name,
-                "n_images":    int(_meta.get("n_images", 0)),
+                "n_images":    int(_meta["n_images"]),
                 "n_effective": acts.shape[0],
-                "spatial_h":   int(_meta.get("spatial_h", 0)),
-                "spatial_w":   int(_meta.get("spatial_w", 0)),
+                "spatial_h":   int(_meta["spatial_h"]),
+                "spatial_w":   int(_meta["spatial_w"]),
+                "image_stems": json.loads(_meta["image_stems"]),
             }
             print(f"[{ds_name}]  loaded {acts.shape[0]:,} tokens from partial checkpoint")
         else:
@@ -456,9 +469,10 @@ def main():
                 {"activations": acts, "labels": lbls, "patch_ids": pids, "dataset_ids": dsids},
                 str(partial_path),
                 metadata={
-                    "n_images":  str(info["n_images"]),
-                    "spatial_h": str(info["spatial_h"]),
-                    "spatial_w": str(info["spatial_w"]),
+                    "n_images":    str(info["n_images"]),
+                    "spatial_h":   str(info["spatial_h"]),
+                    "spatial_w":   str(info["spatial_w"]),
+                    "image_stems": json.dumps(info["image_stems"]),
                 },
             )
             print(f"[{ds_name}]  partial checkpoint saved → {partial_path.name}")
@@ -506,9 +520,25 @@ def main():
     # 6. Save
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
+    # All datasets must share the same (spatial_h, spatial_w) for the merged
+    # file's metadata to be meaningful — the downstream reshape assumes a
+    # single grid.  Cross-check instead of trusting the first dataset.
     spatial_h = all_infos[0]["spatial_h"]
     spatial_w = all_infos[0]["spatial_w"]
+    for info in all_infos[1:]:
+        if info["spatial_h"] != spatial_h or info["spatial_w"] != spatial_w:
+            raise RuntimeError(
+                f"Datasets disagree on spatial grid: "
+                f"{all_infos[0]['name']}={spatial_h}x{spatial_w} vs "
+                f"{info['name']}={info['spatial_h']}x{info['spatial_w']}. "
+                f"All datasets must produce identical (H,W) for the merged file."
+            )
+
     n_images_total = sum(i["n_images"] for i in all_infos)
+
+    # Per-dataset image stems (harvest order) — downstream analysis uses these
+    # to align per-image activations with label CSVs / bbox CSVs by filename.
+    image_stems_by_ds = {i["name"]: i["image_stems"] for i in all_infos}
 
     metadata = {
         "pm_index":          str(args.pm_index),
@@ -520,6 +550,7 @@ def main():
         "dataset_names":     json.dumps([i["name"]    for i in all_infos]),
         "dataset_counts":    json.dumps([i["n_images"] for i in all_infos]),
         "dataset_means":     json.dumps(dataset_means),
+        "image_stems":       json.dumps(image_stems_by_ds),
         "checkpoint":        str(args.checkpoint),
         "centred":           str(not args.no_centering),
     }

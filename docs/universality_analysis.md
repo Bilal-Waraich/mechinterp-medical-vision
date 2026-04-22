@@ -12,7 +12,9 @@ The pipeline is hierarchical: each step gates the next. A latent must pass every
 
 Before any universality check, latents that encode scanner/hospital identity rather than pathology are identified and removed from consideration.
 
-**Method:** For each latent, fit a logistic regression predicting `dataset_id` (0=CheXpert, 1=RSNA, 2=SIIM, 3=TB) from the latent's activation magnitude across all tokens.
+**Method:** For each latent, fit a multinomial logistic regression predicting `dataset_id` (0=CheXpert, 1=RSNA, 2=SIIM, 3=TB) from the latent's per-token activation magnitude. One-vs-rest AUROC is read off from `clf.predict_proba` scores and macro-averaged across datasets.
+
+**Balanced subsample.** CheXpert contributes roughly 15× as many tokens as TB after spatial expansion, so an unstratified fit would be dominated by the big datasets. The script therefore draws a *balanced* subsample — `probe_sample_size // n_datasets` tokens per dataset (default 25 000 per dataset, 100 000 total) — once up front and reuses it for every latent's fit. Subsample size and RNG seed are recorded in the output JSON.
 
 **Metric:** Macro-averaged one-vs-rest AUROC per latent.
 
@@ -20,7 +22,7 @@ Before any universality check, latents that encode scanner/hospital identity rat
 
 **Logic:** If a feature's activation magnitude alone can predict which hospital/dataset an image came from with AUROC > 0.80, it is encoding acquisition differences (scanner type, exposure, demographics) rather than disease. Such a feature cannot be universal in any meaningful clinical sense.
 
-**Output:** `scanner_latent_audit.json` — list of flagged latent indices. These are excluded from all downstream universality steps.
+**Output:** `scanner_latent_audit.json` — threshold, per-latent AUROC, flagged indices, `probe_sample_size`, `probe_seed`. Flagged indices are excluded from all downstream universality steps.
 
 ---
 
@@ -44,9 +46,11 @@ frequency(latent_i, dataset_d) = count(tokens in dataset_d where latent_i > 0)
 
 **Why ≥ 2 datasets:** A feature firing on only one dataset could be dataset-specific. It must appear in at least two to be a candidate for universality.
 
-**Optional canonical class match:** If label CSVs are provided, the dominant canonical class (airspace opacity, pleural, cardiac, etc.) must match across the datasets where the latent fires. A feature firing on "pleural effusion" in CheXpert but "no finding" in RSNA does not pass even if frequency thresholds are met.
+**Canonical class match (enforced when `--label_csv` flags are supplied):** For each (latent, dataset) pair, the dominant canonical class is the mode of the canonical groups of the top `--class_match_top_k` images (default 50) ranked by the latent's per-image `feature_max`. Images with no entry in the dataset's label CSV are dropped before the mode is taken (rather than silently counted as `no_finding`, which would bias the result toward the majority class). A candidate passes the class-match gate only when every active dataset agrees on its dominant class; any disagreement — or a dataset with no labelled image in its top-K — rejects the candidate. A feature firing on "pleural effusion" in CheXpert but "no finding" in RSNA will not pass even if frequency thresholds are met.
 
-**Output:** Set of Level 1 candidate latent indices — typically a small fraction of the full d_sae=4096 dictionary.
+When no `--label_csv` flag is supplied the class-match gate is skipped and Level 1 falls back to frequency-only. The rows of `universal_candidates.csv` then omit the `matched_canonical_class` column.
+
+**Output:** Set of Level 1 candidate latent indices + `matched_canonical_class` per candidate (when class match was enforced) — typically a small fraction of the full d_sae=4096 dictionary.
 
 ---
 
@@ -116,52 +120,49 @@ cosine_sim = (centroid_D1 · centroid_D2) / (||centroid_D1|| × ||centroid_D2||)
    r = Pearson(activation_magnitudes, bbox_overlap_values)
    ```
 
-**Threshold:** p < 0.05 (Bonferroni corrected for multiple latents).
+**Threshold (Bonferroni-corrected):** Pearson `r` and its two-sided `p`-value come from `scipy.stats.pearsonr`. With `n_confirmed` universal candidates and `n_bbox_datasets` ∈ {1, 2} datasets with bboxes:
+
+```
+α_pooled  = --bonferroni_alpha / n_confirmed                   # default 0.05 / n_confirmed
+α_per_ds  = --bonferroni_alpha / (n_confirmed × n_bbox_datasets)
+```
+
+A latent passes spatial grounding when its pooled r > 0 **and** its pooled p < α_pooled. Per-dataset pass/fail flags use α_per_ds and are surfaced as `{ds}_pass` columns in `universal_candidates.csv`. The corrected α values, number of tests performed, and number of passes are all persisted under `spatial_bonferroni` inside `universality_summary.json`.
 
 **Why this matters:** A latent could be labelled "airspace opacity" because it fires on opacity images at the image level, but actually respond to the cardiac silhouette or background. Spatial grounding checks whether the latent fires at the locations where radiologists annotated pathology. This is the strongest form of evidence — the feature is not just statistically correlated with the label, it is firing at the right place.
 
-**Output:** Per-latent Pearson r (per dataset + pooled) in `universal_candidates.csv`.
+**Output:** Per-latent Pearson r, p, and Bonferroni pass flags (per dataset + pooled) in `universal_candidates.csv`; family-wise summary in `universality_summary.json`.
 
 ---
 
 ## Step 5 — Co-activation Analysis (Feature Splitting Detection)
 
-**Files:**
-- `src/visualisation/universality.py` → `compute_co_activation_matrix()` (Pearson)
-- `src/visualisation/coactivation.py` → `compute_coactivation_matrix()` (Jaccard)
+**Invocation:** `src/scripts/universality_eval.py` runs this automatically as its final step via `run_split_detection()` — no separate script invocation is needed.
 
-**Question:** Are any two latents encoding the same concept (feature splitting)?
+**Files:**
+- `src/visualisation/coactivation.py` → `compute_coactivation_matrix()` (Jaccard of top-K image sets), `find_coactivating_pairs()`, `render_coactivation_heatmap()`
+- `src/visualisation/universality.py` → `compute_co_activation_matrix()` (Pearson of per-image feature_max) — available but not currently invoked by the pipeline
+
+**Question:** Are any two confirmed universal latents encoding the same concept (feature splitting)?
 
 Feature splitting is a known SAE failure mode: instead of one latent for "pleural effusion", the SAE might learn two latents that each fire on a subset of pleural effusion cases, often split by dataset or severity. Both latents would pass Level 1 and Level 2 individually but together they represent one concept, not two.
 
-### Pearson Co-activation
+### Jaccard Co-activation (the metric used for split flagging)
 
-For each pair of latents (i, j), compute Pearson correlation of their per-image maximum activation values across all images:
-
-```
-normed_i = feature_max[:, i] / ||feature_max[:, i]||
-normed_j = feature_max[:, j] / ||feature_max[:, j]||
-co_activation[i, j] = normed_i · normed_j
-```
-
-High correlation (close to 1.0) between two latents indicates they fire on the same images and may represent the same concept split across two dictionary atoms.
-
-### Jaccard Co-activation
-
-For each latent, define its **top-K image set**: the K=50 images where it activates most strongly. Then for each pair of latents (i, j):
+For each confirmed latent we take its top-`--split_top_k` images (default 50) across the combined 4-dataset population — reusing the per-image `feature_max` computed in Step 1 so image identity is consistent with the rest of the pipeline. For each pair of confirmed latents (i, j):
 
 ```
 Jaccard(i, j) = |top_K(i) ∩ top_K(j)| / |top_K(i) ∪ top_K(j)|
 ```
 
-**Threshold:** Jaccard ≥ 0.50 → pair flagged as potentially split.
+**Threshold:** Jaccard ≥ `--split_jaccard_threshold` (default 0.50) → pair flagged as a potential feature split.
 
-Jaccard is more robust than Pearson here because it focuses on which images a feature fires on most strongly, ignoring the magnitude distribution.
+Jaccard is more robust than Pearson here because it focuses on *which* images a feature fires on most strongly, ignoring magnitude distribution differences that arise from dataset-specific activation scales.
 
 **Output:**
-- `co_activation_heatmap.png` — Pearson matrix heatmap
-- `universality_dashboard.png` — per-feature dataset distribution stacked bar chart
-- Flagged split pairs reported in results
+- `split_pairs.json` — list of `{i, j, jaccard}` records, sorted descending
+- `co_activation_heatmap.png` — Jaccard heatmap over the confirmed latents
+- `universality_summary.json` records `n_split_pairs` and `split_jaccard_threshold`
 
 ---
 
@@ -187,14 +188,13 @@ The PCA baseline is more meaningful than random — it captures linear structure
 
 | Step | Metric | Threshold | Pass/Fail |
 |---|---|---|---|
-| 0 — Scanner audit | Logistic AUROC (dataset_id prediction) | < 0.80 to keep | Pre-filter |
+| 0 — Scanner audit | Multinomial LR macro AUROC (dataset_id prediction) | < 0.80 to keep | Pre-filter |
 | 1 — Level 1 | Activation frequency per dataset | ≥ 1% on ≥ 2 datasets | Hard gate |
-| 1 — Level 1 (optional) | Canonical class match across datasets | Must agree | Hard gate |
+| 1 — Level 1 (when --label_csv supplied) | Canonical class match across active datasets | Must agree on dominant class | Hard gate |
 | 2 — Level 2 | Cosine similarity of per-dataset centroids | ≥ 0.70 all pairs | Hard gate |
 | 3 — Probe | Leave-one-out logistic AUROC | — | Supplementary |
-| 4 — Spatial | Pearson r vs bbox overlap | p < 0.05 Bonferroni | Supplementary |
-| 5 — Split detection | Jaccard of top-50 image sets | < 0.50 to keep | Diagnostic |
-| 5 — Split detection | Pearson of feature_max vectors | — | Diagnostic |
+| 4 — Spatial | Pearson r vs bbox overlap | p_pooled < α / n_confirmed (default α = 0.05), r > 0 | Supplementary, Bonferroni-corrected |
+| 5 — Split detection | Jaccard of top-K image sets | < 0.50 to keep distinct | Diagnostic (flags splits) |
 | Baseline | Level 1 + Level 2 on random SAE | — | Comparison |
 | Baseline | Level 1 + Level 2 on PCA | — | Comparison |
 
@@ -222,13 +222,14 @@ CheXpert uncertain labels (−1) are treated as negative throughout.
 
 | File | Contents |
 |---|---|
-| `scanner_latent_audit.json` | Flagged scanner latent indices + per-latent AUROC |
-| `universality_summary.json` | Counts at each level, thresholds used, confirmed indices |
-| `universal_candidates.csv` | Per-latent: frequency/dataset, min cosine sim, probe AUROC, spatial r |
+| `scanner_latent_audit.json` | Flagged scanner latent indices, per-latent macro AUROC, `probe_sample_size`, `probe_seed` |
+| `scanner_latent_audit.csv` | Per-latent row: macro AUROC + per-dataset AUROCs |
+| `universality_summary.json` | Counts at each level, thresholds used, confirmed indices, Bonferroni summary, split-pair count |
+| `universal_candidates.csv` | Per-latent: frequency/dataset, min cosine sim, matched canonical class (when class match enforced), probe AUROC, spatial `r`/`p`/`pass` (per dataset + pooled) |
 | `confirmed_latent_frequencies.json` | Per-latent frequency per dataset (for downstream use) |
+| `split_pairs.json` | List of `{i, j, jaccard}` pairs with Jaccard ≥ split threshold |
+| `co_activation_heatmap.png` | Jaccard co-activation heatmap over the confirmed latents |
 | `null_baseline_results.json` | Trained SAE vs random SAE vs PCA comparison |
-| `universality_dashboard.png` | Stacked bar: per-feature dataset distribution |
-| `co_activation_heatmap.png` | Pearson co-activation matrix heatmap |
 | `latent_XXXXX/semantic_grid.png` | Top-K activating patches per dataset per latent |
 | `latent_XXXXX/frequency_bar.png` | Per-dataset activation frequency bar chart |
 | `latent_XXXXX/patch_ablation.png` | Deletion-mode ablation heatmaps |

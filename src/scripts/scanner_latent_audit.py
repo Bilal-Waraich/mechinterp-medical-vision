@@ -138,13 +138,33 @@ def compute_per_latent_auroc(
     codes: torch.Tensor,
     dataset_ids: torch.Tensor,
     n_datasets: int,
+    sample_size: int = 100_000,
+    seed: int = 42,
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Fit logistic regression per latent, return macro AUROC and per-dataset AUROCs.
+    """Fit a logistic regression probe per latent and return AUROCs.
 
-    To keep memory manageable, we fit one probe per latent (d_sae independent
-    logistic regressions) using the latent's activation magnitude as the sole
-    feature.  This is deliberately weak — a single-feature probe that achieves
-    AUROC > 0.80 is a strong signal of scanner encoding.
+    Implements the scanner audit described in ``docs/methodology.md`` §1.3:
+    for each latent we fit a multinomial logistic regression from the latent's
+    per-token activation magnitude to ``dataset_id``, then score the probe
+    with one-vs-rest AUROC (macro-averaged across datasets).  Latents whose
+    macro AUROC exceeds the caller's threshold are scanner latents and are
+    excluded from the universality analysis.
+
+    To prevent the fit from being dominated by the largest dataset (CheXpert
+    contributes ~15× as many tokens as TB after post-spatial expansion), we
+    draw a balanced subsample up front: ``sample_size // n_datasets`` tokens
+    per dataset.  The same subsample is reused for every latent so results
+    are comparable and the whole audit stays within minutes rather than
+    hours.  Dead latents (no activation in the sample) are skipped and
+    recorded as AUROC = 0.
+
+    Parameters
+    ----------
+    codes         : [N, d_sae] float   sparse SAE codes
+    dataset_ids   : [N] int            dataset index per token
+    n_datasets    : int                number of datasets
+    sample_size   : int                total tokens to use (0 → use all)
+    seed          : int                RNG seed for deterministic subsampling
 
     Returns
     -------
@@ -155,33 +175,70 @@ def compute_per_latent_auroc(
     from sklearn.metrics import roc_auc_score
     from sklearn.preprocessing import label_binarize
 
-    d_sae = codes.shape[1]
     codes_np = codes.numpy()
     ids_np   = dataset_ids.numpy().astype(int)
-    classes  = list(range(n_datasets))
-    ids_bin  = label_binarize(ids_np, classes=classes)  # [N, n_datasets]
+    d_sae    = codes_np.shape[1]
 
+    # ── Balanced subsample ────────────────────────────────────────────────
+    rng = np.random.default_rng(seed)
+    if sample_size and sample_size < codes_np.shape[0]:
+        per_ds = max(1, sample_size // n_datasets)
+        idx_list = []
+        for ds in range(n_datasets):
+            pool = np.where(ids_np == ds)[0]
+            if pool.size == 0:
+                continue
+            n_take = min(per_ds, pool.size)
+            idx_list.append(rng.choice(pool, size=n_take, replace=False))
+        sample_idx = np.concatenate(idx_list)
+    else:
+        sample_idx = np.arange(codes_np.shape[0])
+
+    codes_s = codes_np[sample_idx]
+    ids_s   = ids_np[sample_idx]
+    classes = list(range(n_datasets))
+    ids_bin_s = label_binarize(ids_s, classes=classes)          # [N_s, n_datasets]
+    # label_binarize collapses to a single column in the binary case.
+    if ids_bin_s.shape[1] == 1:
+        ids_bin_s = np.hstack([1 - ids_bin_s, ids_bin_s])
+
+    print(f"  Probe fit set: {len(sample_idx):,} tokens  "
+          f"({n_datasets} classes, balanced)")
+
+    # ── Per-latent fit ────────────────────────────────────────────────────
     macro_aurocs  = np.zeros(d_sae, dtype=np.float32)
     per_ds_aurocs = np.zeros((d_sae, n_datasets), dtype=np.float32)
 
     for i in range(d_sae):
-        feat = codes_np[:, i : i + 1]          # [N, 1]
+        feat = codes_s[:, i : i + 1]          # [N_s, 1]
 
-        # Skip dead latents (no activation)
+        # Skip dead latents (no activation in the sample)
         if feat.max() < 1e-8:
             continue
 
+        # Default sklearn LogisticRegression (lbfgs solver) fits a
+        # multinomial softmax when len(classes) > 2.  Single-feature fits
+        # converge in well under a second on ~100k samples.
+        try:
+            clf = LogisticRegression(max_iter=200, random_state=seed)
+            clf.fit(feat, ids_s)
+        except ValueError:
+            continue
+
+        proba = clf.predict_proba(feat)       # [N_s, len(clf.classes_)]
+        cls_index = {int(c): j for j, c in enumerate(clf.classes_)}
+
         ds_aurocs = []
         for ds in range(n_datasets):
-            y_true = ids_bin[:, ds]
-            if y_true.sum() == 0 or y_true.sum() == len(y_true):
+            y_true = ids_bin_s[:, ds]
+            if ds not in cls_index or y_true.sum() == 0 or y_true.sum() == len(y_true):
                 ds_aurocs.append(0.5)
                 continue
+            score = proba[:, cls_index[ds]]
             try:
-                auc = roc_auc_score(y_true, feat[:, 0])
-            except Exception:
-                auc = 0.5
-            ds_aurocs.append(float(auc))
+                ds_aurocs.append(float(roc_auc_score(y_true, score)))
+            except ValueError:
+                ds_aurocs.append(0.5)
 
         per_ds_aurocs[i] = ds_aurocs
         macro_aurocs[i]  = float(np.mean(ds_aurocs))
@@ -205,6 +262,11 @@ def main():
     ap.add_argument("--threshold",       type=float, default=DEFAULT_THRESHOLD,
                     help="AUROC threshold above which a latent is flagged as scanner latent")
     ap.add_argument("--batch_size",      type=int, default=DEFAULT_BATCH)
+    ap.add_argument("--probe_sample_size", type=int, default=100_000,
+                    help="Balanced token sample size for the per-latent LR probe. "
+                         "0 to use all tokens (slow).")
+    ap.add_argument("--seed",            type=int, default=42,
+                    help="RNG seed for the balanced probe subsample.")
     ap.add_argument("--device",
                     default="cuda:0" if torch.cuda.is_available() else "cpu")
     args = ap.parse_args()
@@ -216,6 +278,15 @@ def main():
     acts        = raw["activations"].to(torch.float32)
     dataset_ids = raw["dataset_ids"].to(torch.int32)
     print(f"[Audit] Activations: {tuple(acts.shape)}")
+
+    if dataset_ids.shape[0] != acts.shape[0]:
+        sys.exit(
+            f"[Audit] ERROR: dataset_ids has {dataset_ids.shape[0]:,} entries but "
+            f"activations has {acts.shape[0]:,} rows — lengths must match.\n"
+            f"This file was likely produced by a pre-Bug-A harvest_all.py "
+            f"(dataset_ids stored per-image, not per-token).\n"
+            f"Re-harvest with the current harvest_all.py."
+        )
 
     n_datasets   = int(dataset_ids.max().item()) + 1
     dataset_names = [f"dataset_{i}" for i in range(n_datasets)]
@@ -256,7 +327,9 @@ def main():
         sys.exit("scikit-learn required: pip install scikit-learn")
 
     macro_aurocs, per_ds_aurocs = compute_per_latent_auroc(
-        codes, dataset_ids, n_datasets
+        codes, dataset_ids, n_datasets,
+        sample_size=args.probe_sample_size,
+        seed=args.seed,
     )
 
     # ── Flag scanner latents ──────────────────────────────────────────────
@@ -269,13 +342,15 @@ def main():
     out_dir.mkdir(parents=True, exist_ok=True)
 
     audit_json = {
-        "threshold":        args.threshold,
-        "n_flagged":        len(flagged),
-        "n_total_latents":  d_sae,
-        "flagged_fraction": len(flagged) / d_sae,
-        "flagged_indices":  flagged,
-        "per_latent_auroc": macro_aurocs.tolist(),
-        "dataset_names":    dataset_names,
+        "threshold":          args.threshold,
+        "probe_sample_size":  args.probe_sample_size,
+        "probe_seed":         args.seed,
+        "n_flagged":          len(flagged),
+        "n_total_latents":    d_sae,
+        "flagged_fraction":   len(flagged) / d_sae,
+        "flagged_indices":    flagged,
+        "per_latent_auroc":   macro_aurocs.tolist(),
+        "dataset_names":      dataset_names,
     }
     json_path = out_dir / "scanner_latent_audit.json"
     with open(json_path, "w") as f:

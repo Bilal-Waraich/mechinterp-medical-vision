@@ -106,14 +106,14 @@ CheXpert uncertain labels (-1): treated as **negative** (conservative).
 
 | # | Concern | Severity | Mitigation | Status |
 |---|---|---|---|---|
-| 2 | Dominant dataset imbalance | High | Stratified DataLoader (25% per dataset per batch) | ⚠️ Not yet implemented |
-| 5 | Geometric/view bias | High | PA-only filter at harvest time | ⚠️ Not yet implemented |
-| 7 | Dead features with heterogeneous data | High | n_batches_to_dead → 25 | ⚠️ Default too low |
-| 8 | Cross-dataset b_dec drift | High | Per-dataset centering before concatenation | ⚠️ Not yet implemented |
+| 2 | Dominant dataset imbalance | High | Stratified DataLoader (25% per dataset per batch) | ✅ `StratifiedBatchSampler` in `src/train_sae.py` |
+| 5 | Geometric/view bias | High | PA-only filter at harvest time | ✅ Applied in CheXpert + SIIM dataset loaders |
+| 7 | Dead features with heterogeneous data | High | n_batches_to_dead → 25 | ✅ Default raised to 25 in `src/config.py` |
+| 8 | Cross-dataset b_dec drift | High | Per-dataset centering before concatenation | ✅ `center_activations()` in `src/conglomerate/harvest_all.py`; `b_dec` initialised to zero on centred data |
 | 9 | Encoder fine-tuning confound | High | Use base encoder (TD-1, pending) | ⚠️ Pending TD-1 resolution |
-| 1 | Scanner latent trap | Moderate | Post-hoc linear probe audit (AUROC > 0.80 → flag) | ⚠️ Script not yet written |
+| 1 | Scanner latent trap | Moderate | Multinomial LR probe per latent → dataset_id (AUROC > 0.80 → flag) | ✅ `src/scripts/scanner_latent_audit.py` with balanced subsample |
 | 6 | Hook stage | — | pm_index=2 (TD-2) | ✅ Locked |
-| 3 | Magnitude mismatch | Moderate | RMS normalisation + per-dataset centering | ✅ RMS done; centering pending |
+| 3 | Magnitude mismatch | Moderate | RMS normalisation + per-dataset centering | ✅ Both applied in `src/conglomerate/harvest_all.py` |
 
 ---
 

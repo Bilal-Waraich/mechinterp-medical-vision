@@ -125,7 +125,7 @@ class PCANullSAE:
 
 @torch.no_grad()
 def build_pca_sae(
-    datasets: list[tuple[str, torch.Tensor]],
+    datasets: list[tuple[str, torch.Tensor, list[str]]],
     d_sae: int,
     k: int,
     device: torch.device,
@@ -134,7 +134,7 @@ def build_pca_sae(
     """Fit PCA on a sample of activations from all datasets combined.
 
     Args:
-        datasets:   list of (name, activations [N_i, d_model])
+        datasets:   list of (name, activations [N_i, d_model], image_stems)
         d_sae:      number of PCA components to keep (matches SAE dictionary size)
         k:          top-k threshold matching reference SAE
         device:     torch device for projection
@@ -145,7 +145,7 @@ def build_pca_sae(
     """
     print(f"  Fitting PCA ({d_sae} components) on activation sample …")
     chunks = []
-    for _, acts in datasets:
+    for _, acts, _ in datasets:
         n = min(sample_cap, acts.shape[0])
         idx = torch.randperm(acts.shape[0])[:n]
         chunks.append(acts[idx].float())
@@ -176,7 +176,7 @@ def build_pca_sae(
 def run_null_eval(
     null_model,
     null_name: str,
-    datasets: list[tuple[str, torch.Tensor]],
+    datasets: list[tuple[str, torch.Tensor, list[str]]],
     device: torch.device,
     freq_threshold: float,
     min_datasets: int,
@@ -253,9 +253,6 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument("--cosine_threshold", type=float, default=0.70)
     ap.add_argument("--pca_sample_cap",   type=int,   default=50_000,
                     help="Max tokens per dataset to use for PCA fitting.")
-    ap.add_argument("--matryoshka_shell", type=int, default=None, metavar="K",
-                    help="If set, restrict Matryoshka SAE encode() to the top-K shell "
-                         "(e.g. --matryoshka_shell 24). Ignored for BatchTopK checkpoints.")
     ap.add_argument("--output_dir",  required=True)
     ap.add_argument("--batch_size",  type=int, default=4096)
     ap.add_argument("--device",
@@ -279,16 +276,10 @@ def main() -> None:
     ref_sae.eval()
     print(f"  d_model={ref_sae.d_model}  d_sae={ref_sae.d_sae}  k={ref_sae.k}")
 
-    if args.matryoshka_shell is not None:
-        shell_k = args.matryoshka_shell
-        _orig = ref_sae.encode
-        ref_sae.encode = lambda x, k=shell_k: _orig(x, k=k)
-        print(f"  Matryoshka shell: restricting encode() to top-{shell_k} features")
-
     # Load activations
     print("\nLoading activations …")
     datasets = load_dataset_activations(args)
-    for name, acts in datasets:
+    for name, acts, _ in datasets:
         print(f"  {name}: {acts.shape[0]:,} tokens")
 
     results = []
