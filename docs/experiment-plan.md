@@ -117,55 +117,28 @@ CheXpert uncertain labels (-1): treated as **negative** (conservative).
 
 ---
 
-## Phase 0 — Infrastructure
+## Phase 0 — Infrastructure (Complete)
 
 **Goal:** pipeline correct before any experiments run.
+**Exit criterion (met):** harvest runs on all 4 datasets; batch composition verified empirically (25% each); scanner-latent audit runs on every checkpoint.
 
-**Exit criterion:** harvest runs on all 4 datasets; batch composition verified
-empirically (25% each); scanner-latent audit script runs on a toy checkpoint.
+### Delivered
 
-### Tasks
+| Task | Artifact | Status |
+|---|---|---|
+| 0.1 CheXpert loader | `src/datasets/chexpert_dataset.py` — PA filter, 14-label vector, uncertain → 0, `--n_samples` cap | ✅ |
+| 0.2 SIIM-COVID loader | `src/datasets/siim_covid_dataset.py` — PA filter, bbox records, study-level canonical groups | ✅ |
+| 0.3 TB Shenzhen loader | `src/datasets/tb_shenzhen_dataset.py` — filename-encoded labels, augmentation | ✅ |
+| 0.4 Conglomerate harvester | `src/conglomerate/harvest_all.py` — all four datasets, per-dataset centering, `dataset_ids` + `image_stems` metadata | ✅ |
+| 0.5 Stratified trainer | `src/train_sae.py` — `StratifiedBatchSampler`, TB with replacement, per-dataset fraction logged every 500 steps | ✅ |
+| 0.6 Config defaults | `src/config.py` — `n_batches_to_dead=25`, `pm_index=2`, `stratified=True` | ✅ |
+| 0.7 Scanner audit | `src/scripts/scanner_latent_audit.py` — multinomial LR per latent, balanced subsample, AUROC > 0.80 → flag | ✅ |
 
-**0.1 — `src/datasets/chexpert_dataset.py`**
-- Parse `train.csv` for PA-view filter and pathology labels
-- Uncertain labels (-1) treated as negative (0)
-- Resize to 224×224, greyscale → 3-channel
-- `--n_samples` cap with deterministic seed
+### Additions beyond the original Phase-0 scope
 
-**0.2 — `src/datasets/siim_covid_dataset.py`**
-- PA-view filter via CSV metadata
-- Store bounding box metadata (image_id, x_min, y_min, x_max, y_max, label) for patch validation
-- `--n_samples` cap
-
-**0.3 — `src/datasets/tb_shenzhen_dataset.py`**
-- PNG/JPEG loader (no DICOM)
-- TB positive/negative from filename or companion CSV
-- Augmentation: random horizontal flip, ±10% brightness, random crop + resize
-
-**0.4 — `src/conglomerate/harvest_all.py`**
-- Wire CheXpert, SIIM-COVID19, TB loaders
-- `--n_samples` cap per dataset (deterministic seed)
-- Per-dataset centering: subtract each dataset's mean activation vector before concatenation
-- Store per-dataset mean vectors in output metadata
-- Store `dataset_ids` tensor alongside activations
-
-**0.5 — `src/train_sae.py`**
-- `StratifiedActivationDataset`: enforces 25% per dataset per batch
-- TB sampled with replacement; others without replacement per epoch
-- Load `dataset_ids` tensor from `.safetensors`
-- Log per-dataset batch fraction every 500 steps
-
-**0.6 — `src/config.py`**
-- `n_batches_to_dead`: 10 → 25
-- `pm_index` default: 1 → 2
-- Add `stratified: bool = True`
-
-**0.7 — `src/scripts/scanner_latent_audit.py`**
-- Load SAE checkpoint + activations with dataset_ids
-- Per-latent logistic regression → dataset_id
-- Output: per-latent dataset-predictive AUROC, sorted
-- Flag latents with AUROC > 0.80 as scanner latents
-- Save flagged indices to `scanner_latents.json`
+- **Image-stems metadata (`docs/methodology.md` §1.6):** `harvest_all.py` records harvest-order filename stems so downstream scripts can align activations to label and bbox CSVs by stem rather than row order.
+- **Bonferroni-corrected spatial grounding:** `universality_eval.run_spatial_grounding` uses `scipy.stats.pearsonr` and applies a family-wise α correction across confirmed latents (see `--bonferroni_alpha`).
+- **Automated split detection:** `universality_eval.run_split_detection` runs the Jaccard co-activation check on confirmed latents and writes `split_pairs.json` + `co_activation_heatmap.png`.
 
 ---
 
@@ -196,15 +169,18 @@ loss within 2× of each other; no instability.
 
 ## Phase 3 — Universality Analysis
 
-| Task | Detail |
-|---|---|
-| 3.1 Co-activation matrix | For each non-scanner latent: activation frequency per (dataset × canonical class). Build latent × (dataset, class) matrix. |
-| 3.2 Universal feature identification (Level 1) | Apply TD-3 Level 1: ≥1% frequency on ≥2 datasets + canonical class match. Report count, fraction, which classes covered. |
-| 3.3 Direction confirmation (Level 2) | For Level 1 candidates: compute per-dataset activation centroids, cosine similarity ≥0.70. Report full distribution. |
-| 3.4 Patch-level validation | SIIM-COVID19 + RSNA bboxes → soft patch-label assignment (continuous IoU overlap). Pearson r between latent activation magnitude and patch overlap. |
-| 3.5 Cross-dataset probe | Leave-one-dataset-out logistic probe on canonical classes. AUROC as supplementary universality evidence. |
-| 3.6 Null baseline | Repeat 3.2 + 3.3 on random SAE and PCA baseline. |
-| 3.7 Qualitative inspection | Scanner-clean + AUROC >0.80 patch correlation latents only. Show top-N activating patches. Aim ≤15 latents. |
+Driven end-to-end by `nomad/xray/analysis/pipeline-batchtopk-l{2,3}.nomad`, which chains the four scripts below. Every task corresponds to a function inside `src/scripts/universality_eval.py` unless noted.
+
+| Task | Script / function | Output |
+|---|---|---|
+| 3.0 Scanner audit | `scripts/scanner_latent_audit.py` — multinomial LR probe per latent (balanced subsample) | `scanner_latent_audit.json` + `.csv` |
+| 3.1 Level 1 frequency + canonical class match | `compute_frequency_per_dataset` + `compute_per_image_max` + `compute_dominant_canonical_class` + `apply_level1_filter` | `universal_candidates.csv` (`level1_pass`, `matched_canonical_class`) |
+| 3.2 Level 2 centroid direction | `compute_centroids_per_dataset` + `apply_level2_filter` (cosine ≥ 0.70 all pairs) | `level2_pass`, `min_cosine_sim` columns; `confirmed_latent_frequencies.json` |
+| 3.3 Cross-dataset probe | `run_cross_dataset_probe` — leave-one-out logistic regression, shares the per-image `feature_max` with Step 3.1 for identity consistency | Per-latent `{train}→{test}` AUROC columns |
+| 3.4 Spatial grounding (Bonferroni) | `run_spatial_grounding` — `scipy.stats.pearsonr` + family-wise α correction | `{ds}_r` / `{ds}_p` / `{ds}_pass` + `pooled_r` / `pooled_p` / `pooled_pass` columns; `spatial_bonferroni` block in summary JSON |
+| 3.5 Split detection (Property 4) | `run_split_detection` — Jaccard of top-K activating images across confirmed latents | `split_pairs.json`, `co_activation_heatmap.png`, `n_split_pairs` in summary |
+| 3.6 Null baseline | `scripts/null_baseline_eval.py` — random SAE + PCA null, same L1/L2 gates | `null_baseline_results.json` |
+| 3.7 Qualitative inspection | `scripts/inspect_universal_latents.py` — aim ≤15 confirmed latents | `latent_XXXXX/{semantic_grid, frequency_bar, patch_ablation}.png` + `index.md` |
 
 ---
 

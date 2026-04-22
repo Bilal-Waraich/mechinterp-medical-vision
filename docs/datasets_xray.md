@@ -69,7 +69,7 @@ Mixing PA and AP introduces a systematic confound — the model can learn "AP = 
 | **Resolution** | Native ~1024×1024 DICOM, resized to 224×224 |
 | **View direction** | Frontal (predominantly PA) |
 | **Label type** | Binary (pneumonia / normal) + **bounding boxes** for opacity regions |
-| **Label encoding** | All images loaded as label=0 (unlabelled) — label lookup not implemented in loader |
+| **Label encoding** | `PneumoniaDataset` loads every image with label=0 (placeholder). Downstream analysis reads the real canonical labels from `stage_2_train_labels.csv` via the `--label_csv rsna:...` flag to `universality_eval.py` and joins them to activations by filename stem (see `docs/methodology.md` §1.6). |
 
 **Classes:**
 - Normal

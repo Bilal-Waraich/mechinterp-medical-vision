@@ -52,7 +52,7 @@ The core logic. For each training step it constructs a batch index list that pul
 tokens_per_dataset = batch_size // n_datasets
 ```
 
-So for `batch_size=4096` and 4 datasets, each batch contains **1,024 tokens from each of CheXpert, RSNA, SIIM-COVID19, and TB** — regardless of how many total tokens each dataset has.
+So for `batch_size=2048` (current default in `src/config.py`) and 4 datasets, each batch contains **512 tokens from each of CheXpert, RSNA, SIIM-COVID19, and TB** — regardless of how many total tokens each dataset has.
 
 **TB gets special treatment:** because TB has far fewer unique images than the others, it is sampled **with replacement** (i.e. the same TB activations can appear in multiple batches). All other datasets are sampled **without replacement per epoch** — their token pools are shuffled at the start of each epoch and drawn sequentially, refilling when exhausted.
 

@@ -24,8 +24,12 @@ Latents with high per-dataset predictive power are artifact features.
 time (store as a parallel metadata tensor). Audit post-hoc and lesion artifact
 latents during clinical evaluation.
 
-**Codebase status:** ⚠️ Not handled. The `.safetensors` file stores only the raw
-activation tensor; source provenance is discarded at harvest time.
+**Codebase status:** ✅ Handled. `src/conglomerate/harvest_all.py` stores a
+per-token `dataset_ids` tensor and per-image `image_stems` metadata alongside
+every activation. `src/scripts/scanner_latent_audit.py` fits a multinomial
+logistic-regression probe per latent (balanced per-dataset subsample) and
+writes flagged indices (macro AUROC > 0.80) to `scanner_latent_audit.json`;
+`universality_eval.py` honours the flagged list via `--scanner_audit`.
 
 ---
 
@@ -44,8 +48,11 @@ minority datasets as noise.
 contain an equal number of activation vectors from each source dataset. Requires
 storing dataset IDs alongside activations.
 
-**Codebase status:** ⚠️ Not handled. `train_sae.py:179` uses a plain `TensorDataset`
-with `shuffle=True`. No stratification.
+**Codebase status:** ✅ Handled. `src/train_sae.py:StratifiedBatchSampler`
+enforces `batch_size // n_datasets` tokens from every dataset per batch, with
+TB sampled with replacement. The sampler keys off the per-token `dataset_ids`
+tensor produced by `harvest_all.py`, and the per-dataset batch fraction is
+logged to Weights & Biases every 500 steps under `stratification/*`.
 
 ---
 
@@ -64,10 +71,12 @@ lower-variance datasets.
 vector) before concatenation, in addition to the existing RMS normalisation.
 Initialise `b_dec` to zero on already-centred data rather than the global mean.
 
-**Codebase status:** ✅ Partially handled. `harvest_activations.py` applies
-Anthropic-style RMS normalisation (`x / (rms(x) + ε) * sqrt(d_model)`) per token.
-`b_dec` is initialised to the global data mean (`train_sae.py:211`). However,
-systematic per-dataset mean shifts are not corrected.
+**Codebase status:** ✅ Handled. `src/conglomerate/harvest_all.py` applies
+Anthropic-style RMS normalisation (`x / (rms(x) + ε) * sqrt(d_model)`) per
+token, then subtracts each dataset's mean activation vector before
+concatenation (`center_activations`). `src/train_sae.py` initialises `b_dec`
+to zero when the data is already centred (detected via global-mean norm).
+Both steps are described in `docs/normalisation.md`.
 
 ---
 
@@ -91,9 +100,13 @@ they never co-activate, you have a split.
 auxiliary loss (`aux_penalty`, `n_batches_to_dead`) already pushes against wasted
 capacity but does not directly target splitting.
 
-**Codebase status:** ✅ Tooling present. `l1_coeff`, `expansion_factor`, and
-auxiliary loss are all configurable in `SAEConfig`. No automatic split-detection
-metric is implemented.
+**Codebase status:** ✅ Tooling + automated detection. `l1_coeff`,
+`expansion_factor`, and the dead-feature auxiliary loss are all configurable
+in `SAEConfig`. Split detection runs as the final step of
+`universality_eval.py` — `run_split_detection` computes Jaccard similarity of
+the top-K activating image sets across confirmed latents and writes
+`split_pairs.json` + `co_activation_heatmap.png`. The threshold is exposed as
+`--split_jaccard_threshold` (default 0.50).
 
 ---
 
@@ -113,7 +126,13 @@ pathology — mistaking view artefacts for disease features.
 - Use view-geometry as a deliberate stress test: a truly disease-universal feature
   should fire regardless of view.
 
-**Codebase status:** ⚠️ Not applicable for MRI brain. Not handled for X-ray.
+**Codebase status:** ✅ PA-only filter applied at dataset level for X-ray.
+`CheXpertDataset` enforces `Frontal/Lateral == "Frontal"` AND `AP/PA == "PA"`
+on every row; `SIIMCovidDataset` filters to PA via its image-level metadata.
+RSNA is predominantly PA in the challenge corpus. View-geometry scanner
+audit is implicitly covered by `scanner_latent_audit.py` — if a latent is
+strongly view-predictive for one dataset, it will flag as scanner-predictive
+for that dataset.
 
 ---
 
@@ -139,9 +158,10 @@ encode projection geometry (rib shadows, diaphragm angle, heart border) — thes
 are view-dependent confounds. Stage 3→4 is more likely to represent "what disease
 is present" rather than "what does this projection look like."
 
-**Codebase status:** ✅ Configurable via `--pm_index`. Default is pm_index=1
-(Stage 2→3). `SAEConfig.for_pm_index()` handles the d_model/n_patches mapping.
-**Consider switching to pm_index=2 for universality experiments.**
+**Codebase status:** ✅ Default raised to `pm_index=2` (Stage 3→4,
+d_model=1024, 7×7 grid) in `src/config.py`. `SAEConfig.for_pm_index()`
+handles the d_model/n_patches mapping. Layer-3 (`pm_index=3`) is also
+provisioned via `nomad/xray/layer3-batchtopk.nomad` for comparison runs.
 
 ---
 
@@ -160,8 +180,9 @@ underrepresented in those batches by chance) gets recycled prematurely.
 Stratified sampling (#2) also reduces this risk by ensuring rare-disease samples
 appear in every batch.
 
-**Codebase status:** ⚠️ Configurable but default (10) is too low for heterogeneous
-multi-dataset training.
+**Codebase status:** ✅ Default raised to `n_batches_to_dead=25` in
+`src/config.py`. Stratified sampling (Concern #2) additionally guarantees
+every dataset contributes to every gradient update.
 
 ---
 
@@ -179,8 +200,11 @@ them, causing systematic reconstruction error in every dataset.
 **Mitigation:** Center each dataset separately before concatenation, then
 initialise `b_dec` to zero (or the mean of already-centred data).
 
-**Codebase status:** ⚠️ `b_dec` is initialised to global data mean (`train_sae.py:211`).
-No per-dataset centering.
+**Codebase status:** ✅ Handled. `src/conglomerate/harvest_all.py` calls
+`center_activations()` to subtract each dataset's mean vector before
+concatenation, and `src/train_sae.py` detects the centred state (global-mean
+norm near zero) and initialises `b_dec` to zero accordingly; falls back to
+the global data mean when the activations file is uncentred.
 
 ---
 
@@ -224,8 +248,14 @@ validation ("does this feature fire on lesion patches?") is ambiguous.
 assignment (patch is positive if >50% overlap with pathology bounding box).
 Treat image-level-only datasets as weakly-supervised validation only.
 
-**Codebase status:** ⚠️ Not implemented. The visualisation pipeline operates on
-full-image features; no patch-to-label mapping exists.
+**Codebase status:** ✅ Implemented for RSNA + SIIM.
+`src/scripts/universality_eval.py:compute_patch_bbox_overlap()` maps each
+7×7 patch to a continuous IoU overlap against radiologist bboxes, and
+`run_spatial_grounding()` reports Bonferroni-corrected Pearson r
+(+ p-value + pass flag) per latent, per dataset, and pooled. Image-to-bbox
+alignment uses the `image_stems` metadata emitted by `harvest_all.py`.
+Image-level-only datasets (CheXpert, TB) are treated as weakly-supervised
+validation via the cross-dataset probe (§1.4 of `methodology.md`).
 
 ---
 
@@ -233,13 +263,13 @@ full-image features; no patch-to-label mapping exists.
 
 | # | Concern | MRI severity | X-ray severity | Codebase status |
 |---|---|---|---|---|
-| 1 | Scanner latent trap | High | Moderate | ⚠️ Not handled |
-| 2 | Dominant dataset imbalance | Moderate | **High** | ⚠️ Not handled |
-| 3 | Magnitude mismatch | Moderate | **High** | ✅ Partially (RMS norm) |
-| 4 | Feature splitting | Moderate | **High** | ✅ Knobs exist |
-| 5 | Geometric/view bias | Low | **High** | ⚠️ Not handled (X-ray) |
-| 6 | Which stage to hook | — | — | ✅ Configurable; switch to pm_index=2 |
-| 7 | Dead features / heterogeneous data | Moderate | **High** | ⚠️ Default too low |
-| 8 | Cross-dataset b_dec drift | Moderate | **High** | ⚠️ Not handled |
-| 9 | Encoder fine-tuning confound | High | High | ⚠️ Decision required |
-| 10 | Patch-level label assignment | Moderate | **High** | ⚠️ Not implemented |
+| 1 | Scanner latent trap | High | Moderate | ✅ `scanner_latent_audit.py` + `dataset_ids` |
+| 2 | Dominant dataset imbalance | Moderate | **High** | ✅ `StratifiedBatchSampler` (25% per dataset) |
+| 3 | Magnitude mismatch | Moderate | **High** | ✅ RMS norm + per-dataset centering |
+| 4 | Feature splitting | Moderate | **High** | ✅ Jaccard split detection in pipeline |
+| 5 | Geometric/view bias | Low | **High** | ✅ PA-only filter on CheXpert + SIIM |
+| 6 | Which stage to hook | — | — | ✅ Default `pm_index=2`; Layer-3 via separate nomad |
+| 7 | Dead features / heterogeneous data | Moderate | **High** | ✅ `n_batches_to_dead=25` + stratified sampling |
+| 8 | Cross-dataset b_dec drift | Moderate | **High** | ✅ Per-dataset centering + zero `b_dec` init |
+| 9 | Encoder fine-tuning confound | High | High | ⚠️ Decision required (TD-1 in experiment-plan.md) |
+| 10 | Patch-level label assignment | Moderate | **High** | ✅ `compute_patch_bbox_overlap` + Bonferroni-corrected Pearson r |
