@@ -19,6 +19,16 @@ import torch.nn.functional as F
 from PIL import Image
 from tqdm import tqdm
 
+
+def _open_image(path: Path) -> Image.Image:
+    if path.suffix.lower() == ".dcm":
+        import pydicom
+        ds = pydicom.dcmread(str(path))
+        arr = ds.pixel_array.astype(np.float32)
+        arr = ((arr - arr.min()) / (np.ptp(arr) + 1e-8) * 255).astype(np.uint8)
+        return Image.fromarray(arr).convert("RGB")
+    return Image.open(path).convert("RGB")
+
 # ---------------------------------------------------------------------------
 # Ensure ``src/`` is importable
 # ---------------------------------------------------------------------------
@@ -140,7 +150,7 @@ def render_semantic_dictionary(
         patch_idx = int(feature_argmax[img_idx, feature_idx].item())
         act_val = float(feature_max[img_idx, feature_idx].item())
 
-        img = Image.open(image_paths[img_idx]).convert("RGB")
+        img = _open_image(image_paths[img_idx])
         crop = get_patch_crop(
             img,
             patch_idx,
@@ -318,7 +328,7 @@ def render_semantic_dictionary_v2(
         patch_idx = int(feature_argmax[img_idx, feature_idx].item())
         act_val = float(feature_max[img_idx, feature_idx].item())
 
-        img = Image.open(image_paths[img_idx]).convert("RGB")
+        img = _open_image(image_paths[img_idx])
         crop = get_patch_crop(
             img, patch_idx,
             config.spatial_h, config.spatial_w,
@@ -508,7 +518,7 @@ def render_feature_card(
         img_idx = int(top_imgs[i].item())
         patch_idx = int(feature_argmax[img_idx, feature_idx].item())
         act_val = float(feature_max[img_idx, feature_idx].item())
-        img = Image.open(image_paths[img_idx]).convert("RGB")
+        img = _open_image(image_paths[img_idx])
         crop = get_patch_crop(img, patch_idx,
                               config.spatial_h, config.spatial_w,
                               context_patches=2)
