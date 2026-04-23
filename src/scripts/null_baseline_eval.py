@@ -190,7 +190,7 @@ def run_null_eval(
     # Level 1
     freq_per_ds, n_tokens = compute_frequency_per_dataset(
         datasets, null_model, device, batch_size=batch_size)
-    candidates, active_datasets = apply_level1_filter(
+    candidates, active_datasets, _ = apply_level1_filter(
         freq_per_ds, n_tokens, flagged_indices=set(),
         threshold=freq_threshold, min_datasets=min_datasets)
     print(f"  Level 1 candidates: {len(candidates)}")
