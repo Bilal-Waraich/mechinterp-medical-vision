@@ -117,6 +117,7 @@ def build_top_patches_data(
     spatial_w: int = 7,
     context_patches: int = 1,
     top_k: int = 9,
+    image_paths: list | None = None,
 ) -> list:
     """Top-k activating patch crops encoded as base64 PNGs."""
     fmax = stats["feature_max"][:, feature_idx]
@@ -125,11 +126,12 @@ def build_top_patches_data(
 
     top_indices = torch.topk(torch.from_numpy(fmax), k=min(top_k, len(fmax))).indices.tolist()
 
-    # Support both flat dirs and one-level-deep patient subdirs
-    image_paths = sorted(
-        p for p in images_dir.rglob("*")
-        if p.suffix.lower() in {".png", ".jpg", ".jpeg"}
-    )
+    # Use pre-resolved paths if available, else scan directory
+    if image_paths is None:
+        image_paths = sorted(
+            p for p in images_dir.rglob("*")
+            if p.suffix.lower() in {".png", ".jpg", ".jpeg"}
+        )
 
     result = []
     for image_idx in top_indices:
@@ -138,6 +140,8 @@ def build_top_patches_data(
         if image_idx >= len(image_paths):
             continue
         image_path = image_paths[image_idx]
+        if image_path is None:
+            continue
 
         try:
             img  = Image.open(image_path).convert("RGB")
@@ -165,6 +169,7 @@ def build_universality_profile_data(
     stats: dict,
     images_dir: Path,
     top_k: int = 50,
+    image_paths: list | None = None,
 ) -> dict:
     """Fraction of top-k activating images per dataset (for the stacked bar)."""
     fmax = stats["feature_max"][:, feature_idx]
@@ -175,17 +180,22 @@ def build_universality_profile_data(
         torch.from_numpy(fmax), k=min(top_k, len(fmax))
     ).indices.tolist()
 
-    image_paths = sorted(
-        p for p in images_dir.rglob("*")
-        if p.suffix.lower() in {".png", ".jpg", ".jpeg"}
-    )
+    # Use pre-resolved paths if available, else scan directory
+    if image_paths is None:
+        image_paths = sorted(
+            p for p in images_dir.rglob("*")
+            if p.suffix.lower() in {".png", ".jpg", ".jpeg"}
+        )
 
     dataset_counts: dict[str, int] = {}
     total = 0
     for idx in top_indices:
         if float(fmax[idx]) <= 0 or idx >= len(image_paths):
             continue
-        ds = infer_dataset_name(image_paths[idx])
+        ip = image_paths[idx]
+        if ip is None:
+            continue
+        ds = infer_dataset_name(ip)
         dataset_counts[ds] = dataset_counts.get(ds, 0) + 1
         total += 1
 
@@ -344,6 +354,7 @@ def build_data_for_feature(
     sae: Any | None = None,
     activations: np.ndarray | None = None,
     n_patches: int | None = None,
+    image_paths: list | None = None,
 ) -> dict:
     fmax = stats["feature_max"][:, feature_idx]
     if isinstance(fmax, torch.Tensor):
@@ -356,9 +367,11 @@ def build_data_for_feature(
                                    n_rows=n_coactivation_rows),
         "topPatches":          build_top_patches_data(
                                    feature_idx, stats, images_dir,
-                                   spatial_h, spatial_w, context_patches, top_k=top_k_patches),
+                                   spatial_h, spatial_w, context_patches, top_k=top_k_patches,
+                                   image_paths=image_paths),
         "universalityProfile": build_universality_profile_data(
-                                   feature_idx, stats, images_dir, top_k=50),
+                                   feature_idx, stats, images_dir, top_k=50,
+                                   image_paths=image_paths),
     }
 
     if sae is not None and activations is not None:
@@ -489,6 +502,7 @@ def save_dashboard(
     verbose: bool = True,
     activations: np.ndarray | None = None,
     checkpoint_label: str = "",
+    image_paths: list | None = None,
 ) -> None:
     """Build and write the self-contained HTML dashboard.
 
@@ -506,6 +520,7 @@ def save_dashboard(
     coactivation_top_k: top-k images used to compute Jaccard co-activation
     activations:        flat [N_eff, d_model] tensor for circuit graphs
     checkpoint_label:   short string shown in the header badge
+    image_paths:        pre-resolved list of image paths aligned with activations
     """
     # Co-activation matrix (Jaccard over top-k image sets)
     coact_sub  = compute_coactivation_matrix(
@@ -544,6 +559,7 @@ def save_dashboard(
             sae                  = sae if activations is not None else None,
             activations          = activations,
             n_patches            = n_p,
+            image_paths          = image_paths,
         )
 
     metadata = {

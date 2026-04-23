@@ -23,7 +23,7 @@ if str(_SRC_DIR) not in sys.path:
     sys.path.insert(0, str(_SRC_DIR))
 
 from visualisation.vis_config import VisConfig
-from visualisation.loaders import load_sae, load_activations, load_images
+from visualisation.loaders import load_sae, load_activations, load_images, load_images_multi
 from visualisation.collector import (
     compute_feature_stats,
     save_stats,
@@ -89,10 +89,13 @@ def validate_setup(
             f"Check spatial_h={config.spatial_h}, spatial_w={config.spatial_w}."
         )
     if image_paths and len(image_paths) != n_images:
-        raise ValueError(
-            f"Number of images ({len(image_paths)}) != n_images derived from "
-            f"activations ({n_images}). Images must match harvest order."
-        )
+        # Allow mismatch when using multi-dir stem matching (some may be None)
+        n_valid = sum(1 for p in image_paths if p is not None)
+        if n_valid > 0 and n_valid != n_images:
+            print(f"  ⚠ Image count ({n_valid} resolved) != n_images ({n_images}).")
+            print(f"    Patch crops will be unavailable for unresolved images.")
+        elif n_valid == 0:
+            print(f"  ⚠ No images resolved — patch crop rendering will be skipped.")
 
     print(f"  ✓ Consistency checks passed")
     print()
@@ -123,10 +126,17 @@ def _common_setup(args):
     """Shared boilerplate: build config, load SAE + activations + images."""
     device = getattr(args, "device", "cuda:0")
 
+    # Determine images_dir for VisConfig (use first dir if multi-dir mode)
+    images_dir_str = getattr(args, "images_dir", "") or ""
+    images_dirs = getattr(args, "images_dirs", None)
+    if not images_dir_str and images_dirs:
+        # Use first entry's path for VisConfig (it only needs one for config)
+        images_dir_str = images_dirs[0].rsplit(":", 1)[0]
+
     cfg = VisConfig.from_checkpoint(
         args.checkpoint_dir,
         activations_path=args.activations_path,
-        images_dir=getattr(args, "images_dir", ""),
+        images_dir=images_dir_str,
         device=device,
     )
 
@@ -142,7 +152,22 @@ def _common_setup(args):
     cfg.spatial_w = w
 
     image_paths: list[Path] = []
-    if cfg.images_dir:
+    if images_dirs:
+        # Multi-dataset mode: use image_stems from merged activations
+        import json as _json
+        image_stems_raw = meta.get("image_stems", "{}")
+        if isinstance(image_stems_raw, str):
+            image_stems_by_ds = _json.loads(image_stems_raw)
+        else:
+            image_stems_by_ds = image_stems_raw
+        ds_names_raw = meta.get("dataset_names", "[]")
+        if isinstance(ds_names_raw, str):
+            dataset_names = _json.loads(ds_names_raw)
+        else:
+            dataset_names = ds_names_raw
+        print(f"Loading images from {len(images_dirs)} directories …")
+        image_paths = load_images_multi(images_dirs, image_stems_by_ds, dataset_names)
+    elif cfg.images_dir:
         image_paths = load_images(cfg.images_dir)
 
     return cfg, sae, acts, image_paths
@@ -568,7 +593,7 @@ def cmd_all(args):
         feature_indices=top50,
         stats=stats,
         sae=sae,
-        images_dir=Path(cfg.images_dir),
+        images_dir=Path(cfg.images_dir) if cfg.images_dir else Path("."),
         output_path=dashboard_path,
         spatial_h=cfg.spatial_h,
         spatial_w=cfg.spatial_w,
@@ -578,6 +603,7 @@ def cmd_all(args):
         coactivation_top_k=50,
         verbose=True,
         activations=acts,
+        image_paths=image_paths if image_paths else None,
     )
 
     print(f"\n{'═' * 60}")
@@ -677,7 +703,10 @@ def build_parser() -> argparse.ArgumentParser:
     # ── all ───────────────────────────────────────────────────────────
     sp_all = sub.add_parser("all", help="Run collect -> layer1 -> layer3 pipeline.")
     _add_common(sp_all)
-    sp_all.add_argument("--images_dir", type=str, required=True)
+    sp_all.add_argument("--images_dir", type=str, default="",
+                        help="Single image directory (legacy single-dataset mode).")
+    sp_all.add_argument("--images_dirs", type=str, nargs="+", default=None,
+                        help="Multiple image dirs in path:label format.")
     sp_all.add_argument("--output_dir", type=str, default="data/vis_outputs")
     sp_all.set_defaults(func=cmd_all)
 

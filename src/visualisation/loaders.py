@@ -123,12 +123,14 @@ def load_activations(
 # ──────────────────────────────────────────────────────────────────────────
 
 _IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg"}
+_DCM_EXTENSIONS = {".dcm"}
 
 
 def load_images(images_dir: str) -> list[Path]:
-    """Return a sorted list of image paths in *images_dir*.
+    """Return a sorted list of image paths found recursively under *images_dir*.
 
-    Only ``.png``, ``.jpg``, and ``.jpeg`` files are included.
+    Searches for ``.png``, ``.jpg``, ``.jpeg`` at any depth.  Falls back to
+    ``.dcm`` (DICOM) if no standard image files are found.
     Sort order is alphabetical, matching the harvest order.
 
     Parameters
@@ -142,11 +144,80 @@ def load_images(images_dir: str) -> list[Path]:
         Sorted image paths.
     """
     root = Path(images_dir)
-    paths = [
-        p for p in sorted(root.iterdir())
+    paths = sorted(
+        p for p in root.rglob("*")
         if p.suffix.lower() in _IMAGE_EXTENSIONS
-    ]
+    )
+    if not paths:
+        # Fall back to DICOM
+        paths = sorted(
+            p for p in root.rglob("*")
+            if p.suffix.lower() in _DCM_EXTENSIONS
+        )
     return paths
+
+
+def load_images_multi(
+    images_dirs: list[str],
+    image_stems_by_ds: dict[str, list[str]],
+    dataset_names: list[str],
+) -> list[Path]:
+    """Build a flat, activation-aligned list of image paths from multiple dirs.
+
+    Uses the ``image_stems`` metadata written by ``harvest_all.py`` to match
+    each harvested image back to its file path in the appropriate directory.
+
+    Parameters
+    ----------
+    images_dirs : list[str]
+        Each entry has the format ``"path:label"`` where *label* matches a
+        dataset name from the merged activations.
+    image_stems_by_ds : dict[str, list[str]]
+        ``{dataset_name: [stem, ...]}`` — one stem per image in harvest order.
+        Obtained from the merged safetensors metadata key ``image_stems``.
+    dataset_names : list[str]
+        Ordered list of dataset names matching the ``dataset_ids`` tensor.
+
+    Returns
+    -------
+    list[Path]
+        Flat list of image paths, ordered to match the activation tensor.
+        Entries whose stem could not be resolved are set to ``None``.
+    """
+    # Build {label: dir_path}
+    dir_by_label: dict[str, Path] = {}
+    for entry in images_dirs:
+        path, label = entry.rsplit(":", 1)
+        dir_by_label[label] = Path(path)
+
+    # Build {stem: path} lookup per dataset (recursive scan)
+    stem_to_path: dict[str, dict[str, Path]] = {}
+    for label, root in dir_by_label.items():
+        mapping: dict[str, Path] = {}
+        all_files = list(root.rglob("*"))
+        for p in all_files:
+            if p.suffix.lower() in (_IMAGE_EXTENSIONS | _DCM_EXTENSIONS):
+                mapping[p.stem] = p
+        stem_to_path[label] = mapping
+        print(f"  {label}: {len(mapping)} images indexed from {root}")
+
+    # Build flat image_paths in activation order
+    image_paths: list[Path | None] = []
+    n_resolved = 0
+    n_missing = 0
+    for ds_name in dataset_names:
+        stems = image_stems_by_ds.get(ds_name, [])
+        lookup = stem_to_path.get(ds_name, {})
+        for stem in stems:
+            p = lookup.get(stem)
+            image_paths.append(p)
+            if p is not None:
+                n_resolved += 1
+            else:
+                n_missing += 1
+
+    print(f"  Image stem matching: {n_resolved} resolved, {n_missing} missing")
+    return image_paths
 
 
 # ── Smoke tests ───────────────────────────────────────────────────────────
