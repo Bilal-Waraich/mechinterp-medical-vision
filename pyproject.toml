@@ -22,6 +22,7 @@ dependencies = [
 
     # ── Activation harvesting ─────────────────────────────────────────────
     "Pillow",
+    "pydicom>=2.4.0",
     "scikit-image>=0.25.2,<0.26",
     "opencv-python-headless",
     "tqdm>=4.66.1,<5",

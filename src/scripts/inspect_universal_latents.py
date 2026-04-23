@@ -73,19 +73,19 @@ from visualisation.semantic_dict import get_patch_crop
 _IMG_EXTS = {".png", ".jpg", ".jpeg", ".dcm"}
 
 def load_image_paths(images_dir: str) -> list[Path]:
-    """Return sorted non-DICOM image paths; falls back to DICOM if nothing else."""
+    """Return sorted image paths at any nesting depth, including DICOM."""
     root = Path(images_dir)
-    paths = sorted(p for p in root.iterdir()
-                   if p.suffix.lower() in {".png", ".jpg", ".jpeg"})
-    if not paths:
-        # Try one level deeper (some datasets nest by patient)
-        paths = sorted(p for sub in root.iterdir() if sub.is_dir()
-                       for p in sub.iterdir()
-                       if p.suffix.lower() in {".png", ".jpg", ".jpeg"})
+    paths = sorted(p for p in root.rglob("*") if p.suffix.lower() in _IMG_EXTS)
     return paths
 
 
 def open_image(path: Path) -> Image.Image:
+    if path.suffix.lower() == ".dcm":
+        import pydicom, numpy as np
+        ds = pydicom.dcmread(str(path))
+        arr = ds.pixel_array.astype(np.float32)
+        arr = ((arr - arr.min()) / (np.ptp(arr) + 1e-8) * 255).astype(np.uint8)
+        return Image.fromarray(arr).convert("RGB")
     return Image.open(path).convert("RGB")
 
 
@@ -106,14 +106,13 @@ def get_feature_max(
     feat_argmax = torch.zeros(n_images, d_sae, dtype=torch.long)
 
     for start in range(0, N, batch_size):
-        end = min(start + batch_size, N)
-        codes = sae.encode(acts[start:end].to(next(sae.parameters()).device)).cpu()
-        # Align to image boundaries
+        # Snap to image-aligned boundaries before encoding so reshape is exact
         img_start = start // n_patches
-        img_end   = min((end + n_patches - 1) // n_patches, n_images)
-        # Trim codes to exact image-aligned chunk
-        n_tokens_chunk = (img_end - img_start) * n_patches
-        codes = codes[:n_tokens_chunk].reshape(img_end - img_start, n_patches, d_sae)
+        img_end   = min(img_start + max(1, batch_size // n_patches), n_images)
+        tok_start = img_start * n_patches
+        tok_end   = img_end   * n_patches
+        codes = sae.encode(acts[tok_start:tok_end].to(next(sae.parameters()).device)).cpu()
+        codes = codes.reshape(img_end - img_start, n_patches, d_sae)
         chunk_max, chunk_argmax = codes.max(dim=1)
         feat_max[img_start:img_end]    = chunk_max
         feat_argmax[img_start:img_end] = chunk_argmax
