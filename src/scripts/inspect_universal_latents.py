@@ -342,7 +342,7 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument("--top_k",      type=int, default=8,
                     help="Top-K activating images to show per dataset in the semantic grid.")
     ap.add_argument("--max_latents", type=int, default=15,
-                    help="Maximum number of confirmed latents to inspect.")
+                    help="Maximum number of confirmed latents to inspect (0 = all).")
     ap.add_argument("--spatial_h",  type=int, default=7,
                     help="Patch grid height (7 for pm_index=2, 14 for pm_index=1).")
     ap.add_argument("--spatial_w",  type=int, default=7)
@@ -369,16 +369,23 @@ def main() -> None:
     with open(args.confirmed_json) as f:
         data = json.load(f)
 
-    # Accept both universality_summary.json and confirmed_latent_frequencies.json
+    # Accept three formats:
+    #   * universality_eval.py  universality_summary.json      → "confirmed_indices"
+    #   * matryoshka_universality_eval.py  confirmed_universal_latents.json → "latents"
+    #   * universality_eval.py  confirmed_latent_frequencies.json → flat {idx: freq_dict}
     if "confirmed_indices" in data:
         confirmed = data["confirmed_indices"]
         freq_map: dict[str, dict[str, float]] = {}
+    elif "latents" in data:
+        confirmed = data["latents"]
+        freq_map = {}
     else:
         # confirmed_latent_frequencies.json: keys are latent indices (strings)
         confirmed = [int(k) for k in data.keys()]
         freq_map  = {k: v for k, v in data.items()}
 
-    confirmed = confirmed[: args.max_latents]
+    if args.max_latents > 0:
+        confirmed = confirmed[: args.max_latents]
     print(f"  Inspecting {len(confirmed)} confirmed latents: {confirmed}")
 
     # Load per-latent frequencies if available (for bar charts)

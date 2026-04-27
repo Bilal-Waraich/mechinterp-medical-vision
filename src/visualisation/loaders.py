@@ -21,20 +21,22 @@ if str(_SRC_DIR) not in sys.path:
     sys.path.insert(0, str(_SRC_DIR))
 
 from sae_models import BatchTopKSAE  # noqa: E402
+from matryoshka_sae import MatryoshkaSAE  # noqa: E402
 
 
 # ──────────────────────────────────────────────────────────────────────────
 # SAE loader
 # ──────────────────────────────────────────────────────────────────────────
 
-def load_sae(checkpoint_dir: str, device: str = "cpu") -> BatchTopKSAE:
-    """Load a trained BatchTopKSAE from a checkpoint directory.
+def load_sae(checkpoint_dir: str, device: str = "cpu"):
+    """Load a trained SAE from a checkpoint directory.
+
+    Supports both BatchTopKSAE (cfg contains ``k``) and MatryoshkaSAE
+    (cfg contains ``k_schedule``).
 
     The directory must contain:
-      * ``cfg.json`` — training config with at least ``d_model``,
-        ``expansion_factor``, and ``k``.
-      * ``sae_weights.safetensors`` — state dict with keys
-        ``W_enc``, ``W_dec``, ``b_dec``, ``num_batches_not_active``.
+      * ``cfg.json`` — training config
+      * ``sae_weights.safetensors`` — model state dict
 
     Parameters
     ----------
@@ -45,7 +47,7 @@ def load_sae(checkpoint_dir: str, device: str = "cpu") -> BatchTopKSAE:
 
     Returns
     -------
-    BatchTopKSAE
+    BatchTopKSAE | MatryoshkaSAE
         Model loaded in **eval** mode on *device*.
     """
     ckpt = Path(checkpoint_dir)
@@ -55,12 +57,21 @@ def load_sae(checkpoint_dir: str, device: str = "cpu") -> BatchTopKSAE:
         cfg: dict = json.load(f)
 
     d_model: int = int(cfg["d_model"])
-    expansion_factor: int = int(cfg["expansion_factor"])
-    k: int = int(cfg["k"])
-    d_sae: int = d_model * expansion_factor
+    d_sae: int = int(cfg.get("d_sae", d_model * int(cfg["expansion_factor"])))
 
-    # 2. Instantiate model
-    model = BatchTopKSAE(d_model=d_model, d_sae=d_sae, k=k)
+    # 2. Instantiate correct architecture
+    if "k_schedule" in cfg:
+        model = MatryoshkaSAE(
+            d_model=d_model,
+            d_sae=d_sae,
+            k_schedule=cfg["k_schedule"],
+            scale_weights=cfg.get("scale_weights"),
+            n_batches_to_dead=cfg.get("n_batches_to_dead", 10),
+            aux_penalty=cfg.get("aux_penalty", 1 / 32),
+            l1_coeff=cfg.get("l1_coeff", 2e-4),
+        )
+    else:
+        model = BatchTopKSAE(d_model=d_model, d_sae=d_sae, k=int(cfg["k"]))
 
     # 3. Load weights
     state = load_file(str(ckpt / "sae_weights.safetensors"), device=device)

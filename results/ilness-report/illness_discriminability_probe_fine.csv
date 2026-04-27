@@ -1,0 +1,4789 @@
+latent_idx,dataset,label_name,auroc_mean,auroc_std
+16,chexpert,No Finding,nan,nan
+18,chexpert,No Finding,nan,nan
+55,chexpert,No Finding,nan,nan
+66,chexpert,No Finding,nan,nan
+74,chexpert,No Finding,nan,nan
+88,chexpert,No Finding,nan,nan
+95,chexpert,No Finding,nan,nan
+116,chexpert,No Finding,nan,nan
+126,chexpert,No Finding,nan,nan
+128,chexpert,No Finding,nan,nan
+130,chexpert,No Finding,nan,nan
+138,chexpert,No Finding,nan,nan
+147,chexpert,No Finding,nan,nan
+155,chexpert,No Finding,nan,nan
+156,chexpert,No Finding,nan,nan
+173,chexpert,No Finding,nan,nan
+176,chexpert,No Finding,nan,nan
+197,chexpert,No Finding,nan,nan
+200,chexpert,No Finding,nan,nan
+203,chexpert,No Finding,nan,nan
+207,chexpert,No Finding,nan,nan
+215,chexpert,No Finding,nan,nan
+231,chexpert,No Finding,nan,nan
+245,chexpert,No Finding,nan,nan
+311,chexpert,No Finding,nan,nan
+335,chexpert,No Finding,nan,nan
+347,chexpert,No Finding,nan,nan
+350,chexpert,No Finding,nan,nan
+370,chexpert,No Finding,nan,nan
+374,chexpert,No Finding,nan,nan
+404,chexpert,No Finding,nan,nan
+410,chexpert,No Finding,nan,nan
+413,chexpert,No Finding,nan,nan
+416,chexpert,No Finding,nan,nan
+447,chexpert,No Finding,nan,nan
+463,chexpert,No Finding,nan,nan
+471,chexpert,No Finding,nan,nan
+519,chexpert,No Finding,nan,nan
+546,chexpert,No Finding,nan,nan
+575,chexpert,No Finding,nan,nan
+628,chexpert,No Finding,nan,nan
+630,chexpert,No Finding,nan,nan
+641,chexpert,No Finding,nan,nan
+648,chexpert,No Finding,nan,nan
+663,chexpert,No Finding,nan,nan
+669,chexpert,No Finding,nan,nan
+685,chexpert,No Finding,nan,nan
+714,chexpert,No Finding,nan,nan
+715,chexpert,No Finding,nan,nan
+718,chexpert,No Finding,nan,nan
+735,chexpert,No Finding,nan,nan
+736,chexpert,No Finding,nan,nan
+738,chexpert,No Finding,nan,nan
+753,chexpert,No Finding,nan,nan
+761,chexpert,No Finding,nan,nan
+776,chexpert,No Finding,nan,nan
+801,chexpert,No Finding,nan,nan
+818,chexpert,No Finding,nan,nan
+821,chexpert,No Finding,nan,nan
+830,chexpert,No Finding,nan,nan
+856,chexpert,No Finding,nan,nan
+884,chexpert,No Finding,nan,nan
+905,chexpert,No Finding,nan,nan
+915,chexpert,No Finding,nan,nan
+922,chexpert,No Finding,nan,nan
+935,chexpert,No Finding,nan,nan
+946,chexpert,No Finding,nan,nan
+963,chexpert,No Finding,nan,nan
+969,chexpert,No Finding,nan,nan
+1012,chexpert,No Finding,nan,nan
+1063,chexpert,No Finding,nan,nan
+1064,chexpert,No Finding,nan,nan
+1084,chexpert,No Finding,nan,nan
+1092,chexpert,No Finding,nan,nan
+1097,chexpert,No Finding,nan,nan
+1104,chexpert,No Finding,nan,nan
+1105,chexpert,No Finding,nan,nan
+1120,chexpert,No Finding,nan,nan
+1144,chexpert,No Finding,nan,nan
+1147,chexpert,No Finding,nan,nan
+1148,chexpert,No Finding,nan,nan
+1153,chexpert,No Finding,nan,nan
+1172,chexpert,No Finding,nan,nan
+1188,chexpert,No Finding,nan,nan
+1195,chexpert,No Finding,nan,nan
+1203,chexpert,No Finding,nan,nan
+1216,chexpert,No Finding,nan,nan
+1237,chexpert,No Finding,nan,nan
+1240,chexpert,No Finding,nan,nan
+1243,chexpert,No Finding,nan,nan
+1285,chexpert,No Finding,nan,nan
+1308,chexpert,No Finding,nan,nan
+1310,chexpert,No Finding,nan,nan
+1314,chexpert,No Finding,nan,nan
+1349,chexpert,No Finding,nan,nan
+1384,chexpert,No Finding,nan,nan
+1385,chexpert,No Finding,nan,nan
+1390,chexpert,No Finding,nan,nan
+1397,chexpert,No Finding,nan,nan
+1416,chexpert,No Finding,nan,nan
+1424,chexpert,No Finding,nan,nan
+1445,chexpert,No Finding,nan,nan
+1461,chexpert,No Finding,nan,nan
+1485,chexpert,No Finding,nan,nan
+1502,chexpert,No Finding,nan,nan
+1517,chexpert,No Finding,nan,nan
+1520,chexpert,No Finding,nan,nan
+1523,chexpert,No Finding,nan,nan
+1528,chexpert,No Finding,nan,nan
+1553,chexpert,No Finding,nan,nan
+1584,chexpert,No Finding,nan,nan
+1589,chexpert,No Finding,nan,nan
+1591,chexpert,No Finding,nan,nan
+1628,chexpert,No Finding,nan,nan
+1632,chexpert,No Finding,nan,nan
+1639,chexpert,No Finding,nan,nan
+1663,chexpert,No Finding,nan,nan
+1705,chexpert,No Finding,nan,nan
+1744,chexpert,No Finding,nan,nan
+1781,chexpert,No Finding,nan,nan
+1789,chexpert,No Finding,nan,nan
+1800,chexpert,No Finding,nan,nan
+1816,chexpert,No Finding,nan,nan
+1844,chexpert,No Finding,nan,nan
+1858,chexpert,No Finding,nan,nan
+1875,chexpert,No Finding,nan,nan
+1877,chexpert,No Finding,nan,nan
+1887,chexpert,No Finding,nan,nan
+1899,chexpert,No Finding,nan,nan
+1906,chexpert,No Finding,nan,nan
+1912,chexpert,No Finding,nan,nan
+1969,chexpert,No Finding,nan,nan
+1992,chexpert,No Finding,nan,nan
+2055,chexpert,No Finding,nan,nan
+2086,chexpert,No Finding,nan,nan
+2103,chexpert,No Finding,nan,nan
+2157,chexpert,No Finding,nan,nan
+2184,chexpert,No Finding,nan,nan
+2185,chexpert,No Finding,nan,nan
+2195,chexpert,No Finding,nan,nan
+2202,chexpert,No Finding,nan,nan
+2219,chexpert,No Finding,nan,nan
+2272,chexpert,No Finding,nan,nan
+2286,chexpert,No Finding,nan,nan
+2288,chexpert,No Finding,nan,nan
+2300,chexpert,No Finding,nan,nan
+2315,chexpert,No Finding,nan,nan
+2325,chexpert,No Finding,nan,nan
+2355,chexpert,No Finding,nan,nan
+2357,chexpert,No Finding,nan,nan
+2363,chexpert,No Finding,nan,nan
+2377,chexpert,No Finding,nan,nan
+2402,chexpert,No Finding,nan,nan
+2404,chexpert,No Finding,nan,nan
+2457,chexpert,No Finding,nan,nan
+2473,chexpert,No Finding,nan,nan
+2512,chexpert,No Finding,nan,nan
+2515,chexpert,No Finding,nan,nan
+2535,chexpert,No Finding,nan,nan
+2612,chexpert,No Finding,nan,nan
+2619,chexpert,No Finding,nan,nan
+2640,chexpert,No Finding,nan,nan
+2646,chexpert,No Finding,nan,nan
+2682,chexpert,No Finding,nan,nan
+2683,chexpert,No Finding,nan,nan
+2714,chexpert,No Finding,nan,nan
+2725,chexpert,No Finding,nan,nan
+2744,chexpert,No Finding,nan,nan
+2814,chexpert,No Finding,nan,nan
+2830,chexpert,No Finding,nan,nan
+2833,chexpert,No Finding,nan,nan
+2835,chexpert,No Finding,nan,nan
+2850,chexpert,No Finding,nan,nan
+2852,chexpert,No Finding,nan,nan
+2884,chexpert,No Finding,nan,nan
+2891,chexpert,No Finding,nan,nan
+2921,chexpert,No Finding,nan,nan
+2939,chexpert,No Finding,nan,nan
+2982,chexpert,No Finding,nan,nan
+2992,chexpert,No Finding,nan,nan
+3006,chexpert,No Finding,nan,nan
+3012,chexpert,No Finding,nan,nan
+3016,chexpert,No Finding,nan,nan
+3023,chexpert,No Finding,nan,nan
+3080,chexpert,No Finding,nan,nan
+3089,chexpert,No Finding,nan,nan
+3105,chexpert,No Finding,nan,nan
+3109,chexpert,No Finding,nan,nan
+3112,chexpert,No Finding,nan,nan
+3115,chexpert,No Finding,nan,nan
+3137,chexpert,No Finding,nan,nan
+3139,chexpert,No Finding,nan,nan
+3164,chexpert,No Finding,nan,nan
+3166,chexpert,No Finding,nan,nan
+3184,chexpert,No Finding,nan,nan
+3221,chexpert,No Finding,nan,nan
+3237,chexpert,No Finding,nan,nan
+3248,chexpert,No Finding,nan,nan
+3250,chexpert,No Finding,nan,nan
+3265,chexpert,No Finding,nan,nan
+3272,chexpert,No Finding,nan,nan
+3279,chexpert,No Finding,nan,nan
+3321,chexpert,No Finding,nan,nan
+3342,chexpert,No Finding,nan,nan
+3344,chexpert,No Finding,nan,nan
+3348,chexpert,No Finding,nan,nan
+3357,chexpert,No Finding,nan,nan
+3362,chexpert,No Finding,nan,nan
+3373,chexpert,No Finding,nan,nan
+3406,chexpert,No Finding,nan,nan
+3441,chexpert,No Finding,nan,nan
+3455,chexpert,No Finding,nan,nan
+3470,chexpert,No Finding,nan,nan
+3506,chexpert,No Finding,nan,nan
+3512,chexpert,No Finding,nan,nan
+3520,chexpert,No Finding,nan,nan
+3534,chexpert,No Finding,nan,nan
+3554,chexpert,No Finding,nan,nan
+3562,chexpert,No Finding,nan,nan
+3564,chexpert,No Finding,nan,nan
+3569,chexpert,No Finding,nan,nan
+3575,chexpert,No Finding,nan,nan
+3593,chexpert,No Finding,nan,nan
+3597,chexpert,No Finding,nan,nan
+3599,chexpert,No Finding,nan,nan
+3622,chexpert,No Finding,nan,nan
+3630,chexpert,No Finding,nan,nan
+3669,chexpert,No Finding,nan,nan
+3684,chexpert,No Finding,nan,nan
+3694,chexpert,No Finding,nan,nan
+3726,chexpert,No Finding,nan,nan
+3757,chexpert,No Finding,nan,nan
+3785,chexpert,No Finding,nan,nan
+3786,chexpert,No Finding,nan,nan
+3793,chexpert,No Finding,nan,nan
+3801,chexpert,No Finding,nan,nan
+3805,chexpert,No Finding,nan,nan
+3816,chexpert,No Finding,nan,nan
+3832,chexpert,No Finding,nan,nan
+3845,chexpert,No Finding,nan,nan
+3856,chexpert,No Finding,nan,nan
+3886,chexpert,No Finding,nan,nan
+3893,chexpert,No Finding,nan,nan
+3955,chexpert,No Finding,nan,nan
+3959,chexpert,No Finding,nan,nan
+3969,chexpert,No Finding,nan,nan
+3973,chexpert,No Finding,nan,nan
+3986,chexpert,No Finding,nan,nan
+3987,chexpert,No Finding,nan,nan
+4001,chexpert,No Finding,nan,nan
+4014,chexpert,No Finding,nan,nan
+4032,chexpert,No Finding,nan,nan
+16,chexpert,Enlarged Cardiomediastinum,nan,nan
+18,chexpert,Enlarged Cardiomediastinum,nan,nan
+55,chexpert,Enlarged Cardiomediastinum,nan,nan
+66,chexpert,Enlarged Cardiomediastinum,nan,nan
+74,chexpert,Enlarged Cardiomediastinum,nan,nan
+88,chexpert,Enlarged Cardiomediastinum,nan,nan
+95,chexpert,Enlarged Cardiomediastinum,nan,nan
+116,chexpert,Enlarged Cardiomediastinum,nan,nan
+126,chexpert,Enlarged Cardiomediastinum,nan,nan
+128,chexpert,Enlarged Cardiomediastinum,nan,nan
+130,chexpert,Enlarged Cardiomediastinum,nan,nan
+138,chexpert,Enlarged Cardiomediastinum,nan,nan
+147,chexpert,Enlarged Cardiomediastinum,nan,nan
+155,chexpert,Enlarged Cardiomediastinum,nan,nan
+156,chexpert,Enlarged Cardiomediastinum,nan,nan
+173,chexpert,Enlarged Cardiomediastinum,nan,nan
+176,chexpert,Enlarged Cardiomediastinum,nan,nan
+197,chexpert,Enlarged Cardiomediastinum,nan,nan
+200,chexpert,Enlarged Cardiomediastinum,nan,nan
+203,chexpert,Enlarged Cardiomediastinum,nan,nan
+207,chexpert,Enlarged Cardiomediastinum,nan,nan
+215,chexpert,Enlarged Cardiomediastinum,nan,nan
+231,chexpert,Enlarged Cardiomediastinum,nan,nan
+245,chexpert,Enlarged Cardiomediastinum,nan,nan
+311,chexpert,Enlarged Cardiomediastinum,nan,nan
+335,chexpert,Enlarged Cardiomediastinum,nan,nan
+347,chexpert,Enlarged Cardiomediastinum,nan,nan
+350,chexpert,Enlarged Cardiomediastinum,nan,nan
+370,chexpert,Enlarged Cardiomediastinum,nan,nan
+374,chexpert,Enlarged Cardiomediastinum,nan,nan
+404,chexpert,Enlarged Cardiomediastinum,nan,nan
+410,chexpert,Enlarged Cardiomediastinum,nan,nan
+413,chexpert,Enlarged Cardiomediastinum,nan,nan
+416,chexpert,Enlarged Cardiomediastinum,nan,nan
+447,chexpert,Enlarged Cardiomediastinum,nan,nan
+463,chexpert,Enlarged Cardiomediastinum,nan,nan
+471,chexpert,Enlarged Cardiomediastinum,nan,nan
+519,chexpert,Enlarged Cardiomediastinum,nan,nan
+546,chexpert,Enlarged Cardiomediastinum,nan,nan
+575,chexpert,Enlarged Cardiomediastinum,nan,nan
+628,chexpert,Enlarged Cardiomediastinum,nan,nan
+630,chexpert,Enlarged Cardiomediastinum,nan,nan
+641,chexpert,Enlarged Cardiomediastinum,nan,nan
+648,chexpert,Enlarged Cardiomediastinum,nan,nan
+663,chexpert,Enlarged Cardiomediastinum,nan,nan
+669,chexpert,Enlarged Cardiomediastinum,nan,nan
+685,chexpert,Enlarged Cardiomediastinum,nan,nan
+714,chexpert,Enlarged Cardiomediastinum,nan,nan
+715,chexpert,Enlarged Cardiomediastinum,nan,nan
+718,chexpert,Enlarged Cardiomediastinum,nan,nan
+735,chexpert,Enlarged Cardiomediastinum,nan,nan
+736,chexpert,Enlarged Cardiomediastinum,nan,nan
+738,chexpert,Enlarged Cardiomediastinum,nan,nan
+753,chexpert,Enlarged Cardiomediastinum,nan,nan
+761,chexpert,Enlarged Cardiomediastinum,nan,nan
+776,chexpert,Enlarged Cardiomediastinum,nan,nan
+801,chexpert,Enlarged Cardiomediastinum,nan,nan
+818,chexpert,Enlarged Cardiomediastinum,nan,nan
+821,chexpert,Enlarged Cardiomediastinum,nan,nan
+830,chexpert,Enlarged Cardiomediastinum,nan,nan
+856,chexpert,Enlarged Cardiomediastinum,nan,nan
+884,chexpert,Enlarged Cardiomediastinum,nan,nan
+905,chexpert,Enlarged Cardiomediastinum,nan,nan
+915,chexpert,Enlarged Cardiomediastinum,nan,nan
+922,chexpert,Enlarged Cardiomediastinum,nan,nan
+935,chexpert,Enlarged Cardiomediastinum,nan,nan
+946,chexpert,Enlarged Cardiomediastinum,nan,nan
+963,chexpert,Enlarged Cardiomediastinum,nan,nan
+969,chexpert,Enlarged Cardiomediastinum,nan,nan
+1012,chexpert,Enlarged Cardiomediastinum,nan,nan
+1063,chexpert,Enlarged Cardiomediastinum,nan,nan
+1064,chexpert,Enlarged Cardiomediastinum,nan,nan
+1084,chexpert,Enlarged Cardiomediastinum,nan,nan
+1092,chexpert,Enlarged Cardiomediastinum,nan,nan
+1097,chexpert,Enlarged Cardiomediastinum,nan,nan
+1104,chexpert,Enlarged Cardiomediastinum,nan,nan
+1105,chexpert,Enlarged Cardiomediastinum,nan,nan
+1120,chexpert,Enlarged Cardiomediastinum,nan,nan
+1144,chexpert,Enlarged Cardiomediastinum,nan,nan
+1147,chexpert,Enlarged Cardiomediastinum,nan,nan
+1148,chexpert,Enlarged Cardiomediastinum,nan,nan
+1153,chexpert,Enlarged Cardiomediastinum,nan,nan
+1172,chexpert,Enlarged Cardiomediastinum,nan,nan
+1188,chexpert,Enlarged Cardiomediastinum,nan,nan
+1195,chexpert,Enlarged Cardiomediastinum,nan,nan
+1203,chexpert,Enlarged Cardiomediastinum,nan,nan
+1216,chexpert,Enlarged Cardiomediastinum,nan,nan
+1237,chexpert,Enlarged Cardiomediastinum,nan,nan
+1240,chexpert,Enlarged Cardiomediastinum,nan,nan
+1243,chexpert,Enlarged Cardiomediastinum,nan,nan
+1285,chexpert,Enlarged Cardiomediastinum,nan,nan
+1308,chexpert,Enlarged Cardiomediastinum,nan,nan
+1310,chexpert,Enlarged Cardiomediastinum,nan,nan
+1314,chexpert,Enlarged Cardiomediastinum,nan,nan
+1349,chexpert,Enlarged Cardiomediastinum,nan,nan
+1384,chexpert,Enlarged Cardiomediastinum,nan,nan
+1385,chexpert,Enlarged Cardiomediastinum,nan,nan
+1390,chexpert,Enlarged Cardiomediastinum,nan,nan
+1397,chexpert,Enlarged Cardiomediastinum,nan,nan
+1416,chexpert,Enlarged Cardiomediastinum,nan,nan
+1424,chexpert,Enlarged Cardiomediastinum,nan,nan
+1445,chexpert,Enlarged Cardiomediastinum,nan,nan
+1461,chexpert,Enlarged Cardiomediastinum,nan,nan
+1485,chexpert,Enlarged Cardiomediastinum,nan,nan
+1502,chexpert,Enlarged Cardiomediastinum,nan,nan
+1517,chexpert,Enlarged Cardiomediastinum,nan,nan
+1520,chexpert,Enlarged Cardiomediastinum,nan,nan
+1523,chexpert,Enlarged Cardiomediastinum,nan,nan
+1528,chexpert,Enlarged Cardiomediastinum,nan,nan
+1553,chexpert,Enlarged Cardiomediastinum,nan,nan
+1584,chexpert,Enlarged Cardiomediastinum,nan,nan
+1589,chexpert,Enlarged Cardiomediastinum,nan,nan
+1591,chexpert,Enlarged Cardiomediastinum,nan,nan
+1628,chexpert,Enlarged Cardiomediastinum,nan,nan
+1632,chexpert,Enlarged Cardiomediastinum,nan,nan
+1639,chexpert,Enlarged Cardiomediastinum,nan,nan
+1663,chexpert,Enlarged Cardiomediastinum,nan,nan
+1705,chexpert,Enlarged Cardiomediastinum,nan,nan
+1744,chexpert,Enlarged Cardiomediastinum,nan,nan
+1781,chexpert,Enlarged Cardiomediastinum,nan,nan
+1789,chexpert,Enlarged Cardiomediastinum,nan,nan
+1800,chexpert,Enlarged Cardiomediastinum,nan,nan
+1816,chexpert,Enlarged Cardiomediastinum,nan,nan
+1844,chexpert,Enlarged Cardiomediastinum,nan,nan
+1858,chexpert,Enlarged Cardiomediastinum,nan,nan
+1875,chexpert,Enlarged Cardiomediastinum,nan,nan
+1877,chexpert,Enlarged Cardiomediastinum,nan,nan
+1887,chexpert,Enlarged Cardiomediastinum,nan,nan
+1899,chexpert,Enlarged Cardiomediastinum,nan,nan
+1906,chexpert,Enlarged Cardiomediastinum,nan,nan
+1912,chexpert,Enlarged Cardiomediastinum,nan,nan
+1969,chexpert,Enlarged Cardiomediastinum,nan,nan
+1992,chexpert,Enlarged Cardiomediastinum,nan,nan
+2055,chexpert,Enlarged Cardiomediastinum,nan,nan
+2086,chexpert,Enlarged Cardiomediastinum,nan,nan
+2103,chexpert,Enlarged Cardiomediastinum,nan,nan
+2157,chexpert,Enlarged Cardiomediastinum,nan,nan
+2184,chexpert,Enlarged Cardiomediastinum,nan,nan
+2185,chexpert,Enlarged Cardiomediastinum,nan,nan
+2195,chexpert,Enlarged Cardiomediastinum,nan,nan
+2202,chexpert,Enlarged Cardiomediastinum,nan,nan
+2219,chexpert,Enlarged Cardiomediastinum,nan,nan
+2272,chexpert,Enlarged Cardiomediastinum,nan,nan
+2286,chexpert,Enlarged Cardiomediastinum,nan,nan
+2288,chexpert,Enlarged Cardiomediastinum,nan,nan
+2300,chexpert,Enlarged Cardiomediastinum,nan,nan
+2315,chexpert,Enlarged Cardiomediastinum,nan,nan
+2325,chexpert,Enlarged Cardiomediastinum,nan,nan
+2355,chexpert,Enlarged Cardiomediastinum,nan,nan
+2357,chexpert,Enlarged Cardiomediastinum,nan,nan
+2363,chexpert,Enlarged Cardiomediastinum,nan,nan
+2377,chexpert,Enlarged Cardiomediastinum,nan,nan
+2402,chexpert,Enlarged Cardiomediastinum,nan,nan
+2404,chexpert,Enlarged Cardiomediastinum,nan,nan
+2457,chexpert,Enlarged Cardiomediastinum,nan,nan
+2473,chexpert,Enlarged Cardiomediastinum,nan,nan
+2512,chexpert,Enlarged Cardiomediastinum,nan,nan
+2515,chexpert,Enlarged Cardiomediastinum,nan,nan
+2535,chexpert,Enlarged Cardiomediastinum,nan,nan
+2612,chexpert,Enlarged Cardiomediastinum,nan,nan
+2619,chexpert,Enlarged Cardiomediastinum,nan,nan
+2640,chexpert,Enlarged Cardiomediastinum,nan,nan
+2646,chexpert,Enlarged Cardiomediastinum,nan,nan
+2682,chexpert,Enlarged Cardiomediastinum,nan,nan
+2683,chexpert,Enlarged Cardiomediastinum,nan,nan
+2714,chexpert,Enlarged Cardiomediastinum,nan,nan
+2725,chexpert,Enlarged Cardiomediastinum,nan,nan
+2744,chexpert,Enlarged Cardiomediastinum,nan,nan
+2814,chexpert,Enlarged Cardiomediastinum,nan,nan
+2830,chexpert,Enlarged Cardiomediastinum,nan,nan
+2833,chexpert,Enlarged Cardiomediastinum,nan,nan
+2835,chexpert,Enlarged Cardiomediastinum,nan,nan
+2850,chexpert,Enlarged Cardiomediastinum,nan,nan
+2852,chexpert,Enlarged Cardiomediastinum,nan,nan
+2884,chexpert,Enlarged Cardiomediastinum,nan,nan
+2891,chexpert,Enlarged Cardiomediastinum,nan,nan
+2921,chexpert,Enlarged Cardiomediastinum,nan,nan
+2939,chexpert,Enlarged Cardiomediastinum,nan,nan
+2982,chexpert,Enlarged Cardiomediastinum,nan,nan
+2992,chexpert,Enlarged Cardiomediastinum,nan,nan
+3006,chexpert,Enlarged Cardiomediastinum,nan,nan
+3012,chexpert,Enlarged Cardiomediastinum,nan,nan
+3016,chexpert,Enlarged Cardiomediastinum,nan,nan
+3023,chexpert,Enlarged Cardiomediastinum,nan,nan
+3080,chexpert,Enlarged Cardiomediastinum,nan,nan
+3089,chexpert,Enlarged Cardiomediastinum,nan,nan
+3105,chexpert,Enlarged Cardiomediastinum,nan,nan
+3109,chexpert,Enlarged Cardiomediastinum,nan,nan
+3112,chexpert,Enlarged Cardiomediastinum,nan,nan
+3115,chexpert,Enlarged Cardiomediastinum,nan,nan
+3137,chexpert,Enlarged Cardiomediastinum,nan,nan
+3139,chexpert,Enlarged Cardiomediastinum,nan,nan
+3164,chexpert,Enlarged Cardiomediastinum,nan,nan
+3166,chexpert,Enlarged Cardiomediastinum,nan,nan
+3184,chexpert,Enlarged Cardiomediastinum,nan,nan
+3221,chexpert,Enlarged Cardiomediastinum,nan,nan
+3237,chexpert,Enlarged Cardiomediastinum,nan,nan
+3248,chexpert,Enlarged Cardiomediastinum,nan,nan
+3250,chexpert,Enlarged Cardiomediastinum,nan,nan
+3265,chexpert,Enlarged Cardiomediastinum,nan,nan
+3272,chexpert,Enlarged Cardiomediastinum,nan,nan
+3279,chexpert,Enlarged Cardiomediastinum,nan,nan
+3321,chexpert,Enlarged Cardiomediastinum,nan,nan
+3342,chexpert,Enlarged Cardiomediastinum,nan,nan
+3344,chexpert,Enlarged Cardiomediastinum,nan,nan
+3348,chexpert,Enlarged Cardiomediastinum,nan,nan
+3357,chexpert,Enlarged Cardiomediastinum,nan,nan
+3362,chexpert,Enlarged Cardiomediastinum,nan,nan
+3373,chexpert,Enlarged Cardiomediastinum,nan,nan
+3406,chexpert,Enlarged Cardiomediastinum,nan,nan
+3441,chexpert,Enlarged Cardiomediastinum,nan,nan
+3455,chexpert,Enlarged Cardiomediastinum,nan,nan
+3470,chexpert,Enlarged Cardiomediastinum,nan,nan
+3506,chexpert,Enlarged Cardiomediastinum,nan,nan
+3512,chexpert,Enlarged Cardiomediastinum,nan,nan
+3520,chexpert,Enlarged Cardiomediastinum,nan,nan
+3534,chexpert,Enlarged Cardiomediastinum,nan,nan
+3554,chexpert,Enlarged Cardiomediastinum,nan,nan
+3562,chexpert,Enlarged Cardiomediastinum,nan,nan
+3564,chexpert,Enlarged Cardiomediastinum,nan,nan
+3569,chexpert,Enlarged Cardiomediastinum,nan,nan
+3575,chexpert,Enlarged Cardiomediastinum,nan,nan
+3593,chexpert,Enlarged Cardiomediastinum,nan,nan
+3597,chexpert,Enlarged Cardiomediastinum,nan,nan
+3599,chexpert,Enlarged Cardiomediastinum,nan,nan
+3622,chexpert,Enlarged Cardiomediastinum,nan,nan
+3630,chexpert,Enlarged Cardiomediastinum,nan,nan
+3669,chexpert,Enlarged Cardiomediastinum,nan,nan
+3684,chexpert,Enlarged Cardiomediastinum,nan,nan
+3694,chexpert,Enlarged Cardiomediastinum,nan,nan
+3726,chexpert,Enlarged Cardiomediastinum,nan,nan
+3757,chexpert,Enlarged Cardiomediastinum,nan,nan
+3785,chexpert,Enlarged Cardiomediastinum,nan,nan
+3786,chexpert,Enlarged Cardiomediastinum,nan,nan
+3793,chexpert,Enlarged Cardiomediastinum,nan,nan
+3801,chexpert,Enlarged Cardiomediastinum,nan,nan
+3805,chexpert,Enlarged Cardiomediastinum,nan,nan
+3816,chexpert,Enlarged Cardiomediastinum,nan,nan
+3832,chexpert,Enlarged Cardiomediastinum,nan,nan
+3845,chexpert,Enlarged Cardiomediastinum,nan,nan
+3856,chexpert,Enlarged Cardiomediastinum,nan,nan
+3886,chexpert,Enlarged Cardiomediastinum,nan,nan
+3893,chexpert,Enlarged Cardiomediastinum,nan,nan
+3955,chexpert,Enlarged Cardiomediastinum,nan,nan
+3959,chexpert,Enlarged Cardiomediastinum,nan,nan
+3969,chexpert,Enlarged Cardiomediastinum,nan,nan
+3973,chexpert,Enlarged Cardiomediastinum,nan,nan
+3986,chexpert,Enlarged Cardiomediastinum,nan,nan
+3987,chexpert,Enlarged Cardiomediastinum,nan,nan
+4001,chexpert,Enlarged Cardiomediastinum,nan,nan
+4014,chexpert,Enlarged Cardiomediastinum,nan,nan
+4032,chexpert,Enlarged Cardiomediastinum,nan,nan
+16,chexpert,Cardiomegaly,nan,nan
+18,chexpert,Cardiomegaly,nan,nan
+55,chexpert,Cardiomegaly,nan,nan
+66,chexpert,Cardiomegaly,nan,nan
+74,chexpert,Cardiomegaly,nan,nan
+88,chexpert,Cardiomegaly,nan,nan
+95,chexpert,Cardiomegaly,nan,nan
+116,chexpert,Cardiomegaly,nan,nan
+126,chexpert,Cardiomegaly,nan,nan
+128,chexpert,Cardiomegaly,nan,nan
+130,chexpert,Cardiomegaly,nan,nan
+138,chexpert,Cardiomegaly,nan,nan
+147,chexpert,Cardiomegaly,nan,nan
+155,chexpert,Cardiomegaly,nan,nan
+156,chexpert,Cardiomegaly,nan,nan
+173,chexpert,Cardiomegaly,nan,nan
+176,chexpert,Cardiomegaly,nan,nan
+197,chexpert,Cardiomegaly,nan,nan
+200,chexpert,Cardiomegaly,nan,nan
+203,chexpert,Cardiomegaly,nan,nan
+207,chexpert,Cardiomegaly,nan,nan
+215,chexpert,Cardiomegaly,nan,nan
+231,chexpert,Cardiomegaly,nan,nan
+245,chexpert,Cardiomegaly,nan,nan
+311,chexpert,Cardiomegaly,nan,nan
+335,chexpert,Cardiomegaly,nan,nan
+347,chexpert,Cardiomegaly,nan,nan
+350,chexpert,Cardiomegaly,nan,nan
+370,chexpert,Cardiomegaly,nan,nan
+374,chexpert,Cardiomegaly,nan,nan
+404,chexpert,Cardiomegaly,nan,nan
+410,chexpert,Cardiomegaly,nan,nan
+413,chexpert,Cardiomegaly,nan,nan
+416,chexpert,Cardiomegaly,nan,nan
+447,chexpert,Cardiomegaly,nan,nan
+463,chexpert,Cardiomegaly,nan,nan
+471,chexpert,Cardiomegaly,nan,nan
+519,chexpert,Cardiomegaly,nan,nan
+546,chexpert,Cardiomegaly,nan,nan
+575,chexpert,Cardiomegaly,nan,nan
+628,chexpert,Cardiomegaly,nan,nan
+630,chexpert,Cardiomegaly,nan,nan
+641,chexpert,Cardiomegaly,nan,nan
+648,chexpert,Cardiomegaly,nan,nan
+663,chexpert,Cardiomegaly,nan,nan
+669,chexpert,Cardiomegaly,nan,nan
+685,chexpert,Cardiomegaly,nan,nan
+714,chexpert,Cardiomegaly,nan,nan
+715,chexpert,Cardiomegaly,nan,nan
+718,chexpert,Cardiomegaly,nan,nan
+735,chexpert,Cardiomegaly,nan,nan
+736,chexpert,Cardiomegaly,nan,nan
+738,chexpert,Cardiomegaly,nan,nan
+753,chexpert,Cardiomegaly,nan,nan
+761,chexpert,Cardiomegaly,nan,nan
+776,chexpert,Cardiomegaly,nan,nan
+801,chexpert,Cardiomegaly,nan,nan
+818,chexpert,Cardiomegaly,nan,nan
+821,chexpert,Cardiomegaly,nan,nan
+830,chexpert,Cardiomegaly,nan,nan
+856,chexpert,Cardiomegaly,nan,nan
+884,chexpert,Cardiomegaly,nan,nan
+905,chexpert,Cardiomegaly,nan,nan
+915,chexpert,Cardiomegaly,nan,nan
+922,chexpert,Cardiomegaly,nan,nan
+935,chexpert,Cardiomegaly,nan,nan
+946,chexpert,Cardiomegaly,nan,nan
+963,chexpert,Cardiomegaly,nan,nan
+969,chexpert,Cardiomegaly,nan,nan
+1012,chexpert,Cardiomegaly,nan,nan
+1063,chexpert,Cardiomegaly,nan,nan
+1064,chexpert,Cardiomegaly,nan,nan
+1084,chexpert,Cardiomegaly,nan,nan
+1092,chexpert,Cardiomegaly,nan,nan
+1097,chexpert,Cardiomegaly,nan,nan
+1104,chexpert,Cardiomegaly,nan,nan
+1105,chexpert,Cardiomegaly,nan,nan
+1120,chexpert,Cardiomegaly,nan,nan
+1144,chexpert,Cardiomegaly,nan,nan
+1147,chexpert,Cardiomegaly,nan,nan
+1148,chexpert,Cardiomegaly,nan,nan
+1153,chexpert,Cardiomegaly,nan,nan
+1172,chexpert,Cardiomegaly,nan,nan
+1188,chexpert,Cardiomegaly,nan,nan
+1195,chexpert,Cardiomegaly,nan,nan
+1203,chexpert,Cardiomegaly,nan,nan
+1216,chexpert,Cardiomegaly,nan,nan
+1237,chexpert,Cardiomegaly,nan,nan
+1240,chexpert,Cardiomegaly,nan,nan
+1243,chexpert,Cardiomegaly,nan,nan
+1285,chexpert,Cardiomegaly,nan,nan
+1308,chexpert,Cardiomegaly,nan,nan
+1310,chexpert,Cardiomegaly,nan,nan
+1314,chexpert,Cardiomegaly,nan,nan
+1349,chexpert,Cardiomegaly,nan,nan
+1384,chexpert,Cardiomegaly,nan,nan
+1385,chexpert,Cardiomegaly,nan,nan
+1390,chexpert,Cardiomegaly,nan,nan
+1397,chexpert,Cardiomegaly,nan,nan
+1416,chexpert,Cardiomegaly,nan,nan
+1424,chexpert,Cardiomegaly,nan,nan
+1445,chexpert,Cardiomegaly,nan,nan
+1461,chexpert,Cardiomegaly,nan,nan
+1485,chexpert,Cardiomegaly,nan,nan
+1502,chexpert,Cardiomegaly,nan,nan
+1517,chexpert,Cardiomegaly,nan,nan
+1520,chexpert,Cardiomegaly,nan,nan
+1523,chexpert,Cardiomegaly,nan,nan
+1528,chexpert,Cardiomegaly,nan,nan
+1553,chexpert,Cardiomegaly,nan,nan
+1584,chexpert,Cardiomegaly,nan,nan
+1589,chexpert,Cardiomegaly,nan,nan
+1591,chexpert,Cardiomegaly,nan,nan
+1628,chexpert,Cardiomegaly,nan,nan
+1632,chexpert,Cardiomegaly,nan,nan
+1639,chexpert,Cardiomegaly,nan,nan
+1663,chexpert,Cardiomegaly,nan,nan
+1705,chexpert,Cardiomegaly,nan,nan
+1744,chexpert,Cardiomegaly,nan,nan
+1781,chexpert,Cardiomegaly,nan,nan
+1789,chexpert,Cardiomegaly,nan,nan
+1800,chexpert,Cardiomegaly,nan,nan
+1816,chexpert,Cardiomegaly,nan,nan
+1844,chexpert,Cardiomegaly,nan,nan
+1858,chexpert,Cardiomegaly,nan,nan
+1875,chexpert,Cardiomegaly,nan,nan
+1877,chexpert,Cardiomegaly,nan,nan
+1887,chexpert,Cardiomegaly,nan,nan
+1899,chexpert,Cardiomegaly,nan,nan
+1906,chexpert,Cardiomegaly,nan,nan
+1912,chexpert,Cardiomegaly,nan,nan
+1969,chexpert,Cardiomegaly,nan,nan
+1992,chexpert,Cardiomegaly,nan,nan
+2055,chexpert,Cardiomegaly,nan,nan
+2086,chexpert,Cardiomegaly,nan,nan
+2103,chexpert,Cardiomegaly,nan,nan
+2157,chexpert,Cardiomegaly,nan,nan
+2184,chexpert,Cardiomegaly,nan,nan
+2185,chexpert,Cardiomegaly,nan,nan
+2195,chexpert,Cardiomegaly,nan,nan
+2202,chexpert,Cardiomegaly,nan,nan
+2219,chexpert,Cardiomegaly,nan,nan
+2272,chexpert,Cardiomegaly,nan,nan
+2286,chexpert,Cardiomegaly,nan,nan
+2288,chexpert,Cardiomegaly,nan,nan
+2300,chexpert,Cardiomegaly,nan,nan
+2315,chexpert,Cardiomegaly,nan,nan
+2325,chexpert,Cardiomegaly,nan,nan
+2355,chexpert,Cardiomegaly,nan,nan
+2357,chexpert,Cardiomegaly,nan,nan
+2363,chexpert,Cardiomegaly,nan,nan
+2377,chexpert,Cardiomegaly,nan,nan
+2402,chexpert,Cardiomegaly,nan,nan
+2404,chexpert,Cardiomegaly,nan,nan
+2457,chexpert,Cardiomegaly,nan,nan
+2473,chexpert,Cardiomegaly,nan,nan
+2512,chexpert,Cardiomegaly,nan,nan
+2515,chexpert,Cardiomegaly,nan,nan
+2535,chexpert,Cardiomegaly,nan,nan
+2612,chexpert,Cardiomegaly,nan,nan
+2619,chexpert,Cardiomegaly,nan,nan
+2640,chexpert,Cardiomegaly,nan,nan
+2646,chexpert,Cardiomegaly,nan,nan
+2682,chexpert,Cardiomegaly,nan,nan
+2683,chexpert,Cardiomegaly,nan,nan
+2714,chexpert,Cardiomegaly,nan,nan
+2725,chexpert,Cardiomegaly,nan,nan
+2744,chexpert,Cardiomegaly,nan,nan
+2814,chexpert,Cardiomegaly,nan,nan
+2830,chexpert,Cardiomegaly,nan,nan
+2833,chexpert,Cardiomegaly,nan,nan
+2835,chexpert,Cardiomegaly,nan,nan
+2850,chexpert,Cardiomegaly,nan,nan
+2852,chexpert,Cardiomegaly,nan,nan
+2884,chexpert,Cardiomegaly,nan,nan
+2891,chexpert,Cardiomegaly,nan,nan
+2921,chexpert,Cardiomegaly,nan,nan
+2939,chexpert,Cardiomegaly,nan,nan
+2982,chexpert,Cardiomegaly,nan,nan
+2992,chexpert,Cardiomegaly,nan,nan
+3006,chexpert,Cardiomegaly,nan,nan
+3012,chexpert,Cardiomegaly,nan,nan
+3016,chexpert,Cardiomegaly,nan,nan
+3023,chexpert,Cardiomegaly,nan,nan
+3080,chexpert,Cardiomegaly,nan,nan
+3089,chexpert,Cardiomegaly,nan,nan
+3105,chexpert,Cardiomegaly,nan,nan
+3109,chexpert,Cardiomegaly,nan,nan
+3112,chexpert,Cardiomegaly,nan,nan
+3115,chexpert,Cardiomegaly,nan,nan
+3137,chexpert,Cardiomegaly,nan,nan
+3139,chexpert,Cardiomegaly,nan,nan
+3164,chexpert,Cardiomegaly,nan,nan
+3166,chexpert,Cardiomegaly,nan,nan
+3184,chexpert,Cardiomegaly,nan,nan
+3221,chexpert,Cardiomegaly,nan,nan
+3237,chexpert,Cardiomegaly,nan,nan
+3248,chexpert,Cardiomegaly,nan,nan
+3250,chexpert,Cardiomegaly,nan,nan
+3265,chexpert,Cardiomegaly,nan,nan
+3272,chexpert,Cardiomegaly,nan,nan
+3279,chexpert,Cardiomegaly,nan,nan
+3321,chexpert,Cardiomegaly,nan,nan
+3342,chexpert,Cardiomegaly,nan,nan
+3344,chexpert,Cardiomegaly,nan,nan
+3348,chexpert,Cardiomegaly,nan,nan
+3357,chexpert,Cardiomegaly,nan,nan
+3362,chexpert,Cardiomegaly,nan,nan
+3373,chexpert,Cardiomegaly,nan,nan
+3406,chexpert,Cardiomegaly,nan,nan
+3441,chexpert,Cardiomegaly,nan,nan
+3455,chexpert,Cardiomegaly,nan,nan
+3470,chexpert,Cardiomegaly,nan,nan
+3506,chexpert,Cardiomegaly,nan,nan
+3512,chexpert,Cardiomegaly,nan,nan
+3520,chexpert,Cardiomegaly,nan,nan
+3534,chexpert,Cardiomegaly,nan,nan
+3554,chexpert,Cardiomegaly,nan,nan
+3562,chexpert,Cardiomegaly,nan,nan
+3564,chexpert,Cardiomegaly,nan,nan
+3569,chexpert,Cardiomegaly,nan,nan
+3575,chexpert,Cardiomegaly,nan,nan
+3593,chexpert,Cardiomegaly,nan,nan
+3597,chexpert,Cardiomegaly,nan,nan
+3599,chexpert,Cardiomegaly,nan,nan
+3622,chexpert,Cardiomegaly,nan,nan
+3630,chexpert,Cardiomegaly,nan,nan
+3669,chexpert,Cardiomegaly,nan,nan
+3684,chexpert,Cardiomegaly,nan,nan
+3694,chexpert,Cardiomegaly,nan,nan
+3726,chexpert,Cardiomegaly,nan,nan
+3757,chexpert,Cardiomegaly,nan,nan
+3785,chexpert,Cardiomegaly,nan,nan
+3786,chexpert,Cardiomegaly,nan,nan
+3793,chexpert,Cardiomegaly,nan,nan
+3801,chexpert,Cardiomegaly,nan,nan
+3805,chexpert,Cardiomegaly,nan,nan
+3816,chexpert,Cardiomegaly,nan,nan
+3832,chexpert,Cardiomegaly,nan,nan
+3845,chexpert,Cardiomegaly,nan,nan
+3856,chexpert,Cardiomegaly,nan,nan
+3886,chexpert,Cardiomegaly,nan,nan
+3893,chexpert,Cardiomegaly,nan,nan
+3955,chexpert,Cardiomegaly,nan,nan
+3959,chexpert,Cardiomegaly,nan,nan
+3969,chexpert,Cardiomegaly,nan,nan
+3973,chexpert,Cardiomegaly,nan,nan
+3986,chexpert,Cardiomegaly,nan,nan
+3987,chexpert,Cardiomegaly,nan,nan
+4001,chexpert,Cardiomegaly,nan,nan
+4014,chexpert,Cardiomegaly,nan,nan
+4032,chexpert,Cardiomegaly,nan,nan
+16,chexpert,Lung Opacity,nan,nan
+18,chexpert,Lung Opacity,nan,nan
+55,chexpert,Lung Opacity,nan,nan
+66,chexpert,Lung Opacity,nan,nan
+74,chexpert,Lung Opacity,nan,nan
+88,chexpert,Lung Opacity,nan,nan
+95,chexpert,Lung Opacity,nan,nan
+116,chexpert,Lung Opacity,nan,nan
+126,chexpert,Lung Opacity,nan,nan
+128,chexpert,Lung Opacity,nan,nan
+130,chexpert,Lung Opacity,nan,nan
+138,chexpert,Lung Opacity,nan,nan
+147,chexpert,Lung Opacity,nan,nan
+155,chexpert,Lung Opacity,nan,nan
+156,chexpert,Lung Opacity,nan,nan
+173,chexpert,Lung Opacity,nan,nan
+176,chexpert,Lung Opacity,nan,nan
+197,chexpert,Lung Opacity,nan,nan
+200,chexpert,Lung Opacity,nan,nan
+203,chexpert,Lung Opacity,nan,nan
+207,chexpert,Lung Opacity,nan,nan
+215,chexpert,Lung Opacity,nan,nan
+231,chexpert,Lung Opacity,nan,nan
+245,chexpert,Lung Opacity,nan,nan
+311,chexpert,Lung Opacity,nan,nan
+335,chexpert,Lung Opacity,nan,nan
+347,chexpert,Lung Opacity,nan,nan
+350,chexpert,Lung Opacity,nan,nan
+370,chexpert,Lung Opacity,nan,nan
+374,chexpert,Lung Opacity,nan,nan
+404,chexpert,Lung Opacity,nan,nan
+410,chexpert,Lung Opacity,nan,nan
+413,chexpert,Lung Opacity,nan,nan
+416,chexpert,Lung Opacity,nan,nan
+447,chexpert,Lung Opacity,nan,nan
+463,chexpert,Lung Opacity,nan,nan
+471,chexpert,Lung Opacity,nan,nan
+519,chexpert,Lung Opacity,nan,nan
+546,chexpert,Lung Opacity,nan,nan
+575,chexpert,Lung Opacity,nan,nan
+628,chexpert,Lung Opacity,nan,nan
+630,chexpert,Lung Opacity,nan,nan
+641,chexpert,Lung Opacity,nan,nan
+648,chexpert,Lung Opacity,nan,nan
+663,chexpert,Lung Opacity,nan,nan
+669,chexpert,Lung Opacity,nan,nan
+685,chexpert,Lung Opacity,nan,nan
+714,chexpert,Lung Opacity,nan,nan
+715,chexpert,Lung Opacity,nan,nan
+718,chexpert,Lung Opacity,nan,nan
+735,chexpert,Lung Opacity,nan,nan
+736,chexpert,Lung Opacity,nan,nan
+738,chexpert,Lung Opacity,nan,nan
+753,chexpert,Lung Opacity,nan,nan
+761,chexpert,Lung Opacity,nan,nan
+776,chexpert,Lung Opacity,nan,nan
+801,chexpert,Lung Opacity,nan,nan
+818,chexpert,Lung Opacity,nan,nan
+821,chexpert,Lung Opacity,nan,nan
+830,chexpert,Lung Opacity,nan,nan
+856,chexpert,Lung Opacity,nan,nan
+884,chexpert,Lung Opacity,nan,nan
+905,chexpert,Lung Opacity,nan,nan
+915,chexpert,Lung Opacity,nan,nan
+922,chexpert,Lung Opacity,nan,nan
+935,chexpert,Lung Opacity,nan,nan
+946,chexpert,Lung Opacity,nan,nan
+963,chexpert,Lung Opacity,nan,nan
+969,chexpert,Lung Opacity,nan,nan
+1012,chexpert,Lung Opacity,nan,nan
+1063,chexpert,Lung Opacity,nan,nan
+1064,chexpert,Lung Opacity,nan,nan
+1084,chexpert,Lung Opacity,nan,nan
+1092,chexpert,Lung Opacity,nan,nan
+1097,chexpert,Lung Opacity,nan,nan
+1104,chexpert,Lung Opacity,nan,nan
+1105,chexpert,Lung Opacity,nan,nan
+1120,chexpert,Lung Opacity,nan,nan
+1144,chexpert,Lung Opacity,nan,nan
+1147,chexpert,Lung Opacity,nan,nan
+1148,chexpert,Lung Opacity,nan,nan
+1153,chexpert,Lung Opacity,nan,nan
+1172,chexpert,Lung Opacity,nan,nan
+1188,chexpert,Lung Opacity,nan,nan
+1195,chexpert,Lung Opacity,nan,nan
+1203,chexpert,Lung Opacity,nan,nan
+1216,chexpert,Lung Opacity,nan,nan
+1237,chexpert,Lung Opacity,nan,nan
+1240,chexpert,Lung Opacity,nan,nan
+1243,chexpert,Lung Opacity,nan,nan
+1285,chexpert,Lung Opacity,nan,nan
+1308,chexpert,Lung Opacity,nan,nan
+1310,chexpert,Lung Opacity,nan,nan
+1314,chexpert,Lung Opacity,nan,nan
+1349,chexpert,Lung Opacity,nan,nan
+1384,chexpert,Lung Opacity,nan,nan
+1385,chexpert,Lung Opacity,nan,nan
+1390,chexpert,Lung Opacity,nan,nan
+1397,chexpert,Lung Opacity,nan,nan
+1416,chexpert,Lung Opacity,nan,nan
+1424,chexpert,Lung Opacity,nan,nan
+1445,chexpert,Lung Opacity,nan,nan
+1461,chexpert,Lung Opacity,nan,nan
+1485,chexpert,Lung Opacity,nan,nan
+1502,chexpert,Lung Opacity,nan,nan
+1517,chexpert,Lung Opacity,nan,nan
+1520,chexpert,Lung Opacity,nan,nan
+1523,chexpert,Lung Opacity,nan,nan
+1528,chexpert,Lung Opacity,nan,nan
+1553,chexpert,Lung Opacity,nan,nan
+1584,chexpert,Lung Opacity,nan,nan
+1589,chexpert,Lung Opacity,nan,nan
+1591,chexpert,Lung Opacity,nan,nan
+1628,chexpert,Lung Opacity,nan,nan
+1632,chexpert,Lung Opacity,nan,nan
+1639,chexpert,Lung Opacity,nan,nan
+1663,chexpert,Lung Opacity,nan,nan
+1705,chexpert,Lung Opacity,nan,nan
+1744,chexpert,Lung Opacity,nan,nan
+1781,chexpert,Lung Opacity,nan,nan
+1789,chexpert,Lung Opacity,nan,nan
+1800,chexpert,Lung Opacity,nan,nan
+1816,chexpert,Lung Opacity,nan,nan
+1844,chexpert,Lung Opacity,nan,nan
+1858,chexpert,Lung Opacity,nan,nan
+1875,chexpert,Lung Opacity,nan,nan
+1877,chexpert,Lung Opacity,nan,nan
+1887,chexpert,Lung Opacity,nan,nan
+1899,chexpert,Lung Opacity,nan,nan
+1906,chexpert,Lung Opacity,nan,nan
+1912,chexpert,Lung Opacity,nan,nan
+1969,chexpert,Lung Opacity,nan,nan
+1992,chexpert,Lung Opacity,nan,nan
+2055,chexpert,Lung Opacity,nan,nan
+2086,chexpert,Lung Opacity,nan,nan
+2103,chexpert,Lung Opacity,nan,nan
+2157,chexpert,Lung Opacity,nan,nan
+2184,chexpert,Lung Opacity,nan,nan
+2185,chexpert,Lung Opacity,nan,nan
+2195,chexpert,Lung Opacity,nan,nan
+2202,chexpert,Lung Opacity,nan,nan
+2219,chexpert,Lung Opacity,nan,nan
+2272,chexpert,Lung Opacity,nan,nan
+2286,chexpert,Lung Opacity,nan,nan
+2288,chexpert,Lung Opacity,nan,nan
+2300,chexpert,Lung Opacity,nan,nan
+2315,chexpert,Lung Opacity,nan,nan
+2325,chexpert,Lung Opacity,nan,nan
+2355,chexpert,Lung Opacity,nan,nan
+2357,chexpert,Lung Opacity,nan,nan
+2363,chexpert,Lung Opacity,nan,nan
+2377,chexpert,Lung Opacity,nan,nan
+2402,chexpert,Lung Opacity,nan,nan
+2404,chexpert,Lung Opacity,nan,nan
+2457,chexpert,Lung Opacity,nan,nan
+2473,chexpert,Lung Opacity,nan,nan
+2512,chexpert,Lung Opacity,nan,nan
+2515,chexpert,Lung Opacity,nan,nan
+2535,chexpert,Lung Opacity,nan,nan
+2612,chexpert,Lung Opacity,nan,nan
+2619,chexpert,Lung Opacity,nan,nan
+2640,chexpert,Lung Opacity,nan,nan
+2646,chexpert,Lung Opacity,nan,nan
+2682,chexpert,Lung Opacity,nan,nan
+2683,chexpert,Lung Opacity,nan,nan
+2714,chexpert,Lung Opacity,nan,nan
+2725,chexpert,Lung Opacity,nan,nan
+2744,chexpert,Lung Opacity,nan,nan
+2814,chexpert,Lung Opacity,nan,nan
+2830,chexpert,Lung Opacity,nan,nan
+2833,chexpert,Lung Opacity,nan,nan
+2835,chexpert,Lung Opacity,nan,nan
+2850,chexpert,Lung Opacity,nan,nan
+2852,chexpert,Lung Opacity,nan,nan
+2884,chexpert,Lung Opacity,nan,nan
+2891,chexpert,Lung Opacity,nan,nan
+2921,chexpert,Lung Opacity,nan,nan
+2939,chexpert,Lung Opacity,nan,nan
+2982,chexpert,Lung Opacity,nan,nan
+2992,chexpert,Lung Opacity,nan,nan
+3006,chexpert,Lung Opacity,nan,nan
+3012,chexpert,Lung Opacity,nan,nan
+3016,chexpert,Lung Opacity,nan,nan
+3023,chexpert,Lung Opacity,nan,nan
+3080,chexpert,Lung Opacity,nan,nan
+3089,chexpert,Lung Opacity,nan,nan
+3105,chexpert,Lung Opacity,nan,nan
+3109,chexpert,Lung Opacity,nan,nan
+3112,chexpert,Lung Opacity,nan,nan
+3115,chexpert,Lung Opacity,nan,nan
+3137,chexpert,Lung Opacity,nan,nan
+3139,chexpert,Lung Opacity,nan,nan
+3164,chexpert,Lung Opacity,nan,nan
+3166,chexpert,Lung Opacity,nan,nan
+3184,chexpert,Lung Opacity,nan,nan
+3221,chexpert,Lung Opacity,nan,nan
+3237,chexpert,Lung Opacity,nan,nan
+3248,chexpert,Lung Opacity,nan,nan
+3250,chexpert,Lung Opacity,nan,nan
+3265,chexpert,Lung Opacity,nan,nan
+3272,chexpert,Lung Opacity,nan,nan
+3279,chexpert,Lung Opacity,nan,nan
+3321,chexpert,Lung Opacity,nan,nan
+3342,chexpert,Lung Opacity,nan,nan
+3344,chexpert,Lung Opacity,nan,nan
+3348,chexpert,Lung Opacity,nan,nan
+3357,chexpert,Lung Opacity,nan,nan
+3362,chexpert,Lung Opacity,nan,nan
+3373,chexpert,Lung Opacity,nan,nan
+3406,chexpert,Lung Opacity,nan,nan
+3441,chexpert,Lung Opacity,nan,nan
+3455,chexpert,Lung Opacity,nan,nan
+3470,chexpert,Lung Opacity,nan,nan
+3506,chexpert,Lung Opacity,nan,nan
+3512,chexpert,Lung Opacity,nan,nan
+3520,chexpert,Lung Opacity,nan,nan
+3534,chexpert,Lung Opacity,nan,nan
+3554,chexpert,Lung Opacity,nan,nan
+3562,chexpert,Lung Opacity,nan,nan
+3564,chexpert,Lung Opacity,nan,nan
+3569,chexpert,Lung Opacity,nan,nan
+3575,chexpert,Lung Opacity,nan,nan
+3593,chexpert,Lung Opacity,nan,nan
+3597,chexpert,Lung Opacity,nan,nan
+3599,chexpert,Lung Opacity,nan,nan
+3622,chexpert,Lung Opacity,nan,nan
+3630,chexpert,Lung Opacity,nan,nan
+3669,chexpert,Lung Opacity,nan,nan
+3684,chexpert,Lung Opacity,nan,nan
+3694,chexpert,Lung Opacity,nan,nan
+3726,chexpert,Lung Opacity,nan,nan
+3757,chexpert,Lung Opacity,nan,nan
+3785,chexpert,Lung Opacity,nan,nan
+3786,chexpert,Lung Opacity,nan,nan
+3793,chexpert,Lung Opacity,nan,nan
+3801,chexpert,Lung Opacity,nan,nan
+3805,chexpert,Lung Opacity,nan,nan
+3816,chexpert,Lung Opacity,nan,nan
+3832,chexpert,Lung Opacity,nan,nan
+3845,chexpert,Lung Opacity,nan,nan
+3856,chexpert,Lung Opacity,nan,nan
+3886,chexpert,Lung Opacity,nan,nan
+3893,chexpert,Lung Opacity,nan,nan
+3955,chexpert,Lung Opacity,nan,nan
+3959,chexpert,Lung Opacity,nan,nan
+3969,chexpert,Lung Opacity,nan,nan
+3973,chexpert,Lung Opacity,nan,nan
+3986,chexpert,Lung Opacity,nan,nan
+3987,chexpert,Lung Opacity,nan,nan
+4001,chexpert,Lung Opacity,nan,nan
+4014,chexpert,Lung Opacity,nan,nan
+4032,chexpert,Lung Opacity,nan,nan
+16,chexpert,Lung Lesion,nan,nan
+18,chexpert,Lung Lesion,nan,nan
+55,chexpert,Lung Lesion,nan,nan
+66,chexpert,Lung Lesion,nan,nan
+74,chexpert,Lung Lesion,nan,nan
+88,chexpert,Lung Lesion,nan,nan
+95,chexpert,Lung Lesion,nan,nan
+116,chexpert,Lung Lesion,nan,nan
+126,chexpert,Lung Lesion,nan,nan
+128,chexpert,Lung Lesion,nan,nan
+130,chexpert,Lung Lesion,nan,nan
+138,chexpert,Lung Lesion,nan,nan
+147,chexpert,Lung Lesion,nan,nan
+155,chexpert,Lung Lesion,nan,nan
+156,chexpert,Lung Lesion,nan,nan
+173,chexpert,Lung Lesion,nan,nan
+176,chexpert,Lung Lesion,nan,nan
+197,chexpert,Lung Lesion,nan,nan
+200,chexpert,Lung Lesion,nan,nan
+203,chexpert,Lung Lesion,nan,nan
+207,chexpert,Lung Lesion,nan,nan
+215,chexpert,Lung Lesion,nan,nan
+231,chexpert,Lung Lesion,nan,nan
+245,chexpert,Lung Lesion,nan,nan
+311,chexpert,Lung Lesion,nan,nan
+335,chexpert,Lung Lesion,nan,nan
+347,chexpert,Lung Lesion,nan,nan
+350,chexpert,Lung Lesion,nan,nan
+370,chexpert,Lung Lesion,nan,nan
+374,chexpert,Lung Lesion,nan,nan
+404,chexpert,Lung Lesion,nan,nan
+410,chexpert,Lung Lesion,nan,nan
+413,chexpert,Lung Lesion,nan,nan
+416,chexpert,Lung Lesion,nan,nan
+447,chexpert,Lung Lesion,nan,nan
+463,chexpert,Lung Lesion,nan,nan
+471,chexpert,Lung Lesion,nan,nan
+519,chexpert,Lung Lesion,nan,nan
+546,chexpert,Lung Lesion,nan,nan
+575,chexpert,Lung Lesion,nan,nan
+628,chexpert,Lung Lesion,nan,nan
+630,chexpert,Lung Lesion,nan,nan
+641,chexpert,Lung Lesion,nan,nan
+648,chexpert,Lung Lesion,nan,nan
+663,chexpert,Lung Lesion,nan,nan
+669,chexpert,Lung Lesion,nan,nan
+685,chexpert,Lung Lesion,nan,nan
+714,chexpert,Lung Lesion,nan,nan
+715,chexpert,Lung Lesion,nan,nan
+718,chexpert,Lung Lesion,nan,nan
+735,chexpert,Lung Lesion,nan,nan
+736,chexpert,Lung Lesion,nan,nan
+738,chexpert,Lung Lesion,nan,nan
+753,chexpert,Lung Lesion,nan,nan
+761,chexpert,Lung Lesion,nan,nan
+776,chexpert,Lung Lesion,nan,nan
+801,chexpert,Lung Lesion,nan,nan
+818,chexpert,Lung Lesion,nan,nan
+821,chexpert,Lung Lesion,nan,nan
+830,chexpert,Lung Lesion,nan,nan
+856,chexpert,Lung Lesion,nan,nan
+884,chexpert,Lung Lesion,nan,nan
+905,chexpert,Lung Lesion,nan,nan
+915,chexpert,Lung Lesion,nan,nan
+922,chexpert,Lung Lesion,nan,nan
+935,chexpert,Lung Lesion,nan,nan
+946,chexpert,Lung Lesion,nan,nan
+963,chexpert,Lung Lesion,nan,nan
+969,chexpert,Lung Lesion,nan,nan
+1012,chexpert,Lung Lesion,nan,nan
+1063,chexpert,Lung Lesion,nan,nan
+1064,chexpert,Lung Lesion,nan,nan
+1084,chexpert,Lung Lesion,nan,nan
+1092,chexpert,Lung Lesion,nan,nan
+1097,chexpert,Lung Lesion,nan,nan
+1104,chexpert,Lung Lesion,nan,nan
+1105,chexpert,Lung Lesion,nan,nan
+1120,chexpert,Lung Lesion,nan,nan
+1144,chexpert,Lung Lesion,nan,nan
+1147,chexpert,Lung Lesion,nan,nan
+1148,chexpert,Lung Lesion,nan,nan
+1153,chexpert,Lung Lesion,nan,nan
+1172,chexpert,Lung Lesion,nan,nan
+1188,chexpert,Lung Lesion,nan,nan
+1195,chexpert,Lung Lesion,nan,nan
+1203,chexpert,Lung Lesion,nan,nan
+1216,chexpert,Lung Lesion,nan,nan
+1237,chexpert,Lung Lesion,nan,nan
+1240,chexpert,Lung Lesion,nan,nan
+1243,chexpert,Lung Lesion,nan,nan
+1285,chexpert,Lung Lesion,nan,nan
+1308,chexpert,Lung Lesion,nan,nan
+1310,chexpert,Lung Lesion,nan,nan
+1314,chexpert,Lung Lesion,nan,nan
+1349,chexpert,Lung Lesion,nan,nan
+1384,chexpert,Lung Lesion,nan,nan
+1385,chexpert,Lung Lesion,nan,nan
+1390,chexpert,Lung Lesion,nan,nan
+1397,chexpert,Lung Lesion,nan,nan
+1416,chexpert,Lung Lesion,nan,nan
+1424,chexpert,Lung Lesion,nan,nan
+1445,chexpert,Lung Lesion,nan,nan
+1461,chexpert,Lung Lesion,nan,nan
+1485,chexpert,Lung Lesion,nan,nan
+1502,chexpert,Lung Lesion,nan,nan
+1517,chexpert,Lung Lesion,nan,nan
+1520,chexpert,Lung Lesion,nan,nan
+1523,chexpert,Lung Lesion,nan,nan
+1528,chexpert,Lung Lesion,nan,nan
+1553,chexpert,Lung Lesion,nan,nan
+1584,chexpert,Lung Lesion,nan,nan
+1589,chexpert,Lung Lesion,nan,nan
+1591,chexpert,Lung Lesion,nan,nan
+1628,chexpert,Lung Lesion,nan,nan
+1632,chexpert,Lung Lesion,nan,nan
+1639,chexpert,Lung Lesion,nan,nan
+1663,chexpert,Lung Lesion,nan,nan
+1705,chexpert,Lung Lesion,nan,nan
+1744,chexpert,Lung Lesion,nan,nan
+1781,chexpert,Lung Lesion,nan,nan
+1789,chexpert,Lung Lesion,nan,nan
+1800,chexpert,Lung Lesion,nan,nan
+1816,chexpert,Lung Lesion,nan,nan
+1844,chexpert,Lung Lesion,nan,nan
+1858,chexpert,Lung Lesion,nan,nan
+1875,chexpert,Lung Lesion,nan,nan
+1877,chexpert,Lung Lesion,nan,nan
+1887,chexpert,Lung Lesion,nan,nan
+1899,chexpert,Lung Lesion,nan,nan
+1906,chexpert,Lung Lesion,nan,nan
+1912,chexpert,Lung Lesion,nan,nan
+1969,chexpert,Lung Lesion,nan,nan
+1992,chexpert,Lung Lesion,nan,nan
+2055,chexpert,Lung Lesion,nan,nan
+2086,chexpert,Lung Lesion,nan,nan
+2103,chexpert,Lung Lesion,nan,nan
+2157,chexpert,Lung Lesion,nan,nan
+2184,chexpert,Lung Lesion,nan,nan
+2185,chexpert,Lung Lesion,nan,nan
+2195,chexpert,Lung Lesion,nan,nan
+2202,chexpert,Lung Lesion,nan,nan
+2219,chexpert,Lung Lesion,nan,nan
+2272,chexpert,Lung Lesion,nan,nan
+2286,chexpert,Lung Lesion,nan,nan
+2288,chexpert,Lung Lesion,nan,nan
+2300,chexpert,Lung Lesion,nan,nan
+2315,chexpert,Lung Lesion,nan,nan
+2325,chexpert,Lung Lesion,nan,nan
+2355,chexpert,Lung Lesion,nan,nan
+2357,chexpert,Lung Lesion,nan,nan
+2363,chexpert,Lung Lesion,nan,nan
+2377,chexpert,Lung Lesion,nan,nan
+2402,chexpert,Lung Lesion,nan,nan
+2404,chexpert,Lung Lesion,nan,nan
+2457,chexpert,Lung Lesion,nan,nan
+2473,chexpert,Lung Lesion,nan,nan
+2512,chexpert,Lung Lesion,nan,nan
+2515,chexpert,Lung Lesion,nan,nan
+2535,chexpert,Lung Lesion,nan,nan
+2612,chexpert,Lung Lesion,nan,nan
+2619,chexpert,Lung Lesion,nan,nan
+2640,chexpert,Lung Lesion,nan,nan
+2646,chexpert,Lung Lesion,nan,nan
+2682,chexpert,Lung Lesion,nan,nan
+2683,chexpert,Lung Lesion,nan,nan
+2714,chexpert,Lung Lesion,nan,nan
+2725,chexpert,Lung Lesion,nan,nan
+2744,chexpert,Lung Lesion,nan,nan
+2814,chexpert,Lung Lesion,nan,nan
+2830,chexpert,Lung Lesion,nan,nan
+2833,chexpert,Lung Lesion,nan,nan
+2835,chexpert,Lung Lesion,nan,nan
+2850,chexpert,Lung Lesion,nan,nan
+2852,chexpert,Lung Lesion,nan,nan
+2884,chexpert,Lung Lesion,nan,nan
+2891,chexpert,Lung Lesion,nan,nan
+2921,chexpert,Lung Lesion,nan,nan
+2939,chexpert,Lung Lesion,nan,nan
+2982,chexpert,Lung Lesion,nan,nan
+2992,chexpert,Lung Lesion,nan,nan
+3006,chexpert,Lung Lesion,nan,nan
+3012,chexpert,Lung Lesion,nan,nan
+3016,chexpert,Lung Lesion,nan,nan
+3023,chexpert,Lung Lesion,nan,nan
+3080,chexpert,Lung Lesion,nan,nan
+3089,chexpert,Lung Lesion,nan,nan
+3105,chexpert,Lung Lesion,nan,nan
+3109,chexpert,Lung Lesion,nan,nan
+3112,chexpert,Lung Lesion,nan,nan
+3115,chexpert,Lung Lesion,nan,nan
+3137,chexpert,Lung Lesion,nan,nan
+3139,chexpert,Lung Lesion,nan,nan
+3164,chexpert,Lung Lesion,nan,nan
+3166,chexpert,Lung Lesion,nan,nan
+3184,chexpert,Lung Lesion,nan,nan
+3221,chexpert,Lung Lesion,nan,nan
+3237,chexpert,Lung Lesion,nan,nan
+3248,chexpert,Lung Lesion,nan,nan
+3250,chexpert,Lung Lesion,nan,nan
+3265,chexpert,Lung Lesion,nan,nan
+3272,chexpert,Lung Lesion,nan,nan
+3279,chexpert,Lung Lesion,nan,nan
+3321,chexpert,Lung Lesion,nan,nan
+3342,chexpert,Lung Lesion,nan,nan
+3344,chexpert,Lung Lesion,nan,nan
+3348,chexpert,Lung Lesion,nan,nan
+3357,chexpert,Lung Lesion,nan,nan
+3362,chexpert,Lung Lesion,nan,nan
+3373,chexpert,Lung Lesion,nan,nan
+3406,chexpert,Lung Lesion,nan,nan
+3441,chexpert,Lung Lesion,nan,nan
+3455,chexpert,Lung Lesion,nan,nan
+3470,chexpert,Lung Lesion,nan,nan
+3506,chexpert,Lung Lesion,nan,nan
+3512,chexpert,Lung Lesion,nan,nan
+3520,chexpert,Lung Lesion,nan,nan
+3534,chexpert,Lung Lesion,nan,nan
+3554,chexpert,Lung Lesion,nan,nan
+3562,chexpert,Lung Lesion,nan,nan
+3564,chexpert,Lung Lesion,nan,nan
+3569,chexpert,Lung Lesion,nan,nan
+3575,chexpert,Lung Lesion,nan,nan
+3593,chexpert,Lung Lesion,nan,nan
+3597,chexpert,Lung Lesion,nan,nan
+3599,chexpert,Lung Lesion,nan,nan
+3622,chexpert,Lung Lesion,nan,nan
+3630,chexpert,Lung Lesion,nan,nan
+3669,chexpert,Lung Lesion,nan,nan
+3684,chexpert,Lung Lesion,nan,nan
+3694,chexpert,Lung Lesion,nan,nan
+3726,chexpert,Lung Lesion,nan,nan
+3757,chexpert,Lung Lesion,nan,nan
+3785,chexpert,Lung Lesion,nan,nan
+3786,chexpert,Lung Lesion,nan,nan
+3793,chexpert,Lung Lesion,nan,nan
+3801,chexpert,Lung Lesion,nan,nan
+3805,chexpert,Lung Lesion,nan,nan
+3816,chexpert,Lung Lesion,nan,nan
+3832,chexpert,Lung Lesion,nan,nan
+3845,chexpert,Lung Lesion,nan,nan
+3856,chexpert,Lung Lesion,nan,nan
+3886,chexpert,Lung Lesion,nan,nan
+3893,chexpert,Lung Lesion,nan,nan
+3955,chexpert,Lung Lesion,nan,nan
+3959,chexpert,Lung Lesion,nan,nan
+3969,chexpert,Lung Lesion,nan,nan
+3973,chexpert,Lung Lesion,nan,nan
+3986,chexpert,Lung Lesion,nan,nan
+3987,chexpert,Lung Lesion,nan,nan
+4001,chexpert,Lung Lesion,nan,nan
+4014,chexpert,Lung Lesion,nan,nan
+4032,chexpert,Lung Lesion,nan,nan
+16,chexpert,Edema,nan,nan
+18,chexpert,Edema,nan,nan
+55,chexpert,Edema,nan,nan
+66,chexpert,Edema,nan,nan
+74,chexpert,Edema,nan,nan
+88,chexpert,Edema,nan,nan
+95,chexpert,Edema,nan,nan
+116,chexpert,Edema,nan,nan
+126,chexpert,Edema,nan,nan
+128,chexpert,Edema,nan,nan
+130,chexpert,Edema,nan,nan
+138,chexpert,Edema,nan,nan
+147,chexpert,Edema,nan,nan
+155,chexpert,Edema,nan,nan
+156,chexpert,Edema,nan,nan
+173,chexpert,Edema,nan,nan
+176,chexpert,Edema,nan,nan
+197,chexpert,Edema,nan,nan
+200,chexpert,Edema,nan,nan
+203,chexpert,Edema,nan,nan
+207,chexpert,Edema,nan,nan
+215,chexpert,Edema,nan,nan
+231,chexpert,Edema,nan,nan
+245,chexpert,Edema,nan,nan
+311,chexpert,Edema,nan,nan
+335,chexpert,Edema,nan,nan
+347,chexpert,Edema,nan,nan
+350,chexpert,Edema,nan,nan
+370,chexpert,Edema,nan,nan
+374,chexpert,Edema,nan,nan
+404,chexpert,Edema,nan,nan
+410,chexpert,Edema,nan,nan
+413,chexpert,Edema,nan,nan
+416,chexpert,Edema,nan,nan
+447,chexpert,Edema,nan,nan
+463,chexpert,Edema,nan,nan
+471,chexpert,Edema,nan,nan
+519,chexpert,Edema,nan,nan
+546,chexpert,Edema,nan,nan
+575,chexpert,Edema,nan,nan
+628,chexpert,Edema,nan,nan
+630,chexpert,Edema,nan,nan
+641,chexpert,Edema,nan,nan
+648,chexpert,Edema,nan,nan
+663,chexpert,Edema,nan,nan
+669,chexpert,Edema,nan,nan
+685,chexpert,Edema,nan,nan
+714,chexpert,Edema,nan,nan
+715,chexpert,Edema,nan,nan
+718,chexpert,Edema,nan,nan
+735,chexpert,Edema,nan,nan
+736,chexpert,Edema,nan,nan
+738,chexpert,Edema,nan,nan
+753,chexpert,Edema,nan,nan
+761,chexpert,Edema,nan,nan
+776,chexpert,Edema,nan,nan
+801,chexpert,Edema,nan,nan
+818,chexpert,Edema,nan,nan
+821,chexpert,Edema,nan,nan
+830,chexpert,Edema,nan,nan
+856,chexpert,Edema,nan,nan
+884,chexpert,Edema,nan,nan
+905,chexpert,Edema,nan,nan
+915,chexpert,Edema,nan,nan
+922,chexpert,Edema,nan,nan
+935,chexpert,Edema,nan,nan
+946,chexpert,Edema,nan,nan
+963,chexpert,Edema,nan,nan
+969,chexpert,Edema,nan,nan
+1012,chexpert,Edema,nan,nan
+1063,chexpert,Edema,nan,nan
+1064,chexpert,Edema,nan,nan
+1084,chexpert,Edema,nan,nan
+1092,chexpert,Edema,nan,nan
+1097,chexpert,Edema,nan,nan
+1104,chexpert,Edema,nan,nan
+1105,chexpert,Edema,nan,nan
+1120,chexpert,Edema,nan,nan
+1144,chexpert,Edema,nan,nan
+1147,chexpert,Edema,nan,nan
+1148,chexpert,Edema,nan,nan
+1153,chexpert,Edema,nan,nan
+1172,chexpert,Edema,nan,nan
+1188,chexpert,Edema,nan,nan
+1195,chexpert,Edema,nan,nan
+1203,chexpert,Edema,nan,nan
+1216,chexpert,Edema,nan,nan
+1237,chexpert,Edema,nan,nan
+1240,chexpert,Edema,nan,nan
+1243,chexpert,Edema,nan,nan
+1285,chexpert,Edema,nan,nan
+1308,chexpert,Edema,nan,nan
+1310,chexpert,Edema,nan,nan
+1314,chexpert,Edema,nan,nan
+1349,chexpert,Edema,nan,nan
+1384,chexpert,Edema,nan,nan
+1385,chexpert,Edema,nan,nan
+1390,chexpert,Edema,nan,nan
+1397,chexpert,Edema,nan,nan
+1416,chexpert,Edema,nan,nan
+1424,chexpert,Edema,nan,nan
+1445,chexpert,Edema,nan,nan
+1461,chexpert,Edema,nan,nan
+1485,chexpert,Edema,nan,nan
+1502,chexpert,Edema,nan,nan
+1517,chexpert,Edema,nan,nan
+1520,chexpert,Edema,nan,nan
+1523,chexpert,Edema,nan,nan
+1528,chexpert,Edema,nan,nan
+1553,chexpert,Edema,nan,nan
+1584,chexpert,Edema,nan,nan
+1589,chexpert,Edema,nan,nan
+1591,chexpert,Edema,nan,nan
+1628,chexpert,Edema,nan,nan
+1632,chexpert,Edema,nan,nan
+1639,chexpert,Edema,nan,nan
+1663,chexpert,Edema,nan,nan
+1705,chexpert,Edema,nan,nan
+1744,chexpert,Edema,nan,nan
+1781,chexpert,Edema,nan,nan
+1789,chexpert,Edema,nan,nan
+1800,chexpert,Edema,nan,nan
+1816,chexpert,Edema,nan,nan
+1844,chexpert,Edema,nan,nan
+1858,chexpert,Edema,nan,nan
+1875,chexpert,Edema,nan,nan
+1877,chexpert,Edema,nan,nan
+1887,chexpert,Edema,nan,nan
+1899,chexpert,Edema,nan,nan
+1906,chexpert,Edema,nan,nan
+1912,chexpert,Edema,nan,nan
+1969,chexpert,Edema,nan,nan
+1992,chexpert,Edema,nan,nan
+2055,chexpert,Edema,nan,nan
+2086,chexpert,Edema,nan,nan
+2103,chexpert,Edema,nan,nan
+2157,chexpert,Edema,nan,nan
+2184,chexpert,Edema,nan,nan
+2185,chexpert,Edema,nan,nan
+2195,chexpert,Edema,nan,nan
+2202,chexpert,Edema,nan,nan
+2219,chexpert,Edema,nan,nan
+2272,chexpert,Edema,nan,nan
+2286,chexpert,Edema,nan,nan
+2288,chexpert,Edema,nan,nan
+2300,chexpert,Edema,nan,nan
+2315,chexpert,Edema,nan,nan
+2325,chexpert,Edema,nan,nan
+2355,chexpert,Edema,nan,nan
+2357,chexpert,Edema,nan,nan
+2363,chexpert,Edema,nan,nan
+2377,chexpert,Edema,nan,nan
+2402,chexpert,Edema,nan,nan
+2404,chexpert,Edema,nan,nan
+2457,chexpert,Edema,nan,nan
+2473,chexpert,Edema,nan,nan
+2512,chexpert,Edema,nan,nan
+2515,chexpert,Edema,nan,nan
+2535,chexpert,Edema,nan,nan
+2612,chexpert,Edema,nan,nan
+2619,chexpert,Edema,nan,nan
+2640,chexpert,Edema,nan,nan
+2646,chexpert,Edema,nan,nan
+2682,chexpert,Edema,nan,nan
+2683,chexpert,Edema,nan,nan
+2714,chexpert,Edema,nan,nan
+2725,chexpert,Edema,nan,nan
+2744,chexpert,Edema,nan,nan
+2814,chexpert,Edema,nan,nan
+2830,chexpert,Edema,nan,nan
+2833,chexpert,Edema,nan,nan
+2835,chexpert,Edema,nan,nan
+2850,chexpert,Edema,nan,nan
+2852,chexpert,Edema,nan,nan
+2884,chexpert,Edema,nan,nan
+2891,chexpert,Edema,nan,nan
+2921,chexpert,Edema,nan,nan
+2939,chexpert,Edema,nan,nan
+2982,chexpert,Edema,nan,nan
+2992,chexpert,Edema,nan,nan
+3006,chexpert,Edema,nan,nan
+3012,chexpert,Edema,nan,nan
+3016,chexpert,Edema,nan,nan
+3023,chexpert,Edema,nan,nan
+3080,chexpert,Edema,nan,nan
+3089,chexpert,Edema,nan,nan
+3105,chexpert,Edema,nan,nan
+3109,chexpert,Edema,nan,nan
+3112,chexpert,Edema,nan,nan
+3115,chexpert,Edema,nan,nan
+3137,chexpert,Edema,nan,nan
+3139,chexpert,Edema,nan,nan
+3164,chexpert,Edema,nan,nan
+3166,chexpert,Edema,nan,nan
+3184,chexpert,Edema,nan,nan
+3221,chexpert,Edema,nan,nan
+3237,chexpert,Edema,nan,nan
+3248,chexpert,Edema,nan,nan
+3250,chexpert,Edema,nan,nan
+3265,chexpert,Edema,nan,nan
+3272,chexpert,Edema,nan,nan
+3279,chexpert,Edema,nan,nan
+3321,chexpert,Edema,nan,nan
+3342,chexpert,Edema,nan,nan
+3344,chexpert,Edema,nan,nan
+3348,chexpert,Edema,nan,nan
+3357,chexpert,Edema,nan,nan
+3362,chexpert,Edema,nan,nan
+3373,chexpert,Edema,nan,nan
+3406,chexpert,Edema,nan,nan
+3441,chexpert,Edema,nan,nan
+3455,chexpert,Edema,nan,nan
+3470,chexpert,Edema,nan,nan
+3506,chexpert,Edema,nan,nan
+3512,chexpert,Edema,nan,nan
+3520,chexpert,Edema,nan,nan
+3534,chexpert,Edema,nan,nan
+3554,chexpert,Edema,nan,nan
+3562,chexpert,Edema,nan,nan
+3564,chexpert,Edema,nan,nan
+3569,chexpert,Edema,nan,nan
+3575,chexpert,Edema,nan,nan
+3593,chexpert,Edema,nan,nan
+3597,chexpert,Edema,nan,nan
+3599,chexpert,Edema,nan,nan
+3622,chexpert,Edema,nan,nan
+3630,chexpert,Edema,nan,nan
+3669,chexpert,Edema,nan,nan
+3684,chexpert,Edema,nan,nan
+3694,chexpert,Edema,nan,nan
+3726,chexpert,Edema,nan,nan
+3757,chexpert,Edema,nan,nan
+3785,chexpert,Edema,nan,nan
+3786,chexpert,Edema,nan,nan
+3793,chexpert,Edema,nan,nan
+3801,chexpert,Edema,nan,nan
+3805,chexpert,Edema,nan,nan
+3816,chexpert,Edema,nan,nan
+3832,chexpert,Edema,nan,nan
+3845,chexpert,Edema,nan,nan
+3856,chexpert,Edema,nan,nan
+3886,chexpert,Edema,nan,nan
+3893,chexpert,Edema,nan,nan
+3955,chexpert,Edema,nan,nan
+3959,chexpert,Edema,nan,nan
+3969,chexpert,Edema,nan,nan
+3973,chexpert,Edema,nan,nan
+3986,chexpert,Edema,nan,nan
+3987,chexpert,Edema,nan,nan
+4001,chexpert,Edema,nan,nan
+4014,chexpert,Edema,nan,nan
+4032,chexpert,Edema,nan,nan
+16,chexpert,Consolidation,nan,nan
+18,chexpert,Consolidation,nan,nan
+55,chexpert,Consolidation,nan,nan
+66,chexpert,Consolidation,nan,nan
+74,chexpert,Consolidation,nan,nan
+88,chexpert,Consolidation,nan,nan
+95,chexpert,Consolidation,nan,nan
+116,chexpert,Consolidation,nan,nan
+126,chexpert,Consolidation,nan,nan
+128,chexpert,Consolidation,nan,nan
+130,chexpert,Consolidation,nan,nan
+138,chexpert,Consolidation,nan,nan
+147,chexpert,Consolidation,nan,nan
+155,chexpert,Consolidation,nan,nan
+156,chexpert,Consolidation,nan,nan
+173,chexpert,Consolidation,nan,nan
+176,chexpert,Consolidation,nan,nan
+197,chexpert,Consolidation,nan,nan
+200,chexpert,Consolidation,nan,nan
+203,chexpert,Consolidation,nan,nan
+207,chexpert,Consolidation,nan,nan
+215,chexpert,Consolidation,nan,nan
+231,chexpert,Consolidation,nan,nan
+245,chexpert,Consolidation,nan,nan
+311,chexpert,Consolidation,nan,nan
+335,chexpert,Consolidation,nan,nan
+347,chexpert,Consolidation,nan,nan
+350,chexpert,Consolidation,nan,nan
+370,chexpert,Consolidation,nan,nan
+374,chexpert,Consolidation,nan,nan
+404,chexpert,Consolidation,nan,nan
+410,chexpert,Consolidation,nan,nan
+413,chexpert,Consolidation,nan,nan
+416,chexpert,Consolidation,nan,nan
+447,chexpert,Consolidation,nan,nan
+463,chexpert,Consolidation,nan,nan
+471,chexpert,Consolidation,nan,nan
+519,chexpert,Consolidation,nan,nan
+546,chexpert,Consolidation,nan,nan
+575,chexpert,Consolidation,nan,nan
+628,chexpert,Consolidation,nan,nan
+630,chexpert,Consolidation,nan,nan
+641,chexpert,Consolidation,nan,nan
+648,chexpert,Consolidation,nan,nan
+663,chexpert,Consolidation,nan,nan
+669,chexpert,Consolidation,nan,nan
+685,chexpert,Consolidation,nan,nan
+714,chexpert,Consolidation,nan,nan
+715,chexpert,Consolidation,nan,nan
+718,chexpert,Consolidation,nan,nan
+735,chexpert,Consolidation,nan,nan
+736,chexpert,Consolidation,nan,nan
+738,chexpert,Consolidation,nan,nan
+753,chexpert,Consolidation,nan,nan
+761,chexpert,Consolidation,nan,nan
+776,chexpert,Consolidation,nan,nan
+801,chexpert,Consolidation,nan,nan
+818,chexpert,Consolidation,nan,nan
+821,chexpert,Consolidation,nan,nan
+830,chexpert,Consolidation,nan,nan
+856,chexpert,Consolidation,nan,nan
+884,chexpert,Consolidation,nan,nan
+905,chexpert,Consolidation,nan,nan
+915,chexpert,Consolidation,nan,nan
+922,chexpert,Consolidation,nan,nan
+935,chexpert,Consolidation,nan,nan
+946,chexpert,Consolidation,nan,nan
+963,chexpert,Consolidation,nan,nan
+969,chexpert,Consolidation,nan,nan
+1012,chexpert,Consolidation,nan,nan
+1063,chexpert,Consolidation,nan,nan
+1064,chexpert,Consolidation,nan,nan
+1084,chexpert,Consolidation,nan,nan
+1092,chexpert,Consolidation,nan,nan
+1097,chexpert,Consolidation,nan,nan
+1104,chexpert,Consolidation,nan,nan
+1105,chexpert,Consolidation,nan,nan
+1120,chexpert,Consolidation,nan,nan
+1144,chexpert,Consolidation,nan,nan
+1147,chexpert,Consolidation,nan,nan
+1148,chexpert,Consolidation,nan,nan
+1153,chexpert,Consolidation,nan,nan
+1172,chexpert,Consolidation,nan,nan
+1188,chexpert,Consolidation,nan,nan
+1195,chexpert,Consolidation,nan,nan
+1203,chexpert,Consolidation,nan,nan
+1216,chexpert,Consolidation,nan,nan
+1237,chexpert,Consolidation,nan,nan
+1240,chexpert,Consolidation,nan,nan
+1243,chexpert,Consolidation,nan,nan
+1285,chexpert,Consolidation,nan,nan
+1308,chexpert,Consolidation,nan,nan
+1310,chexpert,Consolidation,nan,nan
+1314,chexpert,Consolidation,nan,nan
+1349,chexpert,Consolidation,nan,nan
+1384,chexpert,Consolidation,nan,nan
+1385,chexpert,Consolidation,nan,nan
+1390,chexpert,Consolidation,nan,nan
+1397,chexpert,Consolidation,nan,nan
+1416,chexpert,Consolidation,nan,nan
+1424,chexpert,Consolidation,nan,nan
+1445,chexpert,Consolidation,nan,nan
+1461,chexpert,Consolidation,nan,nan
+1485,chexpert,Consolidation,nan,nan
+1502,chexpert,Consolidation,nan,nan
+1517,chexpert,Consolidation,nan,nan
+1520,chexpert,Consolidation,nan,nan
+1523,chexpert,Consolidation,nan,nan
+1528,chexpert,Consolidation,nan,nan
+1553,chexpert,Consolidation,nan,nan
+1584,chexpert,Consolidation,nan,nan
+1589,chexpert,Consolidation,nan,nan
+1591,chexpert,Consolidation,nan,nan
+1628,chexpert,Consolidation,nan,nan
+1632,chexpert,Consolidation,nan,nan
+1639,chexpert,Consolidation,nan,nan
+1663,chexpert,Consolidation,nan,nan
+1705,chexpert,Consolidation,nan,nan
+1744,chexpert,Consolidation,nan,nan
+1781,chexpert,Consolidation,nan,nan
+1789,chexpert,Consolidation,nan,nan
+1800,chexpert,Consolidation,nan,nan
+1816,chexpert,Consolidation,nan,nan
+1844,chexpert,Consolidation,nan,nan
+1858,chexpert,Consolidation,nan,nan
+1875,chexpert,Consolidation,nan,nan
+1877,chexpert,Consolidation,nan,nan
+1887,chexpert,Consolidation,nan,nan
+1899,chexpert,Consolidation,nan,nan
+1906,chexpert,Consolidation,nan,nan
+1912,chexpert,Consolidation,nan,nan
+1969,chexpert,Consolidation,nan,nan
+1992,chexpert,Consolidation,nan,nan
+2055,chexpert,Consolidation,nan,nan
+2086,chexpert,Consolidation,nan,nan
+2103,chexpert,Consolidation,nan,nan
+2157,chexpert,Consolidation,nan,nan
+2184,chexpert,Consolidation,nan,nan
+2185,chexpert,Consolidation,nan,nan
+2195,chexpert,Consolidation,nan,nan
+2202,chexpert,Consolidation,nan,nan
+2219,chexpert,Consolidation,nan,nan
+2272,chexpert,Consolidation,nan,nan
+2286,chexpert,Consolidation,nan,nan
+2288,chexpert,Consolidation,nan,nan
+2300,chexpert,Consolidation,nan,nan
+2315,chexpert,Consolidation,nan,nan
+2325,chexpert,Consolidation,nan,nan
+2355,chexpert,Consolidation,nan,nan
+2357,chexpert,Consolidation,nan,nan
+2363,chexpert,Consolidation,nan,nan
+2377,chexpert,Consolidation,nan,nan
+2402,chexpert,Consolidation,nan,nan
+2404,chexpert,Consolidation,nan,nan
+2457,chexpert,Consolidation,nan,nan
+2473,chexpert,Consolidation,nan,nan
+2512,chexpert,Consolidation,nan,nan
+2515,chexpert,Consolidation,nan,nan
+2535,chexpert,Consolidation,nan,nan
+2612,chexpert,Consolidation,nan,nan
+2619,chexpert,Consolidation,nan,nan
+2640,chexpert,Consolidation,nan,nan
+2646,chexpert,Consolidation,nan,nan
+2682,chexpert,Consolidation,nan,nan
+2683,chexpert,Consolidation,nan,nan
+2714,chexpert,Consolidation,nan,nan
+2725,chexpert,Consolidation,nan,nan
+2744,chexpert,Consolidation,nan,nan
+2814,chexpert,Consolidation,nan,nan
+2830,chexpert,Consolidation,nan,nan
+2833,chexpert,Consolidation,nan,nan
+2835,chexpert,Consolidation,nan,nan
+2850,chexpert,Consolidation,nan,nan
+2852,chexpert,Consolidation,nan,nan
+2884,chexpert,Consolidation,nan,nan
+2891,chexpert,Consolidation,nan,nan
+2921,chexpert,Consolidation,nan,nan
+2939,chexpert,Consolidation,nan,nan
+2982,chexpert,Consolidation,nan,nan
+2992,chexpert,Consolidation,nan,nan
+3006,chexpert,Consolidation,nan,nan
+3012,chexpert,Consolidation,nan,nan
+3016,chexpert,Consolidation,nan,nan
+3023,chexpert,Consolidation,nan,nan
+3080,chexpert,Consolidation,nan,nan
+3089,chexpert,Consolidation,nan,nan
+3105,chexpert,Consolidation,nan,nan
+3109,chexpert,Consolidation,nan,nan
+3112,chexpert,Consolidation,nan,nan
+3115,chexpert,Consolidation,nan,nan
+3137,chexpert,Consolidation,nan,nan
+3139,chexpert,Consolidation,nan,nan
+3164,chexpert,Consolidation,nan,nan
+3166,chexpert,Consolidation,nan,nan
+3184,chexpert,Consolidation,nan,nan
+3221,chexpert,Consolidation,nan,nan
+3237,chexpert,Consolidation,nan,nan
+3248,chexpert,Consolidation,nan,nan
+3250,chexpert,Consolidation,nan,nan
+3265,chexpert,Consolidation,nan,nan
+3272,chexpert,Consolidation,nan,nan
+3279,chexpert,Consolidation,nan,nan
+3321,chexpert,Consolidation,nan,nan
+3342,chexpert,Consolidation,nan,nan
+3344,chexpert,Consolidation,nan,nan
+3348,chexpert,Consolidation,nan,nan
+3357,chexpert,Consolidation,nan,nan
+3362,chexpert,Consolidation,nan,nan
+3373,chexpert,Consolidation,nan,nan
+3406,chexpert,Consolidation,nan,nan
+3441,chexpert,Consolidation,nan,nan
+3455,chexpert,Consolidation,nan,nan
+3470,chexpert,Consolidation,nan,nan
+3506,chexpert,Consolidation,nan,nan
+3512,chexpert,Consolidation,nan,nan
+3520,chexpert,Consolidation,nan,nan
+3534,chexpert,Consolidation,nan,nan
+3554,chexpert,Consolidation,nan,nan
+3562,chexpert,Consolidation,nan,nan
+3564,chexpert,Consolidation,nan,nan
+3569,chexpert,Consolidation,nan,nan
+3575,chexpert,Consolidation,nan,nan
+3593,chexpert,Consolidation,nan,nan
+3597,chexpert,Consolidation,nan,nan
+3599,chexpert,Consolidation,nan,nan
+3622,chexpert,Consolidation,nan,nan
+3630,chexpert,Consolidation,nan,nan
+3669,chexpert,Consolidation,nan,nan
+3684,chexpert,Consolidation,nan,nan
+3694,chexpert,Consolidation,nan,nan
+3726,chexpert,Consolidation,nan,nan
+3757,chexpert,Consolidation,nan,nan
+3785,chexpert,Consolidation,nan,nan
+3786,chexpert,Consolidation,nan,nan
+3793,chexpert,Consolidation,nan,nan
+3801,chexpert,Consolidation,nan,nan
+3805,chexpert,Consolidation,nan,nan
+3816,chexpert,Consolidation,nan,nan
+3832,chexpert,Consolidation,nan,nan
+3845,chexpert,Consolidation,nan,nan
+3856,chexpert,Consolidation,nan,nan
+3886,chexpert,Consolidation,nan,nan
+3893,chexpert,Consolidation,nan,nan
+3955,chexpert,Consolidation,nan,nan
+3959,chexpert,Consolidation,nan,nan
+3969,chexpert,Consolidation,nan,nan
+3973,chexpert,Consolidation,nan,nan
+3986,chexpert,Consolidation,nan,nan
+3987,chexpert,Consolidation,nan,nan
+4001,chexpert,Consolidation,nan,nan
+4014,chexpert,Consolidation,nan,nan
+4032,chexpert,Consolidation,nan,nan
+16,chexpert,Pneumonia,nan,nan
+18,chexpert,Pneumonia,nan,nan
+55,chexpert,Pneumonia,nan,nan
+66,chexpert,Pneumonia,nan,nan
+74,chexpert,Pneumonia,nan,nan
+88,chexpert,Pneumonia,nan,nan
+95,chexpert,Pneumonia,nan,nan
+116,chexpert,Pneumonia,nan,nan
+126,chexpert,Pneumonia,nan,nan
+128,chexpert,Pneumonia,nan,nan
+130,chexpert,Pneumonia,nan,nan
+138,chexpert,Pneumonia,nan,nan
+147,chexpert,Pneumonia,nan,nan
+155,chexpert,Pneumonia,nan,nan
+156,chexpert,Pneumonia,nan,nan
+173,chexpert,Pneumonia,nan,nan
+176,chexpert,Pneumonia,nan,nan
+197,chexpert,Pneumonia,nan,nan
+200,chexpert,Pneumonia,nan,nan
+203,chexpert,Pneumonia,nan,nan
+207,chexpert,Pneumonia,nan,nan
+215,chexpert,Pneumonia,nan,nan
+231,chexpert,Pneumonia,nan,nan
+245,chexpert,Pneumonia,nan,nan
+311,chexpert,Pneumonia,nan,nan
+335,chexpert,Pneumonia,nan,nan
+347,chexpert,Pneumonia,nan,nan
+350,chexpert,Pneumonia,nan,nan
+370,chexpert,Pneumonia,nan,nan
+374,chexpert,Pneumonia,nan,nan
+404,chexpert,Pneumonia,nan,nan
+410,chexpert,Pneumonia,nan,nan
+413,chexpert,Pneumonia,nan,nan
+416,chexpert,Pneumonia,nan,nan
+447,chexpert,Pneumonia,nan,nan
+463,chexpert,Pneumonia,nan,nan
+471,chexpert,Pneumonia,nan,nan
+519,chexpert,Pneumonia,nan,nan
+546,chexpert,Pneumonia,nan,nan
+575,chexpert,Pneumonia,nan,nan
+628,chexpert,Pneumonia,nan,nan
+630,chexpert,Pneumonia,nan,nan
+641,chexpert,Pneumonia,nan,nan
+648,chexpert,Pneumonia,nan,nan
+663,chexpert,Pneumonia,nan,nan
+669,chexpert,Pneumonia,nan,nan
+685,chexpert,Pneumonia,nan,nan
+714,chexpert,Pneumonia,nan,nan
+715,chexpert,Pneumonia,nan,nan
+718,chexpert,Pneumonia,nan,nan
+735,chexpert,Pneumonia,nan,nan
+736,chexpert,Pneumonia,nan,nan
+738,chexpert,Pneumonia,nan,nan
+753,chexpert,Pneumonia,nan,nan
+761,chexpert,Pneumonia,nan,nan
+776,chexpert,Pneumonia,nan,nan
+801,chexpert,Pneumonia,nan,nan
+818,chexpert,Pneumonia,nan,nan
+821,chexpert,Pneumonia,nan,nan
+830,chexpert,Pneumonia,nan,nan
+856,chexpert,Pneumonia,nan,nan
+884,chexpert,Pneumonia,nan,nan
+905,chexpert,Pneumonia,nan,nan
+915,chexpert,Pneumonia,nan,nan
+922,chexpert,Pneumonia,nan,nan
+935,chexpert,Pneumonia,nan,nan
+946,chexpert,Pneumonia,nan,nan
+963,chexpert,Pneumonia,nan,nan
+969,chexpert,Pneumonia,nan,nan
+1012,chexpert,Pneumonia,nan,nan
+1063,chexpert,Pneumonia,nan,nan
+1064,chexpert,Pneumonia,nan,nan
+1084,chexpert,Pneumonia,nan,nan
+1092,chexpert,Pneumonia,nan,nan
+1097,chexpert,Pneumonia,nan,nan
+1104,chexpert,Pneumonia,nan,nan
+1105,chexpert,Pneumonia,nan,nan
+1120,chexpert,Pneumonia,nan,nan
+1144,chexpert,Pneumonia,nan,nan
+1147,chexpert,Pneumonia,nan,nan
+1148,chexpert,Pneumonia,nan,nan
+1153,chexpert,Pneumonia,nan,nan
+1172,chexpert,Pneumonia,nan,nan
+1188,chexpert,Pneumonia,nan,nan
+1195,chexpert,Pneumonia,nan,nan
+1203,chexpert,Pneumonia,nan,nan
+1216,chexpert,Pneumonia,nan,nan
+1237,chexpert,Pneumonia,nan,nan
+1240,chexpert,Pneumonia,nan,nan
+1243,chexpert,Pneumonia,nan,nan
+1285,chexpert,Pneumonia,nan,nan
+1308,chexpert,Pneumonia,nan,nan
+1310,chexpert,Pneumonia,nan,nan
+1314,chexpert,Pneumonia,nan,nan
+1349,chexpert,Pneumonia,nan,nan
+1384,chexpert,Pneumonia,nan,nan
+1385,chexpert,Pneumonia,nan,nan
+1390,chexpert,Pneumonia,nan,nan
+1397,chexpert,Pneumonia,nan,nan
+1416,chexpert,Pneumonia,nan,nan
+1424,chexpert,Pneumonia,nan,nan
+1445,chexpert,Pneumonia,nan,nan
+1461,chexpert,Pneumonia,nan,nan
+1485,chexpert,Pneumonia,nan,nan
+1502,chexpert,Pneumonia,nan,nan
+1517,chexpert,Pneumonia,nan,nan
+1520,chexpert,Pneumonia,nan,nan
+1523,chexpert,Pneumonia,nan,nan
+1528,chexpert,Pneumonia,nan,nan
+1553,chexpert,Pneumonia,nan,nan
+1584,chexpert,Pneumonia,nan,nan
+1589,chexpert,Pneumonia,nan,nan
+1591,chexpert,Pneumonia,nan,nan
+1628,chexpert,Pneumonia,nan,nan
+1632,chexpert,Pneumonia,nan,nan
+1639,chexpert,Pneumonia,nan,nan
+1663,chexpert,Pneumonia,nan,nan
+1705,chexpert,Pneumonia,nan,nan
+1744,chexpert,Pneumonia,nan,nan
+1781,chexpert,Pneumonia,nan,nan
+1789,chexpert,Pneumonia,nan,nan
+1800,chexpert,Pneumonia,nan,nan
+1816,chexpert,Pneumonia,nan,nan
+1844,chexpert,Pneumonia,nan,nan
+1858,chexpert,Pneumonia,nan,nan
+1875,chexpert,Pneumonia,nan,nan
+1877,chexpert,Pneumonia,nan,nan
+1887,chexpert,Pneumonia,nan,nan
+1899,chexpert,Pneumonia,nan,nan
+1906,chexpert,Pneumonia,nan,nan
+1912,chexpert,Pneumonia,nan,nan
+1969,chexpert,Pneumonia,nan,nan
+1992,chexpert,Pneumonia,nan,nan
+2055,chexpert,Pneumonia,nan,nan
+2086,chexpert,Pneumonia,nan,nan
+2103,chexpert,Pneumonia,nan,nan
+2157,chexpert,Pneumonia,nan,nan
+2184,chexpert,Pneumonia,nan,nan
+2185,chexpert,Pneumonia,nan,nan
+2195,chexpert,Pneumonia,nan,nan
+2202,chexpert,Pneumonia,nan,nan
+2219,chexpert,Pneumonia,nan,nan
+2272,chexpert,Pneumonia,nan,nan
+2286,chexpert,Pneumonia,nan,nan
+2288,chexpert,Pneumonia,nan,nan
+2300,chexpert,Pneumonia,nan,nan
+2315,chexpert,Pneumonia,nan,nan
+2325,chexpert,Pneumonia,nan,nan
+2355,chexpert,Pneumonia,nan,nan
+2357,chexpert,Pneumonia,nan,nan
+2363,chexpert,Pneumonia,nan,nan
+2377,chexpert,Pneumonia,nan,nan
+2402,chexpert,Pneumonia,nan,nan
+2404,chexpert,Pneumonia,nan,nan
+2457,chexpert,Pneumonia,nan,nan
+2473,chexpert,Pneumonia,nan,nan
+2512,chexpert,Pneumonia,nan,nan
+2515,chexpert,Pneumonia,nan,nan
+2535,chexpert,Pneumonia,nan,nan
+2612,chexpert,Pneumonia,nan,nan
+2619,chexpert,Pneumonia,nan,nan
+2640,chexpert,Pneumonia,nan,nan
+2646,chexpert,Pneumonia,nan,nan
+2682,chexpert,Pneumonia,nan,nan
+2683,chexpert,Pneumonia,nan,nan
+2714,chexpert,Pneumonia,nan,nan
+2725,chexpert,Pneumonia,nan,nan
+2744,chexpert,Pneumonia,nan,nan
+2814,chexpert,Pneumonia,nan,nan
+2830,chexpert,Pneumonia,nan,nan
+2833,chexpert,Pneumonia,nan,nan
+2835,chexpert,Pneumonia,nan,nan
+2850,chexpert,Pneumonia,nan,nan
+2852,chexpert,Pneumonia,nan,nan
+2884,chexpert,Pneumonia,nan,nan
+2891,chexpert,Pneumonia,nan,nan
+2921,chexpert,Pneumonia,nan,nan
+2939,chexpert,Pneumonia,nan,nan
+2982,chexpert,Pneumonia,nan,nan
+2992,chexpert,Pneumonia,nan,nan
+3006,chexpert,Pneumonia,nan,nan
+3012,chexpert,Pneumonia,nan,nan
+3016,chexpert,Pneumonia,nan,nan
+3023,chexpert,Pneumonia,nan,nan
+3080,chexpert,Pneumonia,nan,nan
+3089,chexpert,Pneumonia,nan,nan
+3105,chexpert,Pneumonia,nan,nan
+3109,chexpert,Pneumonia,nan,nan
+3112,chexpert,Pneumonia,nan,nan
+3115,chexpert,Pneumonia,nan,nan
+3137,chexpert,Pneumonia,nan,nan
+3139,chexpert,Pneumonia,nan,nan
+3164,chexpert,Pneumonia,nan,nan
+3166,chexpert,Pneumonia,nan,nan
+3184,chexpert,Pneumonia,nan,nan
+3221,chexpert,Pneumonia,nan,nan
+3237,chexpert,Pneumonia,nan,nan
+3248,chexpert,Pneumonia,nan,nan
+3250,chexpert,Pneumonia,nan,nan
+3265,chexpert,Pneumonia,nan,nan
+3272,chexpert,Pneumonia,nan,nan
+3279,chexpert,Pneumonia,nan,nan
+3321,chexpert,Pneumonia,nan,nan
+3342,chexpert,Pneumonia,nan,nan
+3344,chexpert,Pneumonia,nan,nan
+3348,chexpert,Pneumonia,nan,nan
+3357,chexpert,Pneumonia,nan,nan
+3362,chexpert,Pneumonia,nan,nan
+3373,chexpert,Pneumonia,nan,nan
+3406,chexpert,Pneumonia,nan,nan
+3441,chexpert,Pneumonia,nan,nan
+3455,chexpert,Pneumonia,nan,nan
+3470,chexpert,Pneumonia,nan,nan
+3506,chexpert,Pneumonia,nan,nan
+3512,chexpert,Pneumonia,nan,nan
+3520,chexpert,Pneumonia,nan,nan
+3534,chexpert,Pneumonia,nan,nan
+3554,chexpert,Pneumonia,nan,nan
+3562,chexpert,Pneumonia,nan,nan
+3564,chexpert,Pneumonia,nan,nan
+3569,chexpert,Pneumonia,nan,nan
+3575,chexpert,Pneumonia,nan,nan
+3593,chexpert,Pneumonia,nan,nan
+3597,chexpert,Pneumonia,nan,nan
+3599,chexpert,Pneumonia,nan,nan
+3622,chexpert,Pneumonia,nan,nan
+3630,chexpert,Pneumonia,nan,nan
+3669,chexpert,Pneumonia,nan,nan
+3684,chexpert,Pneumonia,nan,nan
+3694,chexpert,Pneumonia,nan,nan
+3726,chexpert,Pneumonia,nan,nan
+3757,chexpert,Pneumonia,nan,nan
+3785,chexpert,Pneumonia,nan,nan
+3786,chexpert,Pneumonia,nan,nan
+3793,chexpert,Pneumonia,nan,nan
+3801,chexpert,Pneumonia,nan,nan
+3805,chexpert,Pneumonia,nan,nan
+3816,chexpert,Pneumonia,nan,nan
+3832,chexpert,Pneumonia,nan,nan
+3845,chexpert,Pneumonia,nan,nan
+3856,chexpert,Pneumonia,nan,nan
+3886,chexpert,Pneumonia,nan,nan
+3893,chexpert,Pneumonia,nan,nan
+3955,chexpert,Pneumonia,nan,nan
+3959,chexpert,Pneumonia,nan,nan
+3969,chexpert,Pneumonia,nan,nan
+3973,chexpert,Pneumonia,nan,nan
+3986,chexpert,Pneumonia,nan,nan
+3987,chexpert,Pneumonia,nan,nan
+4001,chexpert,Pneumonia,nan,nan
+4014,chexpert,Pneumonia,nan,nan
+4032,chexpert,Pneumonia,nan,nan
+16,chexpert,Atelectasis,nan,nan
+18,chexpert,Atelectasis,nan,nan
+55,chexpert,Atelectasis,nan,nan
+66,chexpert,Atelectasis,nan,nan
+74,chexpert,Atelectasis,nan,nan
+88,chexpert,Atelectasis,nan,nan
+95,chexpert,Atelectasis,nan,nan
+116,chexpert,Atelectasis,nan,nan
+126,chexpert,Atelectasis,nan,nan
+128,chexpert,Atelectasis,nan,nan
+130,chexpert,Atelectasis,nan,nan
+138,chexpert,Atelectasis,nan,nan
+147,chexpert,Atelectasis,nan,nan
+155,chexpert,Atelectasis,nan,nan
+156,chexpert,Atelectasis,nan,nan
+173,chexpert,Atelectasis,nan,nan
+176,chexpert,Atelectasis,nan,nan
+197,chexpert,Atelectasis,nan,nan
+200,chexpert,Atelectasis,nan,nan
+203,chexpert,Atelectasis,nan,nan
+207,chexpert,Atelectasis,nan,nan
+215,chexpert,Atelectasis,nan,nan
+231,chexpert,Atelectasis,nan,nan
+245,chexpert,Atelectasis,nan,nan
+311,chexpert,Atelectasis,nan,nan
+335,chexpert,Atelectasis,nan,nan
+347,chexpert,Atelectasis,nan,nan
+350,chexpert,Atelectasis,nan,nan
+370,chexpert,Atelectasis,nan,nan
+374,chexpert,Atelectasis,nan,nan
+404,chexpert,Atelectasis,nan,nan
+410,chexpert,Atelectasis,nan,nan
+413,chexpert,Atelectasis,nan,nan
+416,chexpert,Atelectasis,nan,nan
+447,chexpert,Atelectasis,nan,nan
+463,chexpert,Atelectasis,nan,nan
+471,chexpert,Atelectasis,nan,nan
+519,chexpert,Atelectasis,nan,nan
+546,chexpert,Atelectasis,nan,nan
+575,chexpert,Atelectasis,nan,nan
+628,chexpert,Atelectasis,nan,nan
+630,chexpert,Atelectasis,nan,nan
+641,chexpert,Atelectasis,nan,nan
+648,chexpert,Atelectasis,nan,nan
+663,chexpert,Atelectasis,nan,nan
+669,chexpert,Atelectasis,nan,nan
+685,chexpert,Atelectasis,nan,nan
+714,chexpert,Atelectasis,nan,nan
+715,chexpert,Atelectasis,nan,nan
+718,chexpert,Atelectasis,nan,nan
+735,chexpert,Atelectasis,nan,nan
+736,chexpert,Atelectasis,nan,nan
+738,chexpert,Atelectasis,nan,nan
+753,chexpert,Atelectasis,nan,nan
+761,chexpert,Atelectasis,nan,nan
+776,chexpert,Atelectasis,nan,nan
+801,chexpert,Atelectasis,nan,nan
+818,chexpert,Atelectasis,nan,nan
+821,chexpert,Atelectasis,nan,nan
+830,chexpert,Atelectasis,nan,nan
+856,chexpert,Atelectasis,nan,nan
+884,chexpert,Atelectasis,nan,nan
+905,chexpert,Atelectasis,nan,nan
+915,chexpert,Atelectasis,nan,nan
+922,chexpert,Atelectasis,nan,nan
+935,chexpert,Atelectasis,nan,nan
+946,chexpert,Atelectasis,nan,nan
+963,chexpert,Atelectasis,nan,nan
+969,chexpert,Atelectasis,nan,nan
+1012,chexpert,Atelectasis,nan,nan
+1063,chexpert,Atelectasis,nan,nan
+1064,chexpert,Atelectasis,nan,nan
+1084,chexpert,Atelectasis,nan,nan
+1092,chexpert,Atelectasis,nan,nan
+1097,chexpert,Atelectasis,nan,nan
+1104,chexpert,Atelectasis,nan,nan
+1105,chexpert,Atelectasis,nan,nan
+1120,chexpert,Atelectasis,nan,nan
+1144,chexpert,Atelectasis,nan,nan
+1147,chexpert,Atelectasis,nan,nan
+1148,chexpert,Atelectasis,nan,nan
+1153,chexpert,Atelectasis,nan,nan
+1172,chexpert,Atelectasis,nan,nan
+1188,chexpert,Atelectasis,nan,nan
+1195,chexpert,Atelectasis,nan,nan
+1203,chexpert,Atelectasis,nan,nan
+1216,chexpert,Atelectasis,nan,nan
+1237,chexpert,Atelectasis,nan,nan
+1240,chexpert,Atelectasis,nan,nan
+1243,chexpert,Atelectasis,nan,nan
+1285,chexpert,Atelectasis,nan,nan
+1308,chexpert,Atelectasis,nan,nan
+1310,chexpert,Atelectasis,nan,nan
+1314,chexpert,Atelectasis,nan,nan
+1349,chexpert,Atelectasis,nan,nan
+1384,chexpert,Atelectasis,nan,nan
+1385,chexpert,Atelectasis,nan,nan
+1390,chexpert,Atelectasis,nan,nan
+1397,chexpert,Atelectasis,nan,nan
+1416,chexpert,Atelectasis,nan,nan
+1424,chexpert,Atelectasis,nan,nan
+1445,chexpert,Atelectasis,nan,nan
+1461,chexpert,Atelectasis,nan,nan
+1485,chexpert,Atelectasis,nan,nan
+1502,chexpert,Atelectasis,nan,nan
+1517,chexpert,Atelectasis,nan,nan
+1520,chexpert,Atelectasis,nan,nan
+1523,chexpert,Atelectasis,nan,nan
+1528,chexpert,Atelectasis,nan,nan
+1553,chexpert,Atelectasis,nan,nan
+1584,chexpert,Atelectasis,nan,nan
+1589,chexpert,Atelectasis,nan,nan
+1591,chexpert,Atelectasis,nan,nan
+1628,chexpert,Atelectasis,nan,nan
+1632,chexpert,Atelectasis,nan,nan
+1639,chexpert,Atelectasis,nan,nan
+1663,chexpert,Atelectasis,nan,nan
+1705,chexpert,Atelectasis,nan,nan
+1744,chexpert,Atelectasis,nan,nan
+1781,chexpert,Atelectasis,nan,nan
+1789,chexpert,Atelectasis,nan,nan
+1800,chexpert,Atelectasis,nan,nan
+1816,chexpert,Atelectasis,nan,nan
+1844,chexpert,Atelectasis,nan,nan
+1858,chexpert,Atelectasis,nan,nan
+1875,chexpert,Atelectasis,nan,nan
+1877,chexpert,Atelectasis,nan,nan
+1887,chexpert,Atelectasis,nan,nan
+1899,chexpert,Atelectasis,nan,nan
+1906,chexpert,Atelectasis,nan,nan
+1912,chexpert,Atelectasis,nan,nan
+1969,chexpert,Atelectasis,nan,nan
+1992,chexpert,Atelectasis,nan,nan
+2055,chexpert,Atelectasis,nan,nan
+2086,chexpert,Atelectasis,nan,nan
+2103,chexpert,Atelectasis,nan,nan
+2157,chexpert,Atelectasis,nan,nan
+2184,chexpert,Atelectasis,nan,nan
+2185,chexpert,Atelectasis,nan,nan
+2195,chexpert,Atelectasis,nan,nan
+2202,chexpert,Atelectasis,nan,nan
+2219,chexpert,Atelectasis,nan,nan
+2272,chexpert,Atelectasis,nan,nan
+2286,chexpert,Atelectasis,nan,nan
+2288,chexpert,Atelectasis,nan,nan
+2300,chexpert,Atelectasis,nan,nan
+2315,chexpert,Atelectasis,nan,nan
+2325,chexpert,Atelectasis,nan,nan
+2355,chexpert,Atelectasis,nan,nan
+2357,chexpert,Atelectasis,nan,nan
+2363,chexpert,Atelectasis,nan,nan
+2377,chexpert,Atelectasis,nan,nan
+2402,chexpert,Atelectasis,nan,nan
+2404,chexpert,Atelectasis,nan,nan
+2457,chexpert,Atelectasis,nan,nan
+2473,chexpert,Atelectasis,nan,nan
+2512,chexpert,Atelectasis,nan,nan
+2515,chexpert,Atelectasis,nan,nan
+2535,chexpert,Atelectasis,nan,nan
+2612,chexpert,Atelectasis,nan,nan
+2619,chexpert,Atelectasis,nan,nan
+2640,chexpert,Atelectasis,nan,nan
+2646,chexpert,Atelectasis,nan,nan
+2682,chexpert,Atelectasis,nan,nan
+2683,chexpert,Atelectasis,nan,nan
+2714,chexpert,Atelectasis,nan,nan
+2725,chexpert,Atelectasis,nan,nan
+2744,chexpert,Atelectasis,nan,nan
+2814,chexpert,Atelectasis,nan,nan
+2830,chexpert,Atelectasis,nan,nan
+2833,chexpert,Atelectasis,nan,nan
+2835,chexpert,Atelectasis,nan,nan
+2850,chexpert,Atelectasis,nan,nan
+2852,chexpert,Atelectasis,nan,nan
+2884,chexpert,Atelectasis,nan,nan
+2891,chexpert,Atelectasis,nan,nan
+2921,chexpert,Atelectasis,nan,nan
+2939,chexpert,Atelectasis,nan,nan
+2982,chexpert,Atelectasis,nan,nan
+2992,chexpert,Atelectasis,nan,nan
+3006,chexpert,Atelectasis,nan,nan
+3012,chexpert,Atelectasis,nan,nan
+3016,chexpert,Atelectasis,nan,nan
+3023,chexpert,Atelectasis,nan,nan
+3080,chexpert,Atelectasis,nan,nan
+3089,chexpert,Atelectasis,nan,nan
+3105,chexpert,Atelectasis,nan,nan
+3109,chexpert,Atelectasis,nan,nan
+3112,chexpert,Atelectasis,nan,nan
+3115,chexpert,Atelectasis,nan,nan
+3137,chexpert,Atelectasis,nan,nan
+3139,chexpert,Atelectasis,nan,nan
+3164,chexpert,Atelectasis,nan,nan
+3166,chexpert,Atelectasis,nan,nan
+3184,chexpert,Atelectasis,nan,nan
+3221,chexpert,Atelectasis,nan,nan
+3237,chexpert,Atelectasis,nan,nan
+3248,chexpert,Atelectasis,nan,nan
+3250,chexpert,Atelectasis,nan,nan
+3265,chexpert,Atelectasis,nan,nan
+3272,chexpert,Atelectasis,nan,nan
+3279,chexpert,Atelectasis,nan,nan
+3321,chexpert,Atelectasis,nan,nan
+3342,chexpert,Atelectasis,nan,nan
+3344,chexpert,Atelectasis,nan,nan
+3348,chexpert,Atelectasis,nan,nan
+3357,chexpert,Atelectasis,nan,nan
+3362,chexpert,Atelectasis,nan,nan
+3373,chexpert,Atelectasis,nan,nan
+3406,chexpert,Atelectasis,nan,nan
+3441,chexpert,Atelectasis,nan,nan
+3455,chexpert,Atelectasis,nan,nan
+3470,chexpert,Atelectasis,nan,nan
+3506,chexpert,Atelectasis,nan,nan
+3512,chexpert,Atelectasis,nan,nan
+3520,chexpert,Atelectasis,nan,nan
+3534,chexpert,Atelectasis,nan,nan
+3554,chexpert,Atelectasis,nan,nan
+3562,chexpert,Atelectasis,nan,nan
+3564,chexpert,Atelectasis,nan,nan
+3569,chexpert,Atelectasis,nan,nan
+3575,chexpert,Atelectasis,nan,nan
+3593,chexpert,Atelectasis,nan,nan
+3597,chexpert,Atelectasis,nan,nan
+3599,chexpert,Atelectasis,nan,nan
+3622,chexpert,Atelectasis,nan,nan
+3630,chexpert,Atelectasis,nan,nan
+3669,chexpert,Atelectasis,nan,nan
+3684,chexpert,Atelectasis,nan,nan
+3694,chexpert,Atelectasis,nan,nan
+3726,chexpert,Atelectasis,nan,nan
+3757,chexpert,Atelectasis,nan,nan
+3785,chexpert,Atelectasis,nan,nan
+3786,chexpert,Atelectasis,nan,nan
+3793,chexpert,Atelectasis,nan,nan
+3801,chexpert,Atelectasis,nan,nan
+3805,chexpert,Atelectasis,nan,nan
+3816,chexpert,Atelectasis,nan,nan
+3832,chexpert,Atelectasis,nan,nan
+3845,chexpert,Atelectasis,nan,nan
+3856,chexpert,Atelectasis,nan,nan
+3886,chexpert,Atelectasis,nan,nan
+3893,chexpert,Atelectasis,nan,nan
+3955,chexpert,Atelectasis,nan,nan
+3959,chexpert,Atelectasis,nan,nan
+3969,chexpert,Atelectasis,nan,nan
+3973,chexpert,Atelectasis,nan,nan
+3986,chexpert,Atelectasis,nan,nan
+3987,chexpert,Atelectasis,nan,nan
+4001,chexpert,Atelectasis,nan,nan
+4014,chexpert,Atelectasis,nan,nan
+4032,chexpert,Atelectasis,nan,nan
+16,chexpert,Pneumothorax,nan,nan
+18,chexpert,Pneumothorax,nan,nan
+55,chexpert,Pneumothorax,nan,nan
+66,chexpert,Pneumothorax,nan,nan
+74,chexpert,Pneumothorax,nan,nan
+88,chexpert,Pneumothorax,nan,nan
+95,chexpert,Pneumothorax,nan,nan
+116,chexpert,Pneumothorax,nan,nan
+126,chexpert,Pneumothorax,nan,nan
+128,chexpert,Pneumothorax,nan,nan
+130,chexpert,Pneumothorax,nan,nan
+138,chexpert,Pneumothorax,nan,nan
+147,chexpert,Pneumothorax,nan,nan
+155,chexpert,Pneumothorax,nan,nan
+156,chexpert,Pneumothorax,nan,nan
+173,chexpert,Pneumothorax,nan,nan
+176,chexpert,Pneumothorax,nan,nan
+197,chexpert,Pneumothorax,nan,nan
+200,chexpert,Pneumothorax,nan,nan
+203,chexpert,Pneumothorax,nan,nan
+207,chexpert,Pneumothorax,nan,nan
+215,chexpert,Pneumothorax,nan,nan
+231,chexpert,Pneumothorax,nan,nan
+245,chexpert,Pneumothorax,nan,nan
+311,chexpert,Pneumothorax,nan,nan
+335,chexpert,Pneumothorax,nan,nan
+347,chexpert,Pneumothorax,nan,nan
+350,chexpert,Pneumothorax,nan,nan
+370,chexpert,Pneumothorax,nan,nan
+374,chexpert,Pneumothorax,nan,nan
+404,chexpert,Pneumothorax,nan,nan
+410,chexpert,Pneumothorax,nan,nan
+413,chexpert,Pneumothorax,nan,nan
+416,chexpert,Pneumothorax,nan,nan
+447,chexpert,Pneumothorax,nan,nan
+463,chexpert,Pneumothorax,nan,nan
+471,chexpert,Pneumothorax,nan,nan
+519,chexpert,Pneumothorax,nan,nan
+546,chexpert,Pneumothorax,nan,nan
+575,chexpert,Pneumothorax,nan,nan
+628,chexpert,Pneumothorax,nan,nan
+630,chexpert,Pneumothorax,nan,nan
+641,chexpert,Pneumothorax,nan,nan
+648,chexpert,Pneumothorax,nan,nan
+663,chexpert,Pneumothorax,nan,nan
+669,chexpert,Pneumothorax,nan,nan
+685,chexpert,Pneumothorax,nan,nan
+714,chexpert,Pneumothorax,nan,nan
+715,chexpert,Pneumothorax,nan,nan
+718,chexpert,Pneumothorax,nan,nan
+735,chexpert,Pneumothorax,nan,nan
+736,chexpert,Pneumothorax,nan,nan
+738,chexpert,Pneumothorax,nan,nan
+753,chexpert,Pneumothorax,nan,nan
+761,chexpert,Pneumothorax,nan,nan
+776,chexpert,Pneumothorax,nan,nan
+801,chexpert,Pneumothorax,nan,nan
+818,chexpert,Pneumothorax,nan,nan
+821,chexpert,Pneumothorax,nan,nan
+830,chexpert,Pneumothorax,nan,nan
+856,chexpert,Pneumothorax,nan,nan
+884,chexpert,Pneumothorax,nan,nan
+905,chexpert,Pneumothorax,nan,nan
+915,chexpert,Pneumothorax,nan,nan
+922,chexpert,Pneumothorax,nan,nan
+935,chexpert,Pneumothorax,nan,nan
+946,chexpert,Pneumothorax,nan,nan
+963,chexpert,Pneumothorax,nan,nan
+969,chexpert,Pneumothorax,nan,nan
+1012,chexpert,Pneumothorax,nan,nan
+1063,chexpert,Pneumothorax,nan,nan
+1064,chexpert,Pneumothorax,nan,nan
+1084,chexpert,Pneumothorax,nan,nan
+1092,chexpert,Pneumothorax,nan,nan
+1097,chexpert,Pneumothorax,nan,nan
+1104,chexpert,Pneumothorax,nan,nan
+1105,chexpert,Pneumothorax,nan,nan
+1120,chexpert,Pneumothorax,nan,nan
+1144,chexpert,Pneumothorax,nan,nan
+1147,chexpert,Pneumothorax,nan,nan
+1148,chexpert,Pneumothorax,nan,nan
+1153,chexpert,Pneumothorax,nan,nan
+1172,chexpert,Pneumothorax,nan,nan
+1188,chexpert,Pneumothorax,nan,nan
+1195,chexpert,Pneumothorax,nan,nan
+1203,chexpert,Pneumothorax,nan,nan
+1216,chexpert,Pneumothorax,nan,nan
+1237,chexpert,Pneumothorax,nan,nan
+1240,chexpert,Pneumothorax,nan,nan
+1243,chexpert,Pneumothorax,nan,nan
+1285,chexpert,Pneumothorax,nan,nan
+1308,chexpert,Pneumothorax,nan,nan
+1310,chexpert,Pneumothorax,nan,nan
+1314,chexpert,Pneumothorax,nan,nan
+1349,chexpert,Pneumothorax,nan,nan
+1384,chexpert,Pneumothorax,nan,nan
+1385,chexpert,Pneumothorax,nan,nan
+1390,chexpert,Pneumothorax,nan,nan
+1397,chexpert,Pneumothorax,nan,nan
+1416,chexpert,Pneumothorax,nan,nan
+1424,chexpert,Pneumothorax,nan,nan
+1445,chexpert,Pneumothorax,nan,nan
+1461,chexpert,Pneumothorax,nan,nan
+1485,chexpert,Pneumothorax,nan,nan
+1502,chexpert,Pneumothorax,nan,nan
+1517,chexpert,Pneumothorax,nan,nan
+1520,chexpert,Pneumothorax,nan,nan
+1523,chexpert,Pneumothorax,nan,nan
+1528,chexpert,Pneumothorax,nan,nan
+1553,chexpert,Pneumothorax,nan,nan
+1584,chexpert,Pneumothorax,nan,nan
+1589,chexpert,Pneumothorax,nan,nan
+1591,chexpert,Pneumothorax,nan,nan
+1628,chexpert,Pneumothorax,nan,nan
+1632,chexpert,Pneumothorax,nan,nan
+1639,chexpert,Pneumothorax,nan,nan
+1663,chexpert,Pneumothorax,nan,nan
+1705,chexpert,Pneumothorax,nan,nan
+1744,chexpert,Pneumothorax,nan,nan
+1781,chexpert,Pneumothorax,nan,nan
+1789,chexpert,Pneumothorax,nan,nan
+1800,chexpert,Pneumothorax,nan,nan
+1816,chexpert,Pneumothorax,nan,nan
+1844,chexpert,Pneumothorax,nan,nan
+1858,chexpert,Pneumothorax,nan,nan
+1875,chexpert,Pneumothorax,nan,nan
+1877,chexpert,Pneumothorax,nan,nan
+1887,chexpert,Pneumothorax,nan,nan
+1899,chexpert,Pneumothorax,nan,nan
+1906,chexpert,Pneumothorax,nan,nan
+1912,chexpert,Pneumothorax,nan,nan
+1969,chexpert,Pneumothorax,nan,nan
+1992,chexpert,Pneumothorax,nan,nan
+2055,chexpert,Pneumothorax,nan,nan
+2086,chexpert,Pneumothorax,nan,nan
+2103,chexpert,Pneumothorax,nan,nan
+2157,chexpert,Pneumothorax,nan,nan
+2184,chexpert,Pneumothorax,nan,nan
+2185,chexpert,Pneumothorax,nan,nan
+2195,chexpert,Pneumothorax,nan,nan
+2202,chexpert,Pneumothorax,nan,nan
+2219,chexpert,Pneumothorax,nan,nan
+2272,chexpert,Pneumothorax,nan,nan
+2286,chexpert,Pneumothorax,nan,nan
+2288,chexpert,Pneumothorax,nan,nan
+2300,chexpert,Pneumothorax,nan,nan
+2315,chexpert,Pneumothorax,nan,nan
+2325,chexpert,Pneumothorax,nan,nan
+2355,chexpert,Pneumothorax,nan,nan
+2357,chexpert,Pneumothorax,nan,nan
+2363,chexpert,Pneumothorax,nan,nan
+2377,chexpert,Pneumothorax,nan,nan
+2402,chexpert,Pneumothorax,nan,nan
+2404,chexpert,Pneumothorax,nan,nan
+2457,chexpert,Pneumothorax,nan,nan
+2473,chexpert,Pneumothorax,nan,nan
+2512,chexpert,Pneumothorax,nan,nan
+2515,chexpert,Pneumothorax,nan,nan
+2535,chexpert,Pneumothorax,nan,nan
+2612,chexpert,Pneumothorax,nan,nan
+2619,chexpert,Pneumothorax,nan,nan
+2640,chexpert,Pneumothorax,nan,nan
+2646,chexpert,Pneumothorax,nan,nan
+2682,chexpert,Pneumothorax,nan,nan
+2683,chexpert,Pneumothorax,nan,nan
+2714,chexpert,Pneumothorax,nan,nan
+2725,chexpert,Pneumothorax,nan,nan
+2744,chexpert,Pneumothorax,nan,nan
+2814,chexpert,Pneumothorax,nan,nan
+2830,chexpert,Pneumothorax,nan,nan
+2833,chexpert,Pneumothorax,nan,nan
+2835,chexpert,Pneumothorax,nan,nan
+2850,chexpert,Pneumothorax,nan,nan
+2852,chexpert,Pneumothorax,nan,nan
+2884,chexpert,Pneumothorax,nan,nan
+2891,chexpert,Pneumothorax,nan,nan
+2921,chexpert,Pneumothorax,nan,nan
+2939,chexpert,Pneumothorax,nan,nan
+2982,chexpert,Pneumothorax,nan,nan
+2992,chexpert,Pneumothorax,nan,nan
+3006,chexpert,Pneumothorax,nan,nan
+3012,chexpert,Pneumothorax,nan,nan
+3016,chexpert,Pneumothorax,nan,nan
+3023,chexpert,Pneumothorax,nan,nan
+3080,chexpert,Pneumothorax,nan,nan
+3089,chexpert,Pneumothorax,nan,nan
+3105,chexpert,Pneumothorax,nan,nan
+3109,chexpert,Pneumothorax,nan,nan
+3112,chexpert,Pneumothorax,nan,nan
+3115,chexpert,Pneumothorax,nan,nan
+3137,chexpert,Pneumothorax,nan,nan
+3139,chexpert,Pneumothorax,nan,nan
+3164,chexpert,Pneumothorax,nan,nan
+3166,chexpert,Pneumothorax,nan,nan
+3184,chexpert,Pneumothorax,nan,nan
+3221,chexpert,Pneumothorax,nan,nan
+3237,chexpert,Pneumothorax,nan,nan
+3248,chexpert,Pneumothorax,nan,nan
+3250,chexpert,Pneumothorax,nan,nan
+3265,chexpert,Pneumothorax,nan,nan
+3272,chexpert,Pneumothorax,nan,nan
+3279,chexpert,Pneumothorax,nan,nan
+3321,chexpert,Pneumothorax,nan,nan
+3342,chexpert,Pneumothorax,nan,nan
+3344,chexpert,Pneumothorax,nan,nan
+3348,chexpert,Pneumothorax,nan,nan
+3357,chexpert,Pneumothorax,nan,nan
+3362,chexpert,Pneumothorax,nan,nan
+3373,chexpert,Pneumothorax,nan,nan
+3406,chexpert,Pneumothorax,nan,nan
+3441,chexpert,Pneumothorax,nan,nan
+3455,chexpert,Pneumothorax,nan,nan
+3470,chexpert,Pneumothorax,nan,nan
+3506,chexpert,Pneumothorax,nan,nan
+3512,chexpert,Pneumothorax,nan,nan
+3520,chexpert,Pneumothorax,nan,nan
+3534,chexpert,Pneumothorax,nan,nan
+3554,chexpert,Pneumothorax,nan,nan
+3562,chexpert,Pneumothorax,nan,nan
+3564,chexpert,Pneumothorax,nan,nan
+3569,chexpert,Pneumothorax,nan,nan
+3575,chexpert,Pneumothorax,nan,nan
+3593,chexpert,Pneumothorax,nan,nan
+3597,chexpert,Pneumothorax,nan,nan
+3599,chexpert,Pneumothorax,nan,nan
+3622,chexpert,Pneumothorax,nan,nan
+3630,chexpert,Pneumothorax,nan,nan
+3669,chexpert,Pneumothorax,nan,nan
+3684,chexpert,Pneumothorax,nan,nan
+3694,chexpert,Pneumothorax,nan,nan
+3726,chexpert,Pneumothorax,nan,nan
+3757,chexpert,Pneumothorax,nan,nan
+3785,chexpert,Pneumothorax,nan,nan
+3786,chexpert,Pneumothorax,nan,nan
+3793,chexpert,Pneumothorax,nan,nan
+3801,chexpert,Pneumothorax,nan,nan
+3805,chexpert,Pneumothorax,nan,nan
+3816,chexpert,Pneumothorax,nan,nan
+3832,chexpert,Pneumothorax,nan,nan
+3845,chexpert,Pneumothorax,nan,nan
+3856,chexpert,Pneumothorax,nan,nan
+3886,chexpert,Pneumothorax,nan,nan
+3893,chexpert,Pneumothorax,nan,nan
+3955,chexpert,Pneumothorax,nan,nan
+3959,chexpert,Pneumothorax,nan,nan
+3969,chexpert,Pneumothorax,nan,nan
+3973,chexpert,Pneumothorax,nan,nan
+3986,chexpert,Pneumothorax,nan,nan
+3987,chexpert,Pneumothorax,nan,nan
+4001,chexpert,Pneumothorax,nan,nan
+4014,chexpert,Pneumothorax,nan,nan
+4032,chexpert,Pneumothorax,nan,nan
+16,chexpert,Pleural Effusion,nan,nan
+18,chexpert,Pleural Effusion,nan,nan
+55,chexpert,Pleural Effusion,nan,nan
+66,chexpert,Pleural Effusion,nan,nan
+74,chexpert,Pleural Effusion,nan,nan
+88,chexpert,Pleural Effusion,nan,nan
+95,chexpert,Pleural Effusion,nan,nan
+116,chexpert,Pleural Effusion,nan,nan
+126,chexpert,Pleural Effusion,nan,nan
+128,chexpert,Pleural Effusion,nan,nan
+130,chexpert,Pleural Effusion,nan,nan
+138,chexpert,Pleural Effusion,nan,nan
+147,chexpert,Pleural Effusion,nan,nan
+155,chexpert,Pleural Effusion,nan,nan
+156,chexpert,Pleural Effusion,nan,nan
+173,chexpert,Pleural Effusion,nan,nan
+176,chexpert,Pleural Effusion,nan,nan
+197,chexpert,Pleural Effusion,nan,nan
+200,chexpert,Pleural Effusion,nan,nan
+203,chexpert,Pleural Effusion,nan,nan
+207,chexpert,Pleural Effusion,nan,nan
+215,chexpert,Pleural Effusion,nan,nan
+231,chexpert,Pleural Effusion,nan,nan
+245,chexpert,Pleural Effusion,nan,nan
+311,chexpert,Pleural Effusion,nan,nan
+335,chexpert,Pleural Effusion,nan,nan
+347,chexpert,Pleural Effusion,nan,nan
+350,chexpert,Pleural Effusion,nan,nan
+370,chexpert,Pleural Effusion,nan,nan
+374,chexpert,Pleural Effusion,nan,nan
+404,chexpert,Pleural Effusion,nan,nan
+410,chexpert,Pleural Effusion,nan,nan
+413,chexpert,Pleural Effusion,nan,nan
+416,chexpert,Pleural Effusion,nan,nan
+447,chexpert,Pleural Effusion,nan,nan
+463,chexpert,Pleural Effusion,nan,nan
+471,chexpert,Pleural Effusion,nan,nan
+519,chexpert,Pleural Effusion,nan,nan
+546,chexpert,Pleural Effusion,nan,nan
+575,chexpert,Pleural Effusion,nan,nan
+628,chexpert,Pleural Effusion,nan,nan
+630,chexpert,Pleural Effusion,nan,nan
+641,chexpert,Pleural Effusion,nan,nan
+648,chexpert,Pleural Effusion,nan,nan
+663,chexpert,Pleural Effusion,nan,nan
+669,chexpert,Pleural Effusion,nan,nan
+685,chexpert,Pleural Effusion,nan,nan
+714,chexpert,Pleural Effusion,nan,nan
+715,chexpert,Pleural Effusion,nan,nan
+718,chexpert,Pleural Effusion,nan,nan
+735,chexpert,Pleural Effusion,nan,nan
+736,chexpert,Pleural Effusion,nan,nan
+738,chexpert,Pleural Effusion,nan,nan
+753,chexpert,Pleural Effusion,nan,nan
+761,chexpert,Pleural Effusion,nan,nan
+776,chexpert,Pleural Effusion,nan,nan
+801,chexpert,Pleural Effusion,nan,nan
+818,chexpert,Pleural Effusion,nan,nan
+821,chexpert,Pleural Effusion,nan,nan
+830,chexpert,Pleural Effusion,nan,nan
+856,chexpert,Pleural Effusion,nan,nan
+884,chexpert,Pleural Effusion,nan,nan
+905,chexpert,Pleural Effusion,nan,nan
+915,chexpert,Pleural Effusion,nan,nan
+922,chexpert,Pleural Effusion,nan,nan
+935,chexpert,Pleural Effusion,nan,nan
+946,chexpert,Pleural Effusion,nan,nan
+963,chexpert,Pleural Effusion,nan,nan
+969,chexpert,Pleural Effusion,nan,nan
+1012,chexpert,Pleural Effusion,nan,nan
+1063,chexpert,Pleural Effusion,nan,nan
+1064,chexpert,Pleural Effusion,nan,nan
+1084,chexpert,Pleural Effusion,nan,nan
+1092,chexpert,Pleural Effusion,nan,nan
+1097,chexpert,Pleural Effusion,nan,nan
+1104,chexpert,Pleural Effusion,nan,nan
+1105,chexpert,Pleural Effusion,nan,nan
+1120,chexpert,Pleural Effusion,nan,nan
+1144,chexpert,Pleural Effusion,nan,nan
+1147,chexpert,Pleural Effusion,nan,nan
+1148,chexpert,Pleural Effusion,nan,nan
+1153,chexpert,Pleural Effusion,nan,nan
+1172,chexpert,Pleural Effusion,nan,nan
+1188,chexpert,Pleural Effusion,nan,nan
+1195,chexpert,Pleural Effusion,nan,nan
+1203,chexpert,Pleural Effusion,nan,nan
+1216,chexpert,Pleural Effusion,nan,nan
+1237,chexpert,Pleural Effusion,nan,nan
+1240,chexpert,Pleural Effusion,nan,nan
+1243,chexpert,Pleural Effusion,nan,nan
+1285,chexpert,Pleural Effusion,nan,nan
+1308,chexpert,Pleural Effusion,nan,nan
+1310,chexpert,Pleural Effusion,nan,nan
+1314,chexpert,Pleural Effusion,nan,nan
+1349,chexpert,Pleural Effusion,nan,nan
+1384,chexpert,Pleural Effusion,nan,nan
+1385,chexpert,Pleural Effusion,nan,nan
+1390,chexpert,Pleural Effusion,nan,nan
+1397,chexpert,Pleural Effusion,nan,nan
+1416,chexpert,Pleural Effusion,nan,nan
+1424,chexpert,Pleural Effusion,nan,nan
+1445,chexpert,Pleural Effusion,nan,nan
+1461,chexpert,Pleural Effusion,nan,nan
+1485,chexpert,Pleural Effusion,nan,nan
+1502,chexpert,Pleural Effusion,nan,nan
+1517,chexpert,Pleural Effusion,nan,nan
+1520,chexpert,Pleural Effusion,nan,nan
+1523,chexpert,Pleural Effusion,nan,nan
+1528,chexpert,Pleural Effusion,nan,nan
+1553,chexpert,Pleural Effusion,nan,nan
+1584,chexpert,Pleural Effusion,nan,nan
+1589,chexpert,Pleural Effusion,nan,nan
+1591,chexpert,Pleural Effusion,nan,nan
+1628,chexpert,Pleural Effusion,nan,nan
+1632,chexpert,Pleural Effusion,nan,nan
+1639,chexpert,Pleural Effusion,nan,nan
+1663,chexpert,Pleural Effusion,nan,nan
+1705,chexpert,Pleural Effusion,nan,nan
+1744,chexpert,Pleural Effusion,nan,nan
+1781,chexpert,Pleural Effusion,nan,nan
+1789,chexpert,Pleural Effusion,nan,nan
+1800,chexpert,Pleural Effusion,nan,nan
+1816,chexpert,Pleural Effusion,nan,nan
+1844,chexpert,Pleural Effusion,nan,nan
+1858,chexpert,Pleural Effusion,nan,nan
+1875,chexpert,Pleural Effusion,nan,nan
+1877,chexpert,Pleural Effusion,nan,nan
+1887,chexpert,Pleural Effusion,nan,nan
+1899,chexpert,Pleural Effusion,nan,nan
+1906,chexpert,Pleural Effusion,nan,nan
+1912,chexpert,Pleural Effusion,nan,nan
+1969,chexpert,Pleural Effusion,nan,nan
+1992,chexpert,Pleural Effusion,nan,nan
+2055,chexpert,Pleural Effusion,nan,nan
+2086,chexpert,Pleural Effusion,nan,nan
+2103,chexpert,Pleural Effusion,nan,nan
+2157,chexpert,Pleural Effusion,nan,nan
+2184,chexpert,Pleural Effusion,nan,nan
+2185,chexpert,Pleural Effusion,nan,nan
+2195,chexpert,Pleural Effusion,nan,nan
+2202,chexpert,Pleural Effusion,nan,nan
+2219,chexpert,Pleural Effusion,nan,nan
+2272,chexpert,Pleural Effusion,nan,nan
+2286,chexpert,Pleural Effusion,nan,nan
+2288,chexpert,Pleural Effusion,nan,nan
+2300,chexpert,Pleural Effusion,nan,nan
+2315,chexpert,Pleural Effusion,nan,nan
+2325,chexpert,Pleural Effusion,nan,nan
+2355,chexpert,Pleural Effusion,nan,nan
+2357,chexpert,Pleural Effusion,nan,nan
+2363,chexpert,Pleural Effusion,nan,nan
+2377,chexpert,Pleural Effusion,nan,nan
+2402,chexpert,Pleural Effusion,nan,nan
+2404,chexpert,Pleural Effusion,nan,nan
+2457,chexpert,Pleural Effusion,nan,nan
+2473,chexpert,Pleural Effusion,nan,nan
+2512,chexpert,Pleural Effusion,nan,nan
+2515,chexpert,Pleural Effusion,nan,nan
+2535,chexpert,Pleural Effusion,nan,nan
+2612,chexpert,Pleural Effusion,nan,nan
+2619,chexpert,Pleural Effusion,nan,nan
+2640,chexpert,Pleural Effusion,nan,nan
+2646,chexpert,Pleural Effusion,nan,nan
+2682,chexpert,Pleural Effusion,nan,nan
+2683,chexpert,Pleural Effusion,nan,nan
+2714,chexpert,Pleural Effusion,nan,nan
+2725,chexpert,Pleural Effusion,nan,nan
+2744,chexpert,Pleural Effusion,nan,nan
+2814,chexpert,Pleural Effusion,nan,nan
+2830,chexpert,Pleural Effusion,nan,nan
+2833,chexpert,Pleural Effusion,nan,nan
+2835,chexpert,Pleural Effusion,nan,nan
+2850,chexpert,Pleural Effusion,nan,nan
+2852,chexpert,Pleural Effusion,nan,nan
+2884,chexpert,Pleural Effusion,nan,nan
+2891,chexpert,Pleural Effusion,nan,nan
+2921,chexpert,Pleural Effusion,nan,nan
+2939,chexpert,Pleural Effusion,nan,nan
+2982,chexpert,Pleural Effusion,nan,nan
+2992,chexpert,Pleural Effusion,nan,nan
+3006,chexpert,Pleural Effusion,nan,nan
+3012,chexpert,Pleural Effusion,nan,nan
+3016,chexpert,Pleural Effusion,nan,nan
+3023,chexpert,Pleural Effusion,nan,nan
+3080,chexpert,Pleural Effusion,nan,nan
+3089,chexpert,Pleural Effusion,nan,nan
+3105,chexpert,Pleural Effusion,nan,nan
+3109,chexpert,Pleural Effusion,nan,nan
+3112,chexpert,Pleural Effusion,nan,nan
+3115,chexpert,Pleural Effusion,nan,nan
+3137,chexpert,Pleural Effusion,nan,nan
+3139,chexpert,Pleural Effusion,nan,nan
+3164,chexpert,Pleural Effusion,nan,nan
+3166,chexpert,Pleural Effusion,nan,nan
+3184,chexpert,Pleural Effusion,nan,nan
+3221,chexpert,Pleural Effusion,nan,nan
+3237,chexpert,Pleural Effusion,nan,nan
+3248,chexpert,Pleural Effusion,nan,nan
+3250,chexpert,Pleural Effusion,nan,nan
+3265,chexpert,Pleural Effusion,nan,nan
+3272,chexpert,Pleural Effusion,nan,nan
+3279,chexpert,Pleural Effusion,nan,nan
+3321,chexpert,Pleural Effusion,nan,nan
+3342,chexpert,Pleural Effusion,nan,nan
+3344,chexpert,Pleural Effusion,nan,nan
+3348,chexpert,Pleural Effusion,nan,nan
+3357,chexpert,Pleural Effusion,nan,nan
+3362,chexpert,Pleural Effusion,nan,nan
+3373,chexpert,Pleural Effusion,nan,nan
+3406,chexpert,Pleural Effusion,nan,nan
+3441,chexpert,Pleural Effusion,nan,nan
+3455,chexpert,Pleural Effusion,nan,nan
+3470,chexpert,Pleural Effusion,nan,nan
+3506,chexpert,Pleural Effusion,nan,nan
+3512,chexpert,Pleural Effusion,nan,nan
+3520,chexpert,Pleural Effusion,nan,nan
+3534,chexpert,Pleural Effusion,nan,nan
+3554,chexpert,Pleural Effusion,nan,nan
+3562,chexpert,Pleural Effusion,nan,nan
+3564,chexpert,Pleural Effusion,nan,nan
+3569,chexpert,Pleural Effusion,nan,nan
+3575,chexpert,Pleural Effusion,nan,nan
+3593,chexpert,Pleural Effusion,nan,nan
+3597,chexpert,Pleural Effusion,nan,nan
+3599,chexpert,Pleural Effusion,nan,nan
+3622,chexpert,Pleural Effusion,nan,nan
+3630,chexpert,Pleural Effusion,nan,nan
+3669,chexpert,Pleural Effusion,nan,nan
+3684,chexpert,Pleural Effusion,nan,nan
+3694,chexpert,Pleural Effusion,nan,nan
+3726,chexpert,Pleural Effusion,nan,nan
+3757,chexpert,Pleural Effusion,nan,nan
+3785,chexpert,Pleural Effusion,nan,nan
+3786,chexpert,Pleural Effusion,nan,nan
+3793,chexpert,Pleural Effusion,nan,nan
+3801,chexpert,Pleural Effusion,nan,nan
+3805,chexpert,Pleural Effusion,nan,nan
+3816,chexpert,Pleural Effusion,nan,nan
+3832,chexpert,Pleural Effusion,nan,nan
+3845,chexpert,Pleural Effusion,nan,nan
+3856,chexpert,Pleural Effusion,nan,nan
+3886,chexpert,Pleural Effusion,nan,nan
+3893,chexpert,Pleural Effusion,nan,nan
+3955,chexpert,Pleural Effusion,nan,nan
+3959,chexpert,Pleural Effusion,nan,nan
+3969,chexpert,Pleural Effusion,nan,nan
+3973,chexpert,Pleural Effusion,nan,nan
+3986,chexpert,Pleural Effusion,nan,nan
+3987,chexpert,Pleural Effusion,nan,nan
+4001,chexpert,Pleural Effusion,nan,nan
+4014,chexpert,Pleural Effusion,nan,nan
+4032,chexpert,Pleural Effusion,nan,nan
+16,chexpert,Pleural Other,nan,nan
+18,chexpert,Pleural Other,nan,nan
+55,chexpert,Pleural Other,nan,nan
+66,chexpert,Pleural Other,nan,nan
+74,chexpert,Pleural Other,nan,nan
+88,chexpert,Pleural Other,nan,nan
+95,chexpert,Pleural Other,nan,nan
+116,chexpert,Pleural Other,nan,nan
+126,chexpert,Pleural Other,nan,nan
+128,chexpert,Pleural Other,nan,nan
+130,chexpert,Pleural Other,nan,nan
+138,chexpert,Pleural Other,nan,nan
+147,chexpert,Pleural Other,nan,nan
+155,chexpert,Pleural Other,nan,nan
+156,chexpert,Pleural Other,nan,nan
+173,chexpert,Pleural Other,nan,nan
+176,chexpert,Pleural Other,nan,nan
+197,chexpert,Pleural Other,nan,nan
+200,chexpert,Pleural Other,nan,nan
+203,chexpert,Pleural Other,nan,nan
+207,chexpert,Pleural Other,nan,nan
+215,chexpert,Pleural Other,nan,nan
+231,chexpert,Pleural Other,nan,nan
+245,chexpert,Pleural Other,nan,nan
+311,chexpert,Pleural Other,nan,nan
+335,chexpert,Pleural Other,nan,nan
+347,chexpert,Pleural Other,nan,nan
+350,chexpert,Pleural Other,nan,nan
+370,chexpert,Pleural Other,nan,nan
+374,chexpert,Pleural Other,nan,nan
+404,chexpert,Pleural Other,nan,nan
+410,chexpert,Pleural Other,nan,nan
+413,chexpert,Pleural Other,nan,nan
+416,chexpert,Pleural Other,nan,nan
+447,chexpert,Pleural Other,nan,nan
+463,chexpert,Pleural Other,nan,nan
+471,chexpert,Pleural Other,nan,nan
+519,chexpert,Pleural Other,nan,nan
+546,chexpert,Pleural Other,nan,nan
+575,chexpert,Pleural Other,nan,nan
+628,chexpert,Pleural Other,nan,nan
+630,chexpert,Pleural Other,nan,nan
+641,chexpert,Pleural Other,nan,nan
+648,chexpert,Pleural Other,nan,nan
+663,chexpert,Pleural Other,nan,nan
+669,chexpert,Pleural Other,nan,nan
+685,chexpert,Pleural Other,nan,nan
+714,chexpert,Pleural Other,nan,nan
+715,chexpert,Pleural Other,nan,nan
+718,chexpert,Pleural Other,nan,nan
+735,chexpert,Pleural Other,nan,nan
+736,chexpert,Pleural Other,nan,nan
+738,chexpert,Pleural Other,nan,nan
+753,chexpert,Pleural Other,nan,nan
+761,chexpert,Pleural Other,nan,nan
+776,chexpert,Pleural Other,nan,nan
+801,chexpert,Pleural Other,nan,nan
+818,chexpert,Pleural Other,nan,nan
+821,chexpert,Pleural Other,nan,nan
+830,chexpert,Pleural Other,nan,nan
+856,chexpert,Pleural Other,nan,nan
+884,chexpert,Pleural Other,nan,nan
+905,chexpert,Pleural Other,nan,nan
+915,chexpert,Pleural Other,nan,nan
+922,chexpert,Pleural Other,nan,nan
+935,chexpert,Pleural Other,nan,nan
+946,chexpert,Pleural Other,nan,nan
+963,chexpert,Pleural Other,nan,nan
+969,chexpert,Pleural Other,nan,nan
+1012,chexpert,Pleural Other,nan,nan
+1063,chexpert,Pleural Other,nan,nan
+1064,chexpert,Pleural Other,nan,nan
+1084,chexpert,Pleural Other,nan,nan
+1092,chexpert,Pleural Other,nan,nan
+1097,chexpert,Pleural Other,nan,nan
+1104,chexpert,Pleural Other,nan,nan
+1105,chexpert,Pleural Other,nan,nan
+1120,chexpert,Pleural Other,nan,nan
+1144,chexpert,Pleural Other,nan,nan
+1147,chexpert,Pleural Other,nan,nan
+1148,chexpert,Pleural Other,nan,nan
+1153,chexpert,Pleural Other,nan,nan
+1172,chexpert,Pleural Other,nan,nan
+1188,chexpert,Pleural Other,nan,nan
+1195,chexpert,Pleural Other,nan,nan
+1203,chexpert,Pleural Other,nan,nan
+1216,chexpert,Pleural Other,nan,nan
+1237,chexpert,Pleural Other,nan,nan
+1240,chexpert,Pleural Other,nan,nan
+1243,chexpert,Pleural Other,nan,nan
+1285,chexpert,Pleural Other,nan,nan
+1308,chexpert,Pleural Other,nan,nan
+1310,chexpert,Pleural Other,nan,nan
+1314,chexpert,Pleural Other,nan,nan
+1349,chexpert,Pleural Other,nan,nan
+1384,chexpert,Pleural Other,nan,nan
+1385,chexpert,Pleural Other,nan,nan
+1390,chexpert,Pleural Other,nan,nan
+1397,chexpert,Pleural Other,nan,nan
+1416,chexpert,Pleural Other,nan,nan
+1424,chexpert,Pleural Other,nan,nan
+1445,chexpert,Pleural Other,nan,nan
+1461,chexpert,Pleural Other,nan,nan
+1485,chexpert,Pleural Other,nan,nan
+1502,chexpert,Pleural Other,nan,nan
+1517,chexpert,Pleural Other,nan,nan
+1520,chexpert,Pleural Other,nan,nan
+1523,chexpert,Pleural Other,nan,nan
+1528,chexpert,Pleural Other,nan,nan
+1553,chexpert,Pleural Other,nan,nan
+1584,chexpert,Pleural Other,nan,nan
+1589,chexpert,Pleural Other,nan,nan
+1591,chexpert,Pleural Other,nan,nan
+1628,chexpert,Pleural Other,nan,nan
+1632,chexpert,Pleural Other,nan,nan
+1639,chexpert,Pleural Other,nan,nan
+1663,chexpert,Pleural Other,nan,nan
+1705,chexpert,Pleural Other,nan,nan
+1744,chexpert,Pleural Other,nan,nan
+1781,chexpert,Pleural Other,nan,nan
+1789,chexpert,Pleural Other,nan,nan
+1800,chexpert,Pleural Other,nan,nan
+1816,chexpert,Pleural Other,nan,nan
+1844,chexpert,Pleural Other,nan,nan
+1858,chexpert,Pleural Other,nan,nan
+1875,chexpert,Pleural Other,nan,nan
+1877,chexpert,Pleural Other,nan,nan
+1887,chexpert,Pleural Other,nan,nan
+1899,chexpert,Pleural Other,nan,nan
+1906,chexpert,Pleural Other,nan,nan
+1912,chexpert,Pleural Other,nan,nan
+1969,chexpert,Pleural Other,nan,nan
+1992,chexpert,Pleural Other,nan,nan
+2055,chexpert,Pleural Other,nan,nan
+2086,chexpert,Pleural Other,nan,nan
+2103,chexpert,Pleural Other,nan,nan
+2157,chexpert,Pleural Other,nan,nan
+2184,chexpert,Pleural Other,nan,nan
+2185,chexpert,Pleural Other,nan,nan
+2195,chexpert,Pleural Other,nan,nan
+2202,chexpert,Pleural Other,nan,nan
+2219,chexpert,Pleural Other,nan,nan
+2272,chexpert,Pleural Other,nan,nan
+2286,chexpert,Pleural Other,nan,nan
+2288,chexpert,Pleural Other,nan,nan
+2300,chexpert,Pleural Other,nan,nan
+2315,chexpert,Pleural Other,nan,nan
+2325,chexpert,Pleural Other,nan,nan
+2355,chexpert,Pleural Other,nan,nan
+2357,chexpert,Pleural Other,nan,nan
+2363,chexpert,Pleural Other,nan,nan
+2377,chexpert,Pleural Other,nan,nan
+2402,chexpert,Pleural Other,nan,nan
+2404,chexpert,Pleural Other,nan,nan
+2457,chexpert,Pleural Other,nan,nan
+2473,chexpert,Pleural Other,nan,nan
+2512,chexpert,Pleural Other,nan,nan
+2515,chexpert,Pleural Other,nan,nan
+2535,chexpert,Pleural Other,nan,nan
+2612,chexpert,Pleural Other,nan,nan
+2619,chexpert,Pleural Other,nan,nan
+2640,chexpert,Pleural Other,nan,nan
+2646,chexpert,Pleural Other,nan,nan
+2682,chexpert,Pleural Other,nan,nan
+2683,chexpert,Pleural Other,nan,nan
+2714,chexpert,Pleural Other,nan,nan
+2725,chexpert,Pleural Other,nan,nan
+2744,chexpert,Pleural Other,nan,nan
+2814,chexpert,Pleural Other,nan,nan
+2830,chexpert,Pleural Other,nan,nan
+2833,chexpert,Pleural Other,nan,nan
+2835,chexpert,Pleural Other,nan,nan
+2850,chexpert,Pleural Other,nan,nan
+2852,chexpert,Pleural Other,nan,nan
+2884,chexpert,Pleural Other,nan,nan
+2891,chexpert,Pleural Other,nan,nan
+2921,chexpert,Pleural Other,nan,nan
+2939,chexpert,Pleural Other,nan,nan
+2982,chexpert,Pleural Other,nan,nan
+2992,chexpert,Pleural Other,nan,nan
+3006,chexpert,Pleural Other,nan,nan
+3012,chexpert,Pleural Other,nan,nan
+3016,chexpert,Pleural Other,nan,nan
+3023,chexpert,Pleural Other,nan,nan
+3080,chexpert,Pleural Other,nan,nan
+3089,chexpert,Pleural Other,nan,nan
+3105,chexpert,Pleural Other,nan,nan
+3109,chexpert,Pleural Other,nan,nan
+3112,chexpert,Pleural Other,nan,nan
+3115,chexpert,Pleural Other,nan,nan
+3137,chexpert,Pleural Other,nan,nan
+3139,chexpert,Pleural Other,nan,nan
+3164,chexpert,Pleural Other,nan,nan
+3166,chexpert,Pleural Other,nan,nan
+3184,chexpert,Pleural Other,nan,nan
+3221,chexpert,Pleural Other,nan,nan
+3237,chexpert,Pleural Other,nan,nan
+3248,chexpert,Pleural Other,nan,nan
+3250,chexpert,Pleural Other,nan,nan
+3265,chexpert,Pleural Other,nan,nan
+3272,chexpert,Pleural Other,nan,nan
+3279,chexpert,Pleural Other,nan,nan
+3321,chexpert,Pleural Other,nan,nan
+3342,chexpert,Pleural Other,nan,nan
+3344,chexpert,Pleural Other,nan,nan
+3348,chexpert,Pleural Other,nan,nan
+3357,chexpert,Pleural Other,nan,nan
+3362,chexpert,Pleural Other,nan,nan
+3373,chexpert,Pleural Other,nan,nan
+3406,chexpert,Pleural Other,nan,nan
+3441,chexpert,Pleural Other,nan,nan
+3455,chexpert,Pleural Other,nan,nan
+3470,chexpert,Pleural Other,nan,nan
+3506,chexpert,Pleural Other,nan,nan
+3512,chexpert,Pleural Other,nan,nan
+3520,chexpert,Pleural Other,nan,nan
+3534,chexpert,Pleural Other,nan,nan
+3554,chexpert,Pleural Other,nan,nan
+3562,chexpert,Pleural Other,nan,nan
+3564,chexpert,Pleural Other,nan,nan
+3569,chexpert,Pleural Other,nan,nan
+3575,chexpert,Pleural Other,nan,nan
+3593,chexpert,Pleural Other,nan,nan
+3597,chexpert,Pleural Other,nan,nan
+3599,chexpert,Pleural Other,nan,nan
+3622,chexpert,Pleural Other,nan,nan
+3630,chexpert,Pleural Other,nan,nan
+3669,chexpert,Pleural Other,nan,nan
+3684,chexpert,Pleural Other,nan,nan
+3694,chexpert,Pleural Other,nan,nan
+3726,chexpert,Pleural Other,nan,nan
+3757,chexpert,Pleural Other,nan,nan
+3785,chexpert,Pleural Other,nan,nan
+3786,chexpert,Pleural Other,nan,nan
+3793,chexpert,Pleural Other,nan,nan
+3801,chexpert,Pleural Other,nan,nan
+3805,chexpert,Pleural Other,nan,nan
+3816,chexpert,Pleural Other,nan,nan
+3832,chexpert,Pleural Other,nan,nan
+3845,chexpert,Pleural Other,nan,nan
+3856,chexpert,Pleural Other,nan,nan
+3886,chexpert,Pleural Other,nan,nan
+3893,chexpert,Pleural Other,nan,nan
+3955,chexpert,Pleural Other,nan,nan
+3959,chexpert,Pleural Other,nan,nan
+3969,chexpert,Pleural Other,nan,nan
+3973,chexpert,Pleural Other,nan,nan
+3986,chexpert,Pleural Other,nan,nan
+3987,chexpert,Pleural Other,nan,nan
+4001,chexpert,Pleural Other,nan,nan
+4014,chexpert,Pleural Other,nan,nan
+4032,chexpert,Pleural Other,nan,nan
+16,chexpert,Fracture,nan,nan
+18,chexpert,Fracture,nan,nan
+55,chexpert,Fracture,nan,nan
+66,chexpert,Fracture,nan,nan
+74,chexpert,Fracture,nan,nan
+88,chexpert,Fracture,nan,nan
+95,chexpert,Fracture,nan,nan
+116,chexpert,Fracture,nan,nan
+126,chexpert,Fracture,nan,nan
+128,chexpert,Fracture,nan,nan
+130,chexpert,Fracture,nan,nan
+138,chexpert,Fracture,nan,nan
+147,chexpert,Fracture,nan,nan
+155,chexpert,Fracture,nan,nan
+156,chexpert,Fracture,nan,nan
+173,chexpert,Fracture,nan,nan
+176,chexpert,Fracture,nan,nan
+197,chexpert,Fracture,nan,nan
+200,chexpert,Fracture,nan,nan
+203,chexpert,Fracture,nan,nan
+207,chexpert,Fracture,nan,nan
+215,chexpert,Fracture,nan,nan
+231,chexpert,Fracture,nan,nan
+245,chexpert,Fracture,nan,nan
+311,chexpert,Fracture,nan,nan
+335,chexpert,Fracture,nan,nan
+347,chexpert,Fracture,nan,nan
+350,chexpert,Fracture,nan,nan
+370,chexpert,Fracture,nan,nan
+374,chexpert,Fracture,nan,nan
+404,chexpert,Fracture,nan,nan
+410,chexpert,Fracture,nan,nan
+413,chexpert,Fracture,nan,nan
+416,chexpert,Fracture,nan,nan
+447,chexpert,Fracture,nan,nan
+463,chexpert,Fracture,nan,nan
+471,chexpert,Fracture,nan,nan
+519,chexpert,Fracture,nan,nan
+546,chexpert,Fracture,nan,nan
+575,chexpert,Fracture,nan,nan
+628,chexpert,Fracture,nan,nan
+630,chexpert,Fracture,nan,nan
+641,chexpert,Fracture,nan,nan
+648,chexpert,Fracture,nan,nan
+663,chexpert,Fracture,nan,nan
+669,chexpert,Fracture,nan,nan
+685,chexpert,Fracture,nan,nan
+714,chexpert,Fracture,nan,nan
+715,chexpert,Fracture,nan,nan
+718,chexpert,Fracture,nan,nan
+735,chexpert,Fracture,nan,nan
+736,chexpert,Fracture,nan,nan
+738,chexpert,Fracture,nan,nan
+753,chexpert,Fracture,nan,nan
+761,chexpert,Fracture,nan,nan
+776,chexpert,Fracture,nan,nan
+801,chexpert,Fracture,nan,nan
+818,chexpert,Fracture,nan,nan
+821,chexpert,Fracture,nan,nan
+830,chexpert,Fracture,nan,nan
+856,chexpert,Fracture,nan,nan
+884,chexpert,Fracture,nan,nan
+905,chexpert,Fracture,nan,nan
+915,chexpert,Fracture,nan,nan
+922,chexpert,Fracture,nan,nan
+935,chexpert,Fracture,nan,nan
+946,chexpert,Fracture,nan,nan
+963,chexpert,Fracture,nan,nan
+969,chexpert,Fracture,nan,nan
+1012,chexpert,Fracture,nan,nan
+1063,chexpert,Fracture,nan,nan
+1064,chexpert,Fracture,nan,nan
+1084,chexpert,Fracture,nan,nan
+1092,chexpert,Fracture,nan,nan
+1097,chexpert,Fracture,nan,nan
+1104,chexpert,Fracture,nan,nan
+1105,chexpert,Fracture,nan,nan
+1120,chexpert,Fracture,nan,nan
+1144,chexpert,Fracture,nan,nan
+1147,chexpert,Fracture,nan,nan
+1148,chexpert,Fracture,nan,nan
+1153,chexpert,Fracture,nan,nan
+1172,chexpert,Fracture,nan,nan
+1188,chexpert,Fracture,nan,nan
+1195,chexpert,Fracture,nan,nan
+1203,chexpert,Fracture,nan,nan
+1216,chexpert,Fracture,nan,nan
+1237,chexpert,Fracture,nan,nan
+1240,chexpert,Fracture,nan,nan
+1243,chexpert,Fracture,nan,nan
+1285,chexpert,Fracture,nan,nan
+1308,chexpert,Fracture,nan,nan
+1310,chexpert,Fracture,nan,nan
+1314,chexpert,Fracture,nan,nan
+1349,chexpert,Fracture,nan,nan
+1384,chexpert,Fracture,nan,nan
+1385,chexpert,Fracture,nan,nan
+1390,chexpert,Fracture,nan,nan
+1397,chexpert,Fracture,nan,nan
+1416,chexpert,Fracture,nan,nan
+1424,chexpert,Fracture,nan,nan
+1445,chexpert,Fracture,nan,nan
+1461,chexpert,Fracture,nan,nan
+1485,chexpert,Fracture,nan,nan
+1502,chexpert,Fracture,nan,nan
+1517,chexpert,Fracture,nan,nan
+1520,chexpert,Fracture,nan,nan
+1523,chexpert,Fracture,nan,nan
+1528,chexpert,Fracture,nan,nan
+1553,chexpert,Fracture,nan,nan
+1584,chexpert,Fracture,nan,nan
+1589,chexpert,Fracture,nan,nan
+1591,chexpert,Fracture,nan,nan
+1628,chexpert,Fracture,nan,nan
+1632,chexpert,Fracture,nan,nan
+1639,chexpert,Fracture,nan,nan
+1663,chexpert,Fracture,nan,nan
+1705,chexpert,Fracture,nan,nan
+1744,chexpert,Fracture,nan,nan
+1781,chexpert,Fracture,nan,nan
+1789,chexpert,Fracture,nan,nan
+1800,chexpert,Fracture,nan,nan
+1816,chexpert,Fracture,nan,nan
+1844,chexpert,Fracture,nan,nan
+1858,chexpert,Fracture,nan,nan
+1875,chexpert,Fracture,nan,nan
+1877,chexpert,Fracture,nan,nan
+1887,chexpert,Fracture,nan,nan
+1899,chexpert,Fracture,nan,nan
+1906,chexpert,Fracture,nan,nan
+1912,chexpert,Fracture,nan,nan
+1969,chexpert,Fracture,nan,nan
+1992,chexpert,Fracture,nan,nan
+2055,chexpert,Fracture,nan,nan
+2086,chexpert,Fracture,nan,nan
+2103,chexpert,Fracture,nan,nan
+2157,chexpert,Fracture,nan,nan
+2184,chexpert,Fracture,nan,nan
+2185,chexpert,Fracture,nan,nan
+2195,chexpert,Fracture,nan,nan
+2202,chexpert,Fracture,nan,nan
+2219,chexpert,Fracture,nan,nan
+2272,chexpert,Fracture,nan,nan
+2286,chexpert,Fracture,nan,nan
+2288,chexpert,Fracture,nan,nan
+2300,chexpert,Fracture,nan,nan
+2315,chexpert,Fracture,nan,nan
+2325,chexpert,Fracture,nan,nan
+2355,chexpert,Fracture,nan,nan
+2357,chexpert,Fracture,nan,nan
+2363,chexpert,Fracture,nan,nan
+2377,chexpert,Fracture,nan,nan
+2402,chexpert,Fracture,nan,nan
+2404,chexpert,Fracture,nan,nan
+2457,chexpert,Fracture,nan,nan
+2473,chexpert,Fracture,nan,nan
+2512,chexpert,Fracture,nan,nan
+2515,chexpert,Fracture,nan,nan
+2535,chexpert,Fracture,nan,nan
+2612,chexpert,Fracture,nan,nan
+2619,chexpert,Fracture,nan,nan
+2640,chexpert,Fracture,nan,nan
+2646,chexpert,Fracture,nan,nan
+2682,chexpert,Fracture,nan,nan
+2683,chexpert,Fracture,nan,nan
+2714,chexpert,Fracture,nan,nan
+2725,chexpert,Fracture,nan,nan
+2744,chexpert,Fracture,nan,nan
+2814,chexpert,Fracture,nan,nan
+2830,chexpert,Fracture,nan,nan
+2833,chexpert,Fracture,nan,nan
+2835,chexpert,Fracture,nan,nan
+2850,chexpert,Fracture,nan,nan
+2852,chexpert,Fracture,nan,nan
+2884,chexpert,Fracture,nan,nan
+2891,chexpert,Fracture,nan,nan
+2921,chexpert,Fracture,nan,nan
+2939,chexpert,Fracture,nan,nan
+2982,chexpert,Fracture,nan,nan
+2992,chexpert,Fracture,nan,nan
+3006,chexpert,Fracture,nan,nan
+3012,chexpert,Fracture,nan,nan
+3016,chexpert,Fracture,nan,nan
+3023,chexpert,Fracture,nan,nan
+3080,chexpert,Fracture,nan,nan
+3089,chexpert,Fracture,nan,nan
+3105,chexpert,Fracture,nan,nan
+3109,chexpert,Fracture,nan,nan
+3112,chexpert,Fracture,nan,nan
+3115,chexpert,Fracture,nan,nan
+3137,chexpert,Fracture,nan,nan
+3139,chexpert,Fracture,nan,nan
+3164,chexpert,Fracture,nan,nan
+3166,chexpert,Fracture,nan,nan
+3184,chexpert,Fracture,nan,nan
+3221,chexpert,Fracture,nan,nan
+3237,chexpert,Fracture,nan,nan
+3248,chexpert,Fracture,nan,nan
+3250,chexpert,Fracture,nan,nan
+3265,chexpert,Fracture,nan,nan
+3272,chexpert,Fracture,nan,nan
+3279,chexpert,Fracture,nan,nan
+3321,chexpert,Fracture,nan,nan
+3342,chexpert,Fracture,nan,nan
+3344,chexpert,Fracture,nan,nan
+3348,chexpert,Fracture,nan,nan
+3357,chexpert,Fracture,nan,nan
+3362,chexpert,Fracture,nan,nan
+3373,chexpert,Fracture,nan,nan
+3406,chexpert,Fracture,nan,nan
+3441,chexpert,Fracture,nan,nan
+3455,chexpert,Fracture,nan,nan
+3470,chexpert,Fracture,nan,nan
+3506,chexpert,Fracture,nan,nan
+3512,chexpert,Fracture,nan,nan
+3520,chexpert,Fracture,nan,nan
+3534,chexpert,Fracture,nan,nan
+3554,chexpert,Fracture,nan,nan
+3562,chexpert,Fracture,nan,nan
+3564,chexpert,Fracture,nan,nan
+3569,chexpert,Fracture,nan,nan
+3575,chexpert,Fracture,nan,nan
+3593,chexpert,Fracture,nan,nan
+3597,chexpert,Fracture,nan,nan
+3599,chexpert,Fracture,nan,nan
+3622,chexpert,Fracture,nan,nan
+3630,chexpert,Fracture,nan,nan
+3669,chexpert,Fracture,nan,nan
+3684,chexpert,Fracture,nan,nan
+3694,chexpert,Fracture,nan,nan
+3726,chexpert,Fracture,nan,nan
+3757,chexpert,Fracture,nan,nan
+3785,chexpert,Fracture,nan,nan
+3786,chexpert,Fracture,nan,nan
+3793,chexpert,Fracture,nan,nan
+3801,chexpert,Fracture,nan,nan
+3805,chexpert,Fracture,nan,nan
+3816,chexpert,Fracture,nan,nan
+3832,chexpert,Fracture,nan,nan
+3845,chexpert,Fracture,nan,nan
+3856,chexpert,Fracture,nan,nan
+3886,chexpert,Fracture,nan,nan
+3893,chexpert,Fracture,nan,nan
+3955,chexpert,Fracture,nan,nan
+3959,chexpert,Fracture,nan,nan
+3969,chexpert,Fracture,nan,nan
+3973,chexpert,Fracture,nan,nan
+3986,chexpert,Fracture,nan,nan
+3987,chexpert,Fracture,nan,nan
+4001,chexpert,Fracture,nan,nan
+4014,chexpert,Fracture,nan,nan
+4032,chexpert,Fracture,nan,nan
+16,chexpert,Support Devices,nan,nan
+18,chexpert,Support Devices,nan,nan
+55,chexpert,Support Devices,nan,nan
+66,chexpert,Support Devices,nan,nan
+74,chexpert,Support Devices,nan,nan
+88,chexpert,Support Devices,nan,nan
+95,chexpert,Support Devices,nan,nan
+116,chexpert,Support Devices,nan,nan
+126,chexpert,Support Devices,nan,nan
+128,chexpert,Support Devices,nan,nan
+130,chexpert,Support Devices,nan,nan
+138,chexpert,Support Devices,nan,nan
+147,chexpert,Support Devices,nan,nan
+155,chexpert,Support Devices,nan,nan
+156,chexpert,Support Devices,nan,nan
+173,chexpert,Support Devices,nan,nan
+176,chexpert,Support Devices,nan,nan
+197,chexpert,Support Devices,nan,nan
+200,chexpert,Support Devices,nan,nan
+203,chexpert,Support Devices,nan,nan
+207,chexpert,Support Devices,nan,nan
+215,chexpert,Support Devices,nan,nan
+231,chexpert,Support Devices,nan,nan
+245,chexpert,Support Devices,nan,nan
+311,chexpert,Support Devices,nan,nan
+335,chexpert,Support Devices,nan,nan
+347,chexpert,Support Devices,nan,nan
+350,chexpert,Support Devices,nan,nan
+370,chexpert,Support Devices,nan,nan
+374,chexpert,Support Devices,nan,nan
+404,chexpert,Support Devices,nan,nan
+410,chexpert,Support Devices,nan,nan
+413,chexpert,Support Devices,nan,nan
+416,chexpert,Support Devices,nan,nan
+447,chexpert,Support Devices,nan,nan
+463,chexpert,Support Devices,nan,nan
+471,chexpert,Support Devices,nan,nan
+519,chexpert,Support Devices,nan,nan
+546,chexpert,Support Devices,nan,nan
+575,chexpert,Support Devices,nan,nan
+628,chexpert,Support Devices,nan,nan
+630,chexpert,Support Devices,nan,nan
+641,chexpert,Support Devices,nan,nan
+648,chexpert,Support Devices,nan,nan
+663,chexpert,Support Devices,nan,nan
+669,chexpert,Support Devices,nan,nan
+685,chexpert,Support Devices,nan,nan
+714,chexpert,Support Devices,nan,nan
+715,chexpert,Support Devices,nan,nan
+718,chexpert,Support Devices,nan,nan
+735,chexpert,Support Devices,nan,nan
+736,chexpert,Support Devices,nan,nan
+738,chexpert,Support Devices,nan,nan
+753,chexpert,Support Devices,nan,nan
+761,chexpert,Support Devices,nan,nan
+776,chexpert,Support Devices,nan,nan
+801,chexpert,Support Devices,nan,nan
+818,chexpert,Support Devices,nan,nan
+821,chexpert,Support Devices,nan,nan
+830,chexpert,Support Devices,nan,nan
+856,chexpert,Support Devices,nan,nan
+884,chexpert,Support Devices,nan,nan
+905,chexpert,Support Devices,nan,nan
+915,chexpert,Support Devices,nan,nan
+922,chexpert,Support Devices,nan,nan
+935,chexpert,Support Devices,nan,nan
+946,chexpert,Support Devices,nan,nan
+963,chexpert,Support Devices,nan,nan
+969,chexpert,Support Devices,nan,nan
+1012,chexpert,Support Devices,nan,nan
+1063,chexpert,Support Devices,nan,nan
+1064,chexpert,Support Devices,nan,nan
+1084,chexpert,Support Devices,nan,nan
+1092,chexpert,Support Devices,nan,nan
+1097,chexpert,Support Devices,nan,nan
+1104,chexpert,Support Devices,nan,nan
+1105,chexpert,Support Devices,nan,nan
+1120,chexpert,Support Devices,nan,nan
+1144,chexpert,Support Devices,nan,nan
+1147,chexpert,Support Devices,nan,nan
+1148,chexpert,Support Devices,nan,nan
+1153,chexpert,Support Devices,nan,nan
+1172,chexpert,Support Devices,nan,nan
+1188,chexpert,Support Devices,nan,nan
+1195,chexpert,Support Devices,nan,nan
+1203,chexpert,Support Devices,nan,nan
+1216,chexpert,Support Devices,nan,nan
+1237,chexpert,Support Devices,nan,nan
+1240,chexpert,Support Devices,nan,nan
+1243,chexpert,Support Devices,nan,nan
+1285,chexpert,Support Devices,nan,nan
+1308,chexpert,Support Devices,nan,nan
+1310,chexpert,Support Devices,nan,nan
+1314,chexpert,Support Devices,nan,nan
+1349,chexpert,Support Devices,nan,nan
+1384,chexpert,Support Devices,nan,nan
+1385,chexpert,Support Devices,nan,nan
+1390,chexpert,Support Devices,nan,nan
+1397,chexpert,Support Devices,nan,nan
+1416,chexpert,Support Devices,nan,nan
+1424,chexpert,Support Devices,nan,nan
+1445,chexpert,Support Devices,nan,nan
+1461,chexpert,Support Devices,nan,nan
+1485,chexpert,Support Devices,nan,nan
+1502,chexpert,Support Devices,nan,nan
+1517,chexpert,Support Devices,nan,nan
+1520,chexpert,Support Devices,nan,nan
+1523,chexpert,Support Devices,nan,nan
+1528,chexpert,Support Devices,nan,nan
+1553,chexpert,Support Devices,nan,nan
+1584,chexpert,Support Devices,nan,nan
+1589,chexpert,Support Devices,nan,nan
+1591,chexpert,Support Devices,nan,nan
+1628,chexpert,Support Devices,nan,nan
+1632,chexpert,Support Devices,nan,nan
+1639,chexpert,Support Devices,nan,nan
+1663,chexpert,Support Devices,nan,nan
+1705,chexpert,Support Devices,nan,nan
+1744,chexpert,Support Devices,nan,nan
+1781,chexpert,Support Devices,nan,nan
+1789,chexpert,Support Devices,nan,nan
+1800,chexpert,Support Devices,nan,nan
+1816,chexpert,Support Devices,nan,nan
+1844,chexpert,Support Devices,nan,nan
+1858,chexpert,Support Devices,nan,nan
+1875,chexpert,Support Devices,nan,nan
+1877,chexpert,Support Devices,nan,nan
+1887,chexpert,Support Devices,nan,nan
+1899,chexpert,Support Devices,nan,nan
+1906,chexpert,Support Devices,nan,nan
+1912,chexpert,Support Devices,nan,nan
+1969,chexpert,Support Devices,nan,nan
+1992,chexpert,Support Devices,nan,nan
+2055,chexpert,Support Devices,nan,nan
+2086,chexpert,Support Devices,nan,nan
+2103,chexpert,Support Devices,nan,nan
+2157,chexpert,Support Devices,nan,nan
+2184,chexpert,Support Devices,nan,nan
+2185,chexpert,Support Devices,nan,nan
+2195,chexpert,Support Devices,nan,nan
+2202,chexpert,Support Devices,nan,nan
+2219,chexpert,Support Devices,nan,nan
+2272,chexpert,Support Devices,nan,nan
+2286,chexpert,Support Devices,nan,nan
+2288,chexpert,Support Devices,nan,nan
+2300,chexpert,Support Devices,nan,nan
+2315,chexpert,Support Devices,nan,nan
+2325,chexpert,Support Devices,nan,nan
+2355,chexpert,Support Devices,nan,nan
+2357,chexpert,Support Devices,nan,nan
+2363,chexpert,Support Devices,nan,nan
+2377,chexpert,Support Devices,nan,nan
+2402,chexpert,Support Devices,nan,nan
+2404,chexpert,Support Devices,nan,nan
+2457,chexpert,Support Devices,nan,nan
+2473,chexpert,Support Devices,nan,nan
+2512,chexpert,Support Devices,nan,nan
+2515,chexpert,Support Devices,nan,nan
+2535,chexpert,Support Devices,nan,nan
+2612,chexpert,Support Devices,nan,nan
+2619,chexpert,Support Devices,nan,nan
+2640,chexpert,Support Devices,nan,nan
+2646,chexpert,Support Devices,nan,nan
+2682,chexpert,Support Devices,nan,nan
+2683,chexpert,Support Devices,nan,nan
+2714,chexpert,Support Devices,nan,nan
+2725,chexpert,Support Devices,nan,nan
+2744,chexpert,Support Devices,nan,nan
+2814,chexpert,Support Devices,nan,nan
+2830,chexpert,Support Devices,nan,nan
+2833,chexpert,Support Devices,nan,nan
+2835,chexpert,Support Devices,nan,nan
+2850,chexpert,Support Devices,nan,nan
+2852,chexpert,Support Devices,nan,nan
+2884,chexpert,Support Devices,nan,nan
+2891,chexpert,Support Devices,nan,nan
+2921,chexpert,Support Devices,nan,nan
+2939,chexpert,Support Devices,nan,nan
+2982,chexpert,Support Devices,nan,nan
+2992,chexpert,Support Devices,nan,nan
+3006,chexpert,Support Devices,nan,nan
+3012,chexpert,Support Devices,nan,nan
+3016,chexpert,Support Devices,nan,nan
+3023,chexpert,Support Devices,nan,nan
+3080,chexpert,Support Devices,nan,nan
+3089,chexpert,Support Devices,nan,nan
+3105,chexpert,Support Devices,nan,nan
+3109,chexpert,Support Devices,nan,nan
+3112,chexpert,Support Devices,nan,nan
+3115,chexpert,Support Devices,nan,nan
+3137,chexpert,Support Devices,nan,nan
+3139,chexpert,Support Devices,nan,nan
+3164,chexpert,Support Devices,nan,nan
+3166,chexpert,Support Devices,nan,nan
+3184,chexpert,Support Devices,nan,nan
+3221,chexpert,Support Devices,nan,nan
+3237,chexpert,Support Devices,nan,nan
+3248,chexpert,Support Devices,nan,nan
+3250,chexpert,Support Devices,nan,nan
+3265,chexpert,Support Devices,nan,nan
+3272,chexpert,Support Devices,nan,nan
+3279,chexpert,Support Devices,nan,nan
+3321,chexpert,Support Devices,nan,nan
+3342,chexpert,Support Devices,nan,nan
+3344,chexpert,Support Devices,nan,nan
+3348,chexpert,Support Devices,nan,nan
+3357,chexpert,Support Devices,nan,nan
+3362,chexpert,Support Devices,nan,nan
+3373,chexpert,Support Devices,nan,nan
+3406,chexpert,Support Devices,nan,nan
+3441,chexpert,Support Devices,nan,nan
+3455,chexpert,Support Devices,nan,nan
+3470,chexpert,Support Devices,nan,nan
+3506,chexpert,Support Devices,nan,nan
+3512,chexpert,Support Devices,nan,nan
+3520,chexpert,Support Devices,nan,nan
+3534,chexpert,Support Devices,nan,nan
+3554,chexpert,Support Devices,nan,nan
+3562,chexpert,Support Devices,nan,nan
+3564,chexpert,Support Devices,nan,nan
+3569,chexpert,Support Devices,nan,nan
+3575,chexpert,Support Devices,nan,nan
+3593,chexpert,Support Devices,nan,nan
+3597,chexpert,Support Devices,nan,nan
+3599,chexpert,Support Devices,nan,nan
+3622,chexpert,Support Devices,nan,nan
+3630,chexpert,Support Devices,nan,nan
+3669,chexpert,Support Devices,nan,nan
+3684,chexpert,Support Devices,nan,nan
+3694,chexpert,Support Devices,nan,nan
+3726,chexpert,Support Devices,nan,nan
+3757,chexpert,Support Devices,nan,nan
+3785,chexpert,Support Devices,nan,nan
+3786,chexpert,Support Devices,nan,nan
+3793,chexpert,Support Devices,nan,nan
+3801,chexpert,Support Devices,nan,nan
+3805,chexpert,Support Devices,nan,nan
+3816,chexpert,Support Devices,nan,nan
+3832,chexpert,Support Devices,nan,nan
+3845,chexpert,Support Devices,nan,nan
+3856,chexpert,Support Devices,nan,nan
+3886,chexpert,Support Devices,nan,nan
+3893,chexpert,Support Devices,nan,nan
+3955,chexpert,Support Devices,nan,nan
+3959,chexpert,Support Devices,nan,nan
+3969,chexpert,Support Devices,nan,nan
+3973,chexpert,Support Devices,nan,nan
+3986,chexpert,Support Devices,nan,nan
+3987,chexpert,Support Devices,nan,nan
+4001,chexpert,Support Devices,nan,nan
+4014,chexpert,Support Devices,nan,nan
+4032,chexpert,Support Devices,nan,nan
+16,rsna,pneumonia,0.5078794219203768,0.005763055039403903
+18,rsna,pneumonia,0.5007460382794815,0.004849591717942872
+55,rsna,pneumonia,0.5041410841279641,0.008143860528600177
+66,rsna,pneumonia,0.505076633280739,0.011121095535234798
+74,rsna,pneumonia,0.48806438796277235,0.008998715127557072
+88,rsna,pneumonia,0.5024537799272827,0.013044856922178523
+95,rsna,pneumonia,0.5097626683588301,0.012091982186812332
+116,rsna,pneumonia,0.5009013914614346,0.0036395274142234564
+126,rsna,pneumonia,0.49703228259129667,0.011860766835734768
+128,rsna,pneumonia,0.496142467585923,0.006728472241225662
+130,rsna,pneumonia,0.5073657702773776,0.010667927185227258
+138,rsna,pneumonia,0.49976446914088407,0.00881998674355465
+147,rsna,pneumonia,0.4905716196748302,0.00954097671336811
+155,rsna,pneumonia,0.49932999474057305,0.012412019973201013
+156,rsna,pneumonia,0.4910283894719993,0.009253849429716098
+173,rsna,pneumonia,0.4985556584573872,0.009978116522042425
+176,rsna,pneumonia,0.49646031991036105,0.007743035817463673
+197,rsna,pneumonia,0.503315296928952,0.00970961673433916
+200,rsna,pneumonia,0.502838518442295,0.00893724993295838
+203,rsna,pneumonia,0.4883618028400905,0.005411220160559495
+207,rsna,pneumonia,0.5028255127941277,0.011362050827361898
+215,rsna,pneumonia,0.4924670142461869,0.006654242161460652
+231,rsna,pneumonia,0.504121504196108,0.01479764584785972
+245,rsna,pneumonia,0.49839573186069386,0.005384274521502494
+311,rsna,pneumonia,0.49729353890832584,0.01230611372976632
+335,rsna,pneumonia,0.4847237943335392,0.007209340843445593
+347,rsna,pneumonia,0.5018382268871053,0.015913547567162668
+350,rsna,pneumonia,0.49043670393999683,0.008601961088128817
+370,rsna,pneumonia,0.49148901808785517,0.0025549145032421404
+374,rsna,pneumonia,0.49281473668564635,0.00695272831781068
+404,rsna,pneumonia,0.4913029372756169,0.009300780161015872
+410,rsna,pneumonia,0.49578431204408774,0.01226393655065951
+413,rsna,pneumonia,0.49407128238549314,0.010881179472226164
+416,rsna,pneumonia,0.5055548409595023,0.007076481849733885
+447,rsna,pneumonia,0.5020731860693787,0.006590122899222143
+463,rsna,pneumonia,0.5093367691111569,0.006258257105171668
+471,rsna,pneumonia,0.49305655599003,0.007748910314820571
+519,rsna,pneumonia,0.5055762788410967,0.009097426706992087
+546,rsna,pneumonia,0.5064190734261735,0.010505486446980135
+575,rsna,pneumonia,0.5049761610756672,0.013781194627307135
+628,rsna,pneumonia,0.5041152157508404,0.009853500081988589
+630,rsna,pneumonia,0.479704900413894,0.018194338006369614
+641,rsna,pneumonia,0.5048156628021312,0.011955662798737297
+648,rsna,pneumonia,0.49633612311632475,0.009983792731923178
+663,rsna,pneumonia,0.494331109510416,0.014242676101437878
+669,rsna,pneumonia,0.49326450344149453,0.008758143003774602
+685,rsna,pneumonia,0.49007869131737214,0.007746378813221739
+714,rsna,pneumonia,0.5006132663328074,0.006184226996121523
+715,rsna,pneumonia,0.503404192677963,0.006296190006874303
+718,rsna,pneumonia,0.5162744963527017,0.012362082802296214
+735,rsna,pneumonia,0.5035026640140862,0.0049635240130223
+736,rsna,pneumonia,0.5041249342571632,0.004325794245557896
+738,rsna,pneumonia,0.5004449075026869,0.008390216518133292
+753,rsna,pneumonia,0.5163503864535455,0.009070231516731059
+761,rsna,pneumonia,0.5048842640232329,0.008034742383045818
+776,rsna,pneumonia,0.5071663979785507,0.01365690605295978
+801,rsna,pneumonia,0.5078385470261371,0.012240481239531725
+818,rsna,pneumonia,0.4833876426333722,0.012279747834248065
+821,rsna,pneumonia,0.4882163110836707,0.01820574285904249
+830,rsna,pneumonia,0.5004470512908462,0.010293038588691307
+856,rsna,pneumonia,0.5041838169719421,0.008110946722689935
+884,rsna,pneumonia,0.4829415917770003,0.0046153657632117505
+905,rsna,pneumonia,0.483989189590908,0.00772284427633151
+915,rsna,pneumonia,0.4953595561500995,0.01584238778550102
+922,rsna,pneumonia,0.4962795271089159,0.007788698651923326
+935,rsna,pneumonia,0.4954217260067229,0.006193574231815783
+946,rsna,pneumonia,0.4939899613546454,0.011964597893806625
+963,rsna,pneumonia,0.49060220438590474,0.006101575299426343
+969,rsna,pneumonia,0.5049748748027716,0.012339385739693643
+1012,rsna,pneumonia,0.4905007317463584,0.0074018654687542625
+1063,rsna,pneumonia,0.4965011948046009,0.007784076961974192
+1064,rsna,pneumonia,0.49167238343509184,0.007024227767675031
+1084,rsna,pneumonia,0.49296851775628275,0.006327219185437838
+1092,rsna,pneumonia,0.49867571059431526,0.00797334328586588
+1097,rsna,pneumonia,0.4949187933045208,0.007264315003613742
+1104,rsna,pneumonia,0.4847356566280213,0.003791205225787086
+1105,rsna,pneumonia,0.4877948423315268,0.018681941747125577
+1120,rsna,pneumonia,0.4949991139008941,0.006371263525872589
+1144,rsna,pneumonia,0.5124151059888866,0.012008750563483701
+1147,rsna,pneumonia,0.48855903135075796,0.010303672542889839
+1148,rsna,pneumonia,0.5025013720244221,0.011199780978523812
+1153,rsna,pneumonia,0.5053504664883034,0.013658374354679282
+1172,rsna,pneumonia,0.5017713406965311,0.009941042264392824
+1188,rsna,pneumonia,0.504458650613981,0.010299621029068848
+1195,rsna,pneumonia,0.5077963858590016,0.012335165651176046
+1203,rsna,pneumonia,0.502022306830395,0.01487169017250119
+1216,rsna,pneumonia,0.505347179346459,0.0120509233174672
+1237,rsna,pneumonia,0.4959150831218129,0.009137359234877053
+1240,rsna,pneumonia,0.4905381765795431,0.00791036496460509
+1243,rsna,pneumonia,0.4967565914339942,0.00528433779565618
+1285,rsna,pneumonia,0.5059124248244953,0.008441302168948714
+1308,rsna,pneumonia,0.4925646280670463,0.01529271475446819
+1310,rsna,pneumonia,0.4962825284123391,0.008274808856749515
+1314,rsna,pneumonia,0.5013468706409641,0.007324229082502335
+1349,rsna,pneumonia,0.5066614644073999,0.006825024130832953
+1384,rsna,pneumonia,0.508864135281608,0.019549815347019453
+1385,rsna,pneumonia,0.5055592714550319,0.009129295039055081
+1390,rsna,pneumonia,0.5002586837712377,0.00759817065628589
+1397,rsna,pneumonia,0.48920088152569124,0.006331090039508819
+1416,rsna,pneumonia,0.49537456266721547,0.00302725703041752
+1424,rsna,pneumonia,0.4906230705906564,0.006227066796579107
+1445,rsna,pneumonia,0.4853999451190232,0.007037408679880653
+1461,rsna,pneumonia,0.4925692014817864,0.005530603872797851
+1485,rsna,pneumonia,0.5032965745123597,0.015291690497007295
+1502,rsna,pneumonia,0.5016154158377353,0.009626277080376583
+1517,rsna,pneumonia,0.4962149276257117,0.006464673256431042
+1520,rsna,pneumonia,0.4899306270151609,0.00737155733850991
+1523,rsna,pneumonia,0.4914534312044088,0.013980202516840595
+1528,rsna,pneumonia,0.502530241704969,0.008077807368617466
+1553,rsna,pneumonia,0.49789780133086375,0.013816346100354692
+1584,rsna,pneumonia,0.5059824552377032,0.0076598059185246465
+1589,rsna,pneumonia,0.5042688539022662,0.013453831127504928
+1591,rsna,pneumonia,0.49822637259609887,0.012482437357270058
+1628,rsna,pneumonia,0.49742002240973215,0.01306393743452148
+1632,rsna,pneumonia,0.4950029727195811,0.013855857998517178
+1639,rsna,pneumonia,0.5133482255150809,0.004575481791421423
+1663,rsna,pneumonia,0.5023207221421874,0.006460117253770578
+1705,rsna,pneumonia,0.489709673915529,0.007464383055029241
+1744,rsna,pneumonia,0.49430909995197914,0.008232943173974218
+1781,rsna,pneumonia,0.5029194107155106,0.007887949830191573
+1789,rsna,pneumonia,0.4919626523518786,0.007636757538012622
+1800,rsna,pneumonia,0.4902153220827331,0.008249026588973722
+1816,rsna,pneumonia,0.4866497736159704,0.013266853384373927
+1844,rsna,pneumonia,0.493691117285221,0.004999037081299644
+1858,rsna,pneumonia,0.4916772426882532,0.006368186008092503
+1875,rsna,pneumonia,0.4950677151219959,0.0035402085027355563
+1877,rsna,pneumonia,0.5046714573186071,0.009041913528204224
+1887,rsna,pneumonia,0.49746246941528893,0.010403789011628937
+1899,rsna,pneumonia,0.48918973382726216,0.020187027326587934
+1906,rsna,pneumonia,0.4991722119320391,0.007029787853300387
+1912,rsna,pneumonia,0.4915694816034392,0.012878593381498908
+1969,rsna,pneumonia,0.49122618965950926,0.009794360083198814
+1992,rsna,pneumonia,0.5073637694084289,0.010936743144876174
+2055,rsna,pneumonia,0.5135787542018247,0.011381808886041785
+2086,rsna,pneumonia,0.501232964030093,0.0023285586945716702
+2103,rsna,pneumonia,0.5081363906610872,0.007417340717511594
+2157,rsna,pneumonia,0.49447717294367843,0.004452079117470394
+2184,rsna,pneumonia,0.5111691363106263,0.006798329312136227
+2185,rsna,pneumonia,0.5068631234135967,0.0096041504563736
+2195,rsna,pneumonia,0.48457673046580235,0.0039006920650980314
+2202,rsna,pneumonia,0.4870029269854337,0.00864629507468162
+2219,rsna,pneumonia,0.4906337895314536,0.002798408216478754
+2272,rsna,pneumonia,0.4825131199835357,0.013594729290215829
+2286,rsna,pneumonia,0.49598039720107023,0.010011194721716929
+2288,rsna,pneumonia,0.48964078685600604,0.010548534888566915
+2300,rsna,pneumonia,0.507816680386911,0.004427075249823744
+2315,rsna,pneumonia,0.5162481992179461,0.011597805096264046
+2325,rsna,pneumonia,0.5019674258535135,0.012104958258231208
+2355,rsna,pneumonia,0.49989495438018794,0.009678413073040954
+2357,rsna,pneumonia,0.5048548226658436,0.009161085107323629
+2363,rsna,pneumonia,0.5058804109213144,0.013631983459404907
+2377,rsna,pneumonia,0.5086203151082757,0.012626601395009327
+2402,rsna,pneumonia,0.5057336328919988,0.012750835915533072
+2404,rsna,pneumonia,0.5067875191511743,0.0070763328352586
+2457,rsna,pneumonia,0.49354634012485415,0.0055897651782431884
+2473,rsna,pneumonia,0.48734135967620223,0.010593313716756989
+2512,rsna,pneumonia,0.49426036450115485,0.010012638858368311
+2515,rsna,pneumonia,0.4977212961057374,0.003999344137284222
+2535,rsna,pneumonia,0.5101657005328029,0.005829519038614668
+2612,rsna,pneumonia,0.48544553634721355,0.012618890718827214
+2619,rsna,pneumonia,0.4882659040497588,0.017521361597042873
+2640,rsna,pneumonia,0.4915671948960691,0.016016428452937225
+2646,rsna,pneumonia,0.5071256660035216,0.008021212024919892
+2682,rsna,pneumonia,0.5081143811026503,0.025004148371963433
+2683,rsna,pneumonia,0.5070503475795203,0.013444953234980881
+2714,rsna,pneumonia,0.5051606697765887,0.007103899194265555
+2725,rsna,pneumonia,0.5131499965699391,0.01273250074289447
+2744,rsna,pneumonia,0.5005438075964419,0.014202153413461543
+2814,rsna,pneumonia,0.4916260776108482,0.010302592261946875
+2830,rsna,pneumonia,0.49444401568681257,0.016367485331260912
+2833,rsna,pneumonia,0.4842322951681874,0.008634507872889326
+2835,rsna,pneumonia,0.5034462109258878,0.01952639955581879
+2850,rsna,pneumonia,0.5060426242253778,0.008724440965660812
+2852,rsna,pneumonia,0.49614018087855294,0.005619295982274268
+2884,rsna,pneumonia,0.5104312444261507,0.011070996971952848
+2891,rsna,pneumonia,0.50429700898676,0.013023438859334506
+2921,rsna,pneumonia,0.5115004230408634,0.01539140771848426
+2939,rsna,pneumonia,0.49210128398618824,0.012532773428796582
+2982,rsna,pneumonia,0.4922569230065628,0.00890295957847342
+2992,rsna,pneumonia,0.4920016692963801,0.011260326376616567
+3006,rsna,pneumonia,0.4997980551553818,0.008120960582759526
+3012,rsna,pneumonia,0.49675459056504534,0.0038958848198421938
+3016,rsna,pneumonia,0.5052071185200429,0.007620833956030638
+3023,rsna,pneumonia,0.4982283734650477,0.004618548304779912
+3080,rsna,pneumonia,0.5097337986782832,0.001892455411566539
+3089,rsna,pneumonia,0.50540877752624,0.007898237193953985
+3105,rsna,pneumonia,0.48959833985044937,0.006004589693093427
+3109,rsna,pneumonia,0.4960655770506047,0.002458034858572967
+3112,rsna,pneumonia,0.507087792412705,0.0033550506333264647
+3115,rsna,pneumonia,0.5042617079417346,0.007909125310057028
+3137,rsna,pneumonia,0.5039817292081132,0.01239983929704082
+3139,rsna,pneumonia,0.4935389083259015,0.004347385574131547
+3164,rsna,pneumonia,0.49213129702042024,0.01094811285565075
+3166,rsna,pneumonia,0.5060763531590862,0.01012900719905747
+3184,rsna,pneumonia,0.4892957798815486,0.005408635173509642
+3221,rsna,pneumonia,0.4973459902586265,0.00876024380523936
+3237,rsna,pneumonia,0.48771809471541927,0.015877288935107824
+3248,rsna,pneumonia,0.5089640358098373,0.018461154046142243
+3250,rsna,pneumonia,0.5112844721136036,0.012204517164443452
+3265,rsna,pneumonia,0.5113992362397384,0.009810449712475694
+3272,rsna,pneumonia,0.491855891701539,0.004256463264293893
+3279,rsna,pneumonia,0.4968241922206215,0.001629934818206237
+3321,rsna,pneumonia,0.49428709039354235,0.0045793726359839824
+3342,rsna,pneumonia,0.4986505568132446,0.007292094737678474
+3344,rsna,pneumonia,0.49479588278338016,0.016756098931348943
+3348,rsna,pneumonia,0.5110520854771214,0.010315855898561904
+3357,rsna,pneumonia,0.4896829480231415,0.005462004984313702
+3362,rsna,pneumonia,0.5042006814387963,0.013754231267862429
+3373,rsna,pneumonia,0.49919122018705264,0.005698224297200461
+3406,rsna,pneumonia,0.5031417930072488,0.005300578824552797
+3441,rsna,pneumonia,0.5005488097688139,0.01279007366839186
+3455,rsna,pneumonia,0.49301739612631773,0.009236613982875837
+3470,rsna,pneumonia,0.5005442363540736,0.002897551019919408
+3506,rsna,pneumonia,0.4942587923898379,0.01405218414413803
+3512,rsna,pneumonia,0.4866317657954312,0.020957878845724417
+3520,rsna,pneumonia,0.503694318675539,0.009233106323744298
+3534,rsna,pneumonia,0.513808425373305,0.007444838834606762
+3554,rsna,pneumonia,0.49010770391712966,0.008031827700513874
+3562,rsna,pneumonia,0.5039081258146394,0.008988339141951223
+3564,rsna,pneumonia,0.5030558985616611,0.0062825397461572135
+3569,rsna,pneumonia,0.5086158846127461,0.005313026220458106
+3575,rsna,pneumonia,0.49491436280899137,0.012817484350712392
+3593,rsna,pneumonia,0.5074269396995266,0.014956823245223962
+3597,rsna,pneumonia,0.4868192757997759,0.010126841474716474
+3599,rsna,pneumonia,0.5079730340033386,0.009314419852725108
+3622,rsna,pneumonia,0.5057447805904278,0.018170293857469995
+3630,rsna,pneumonia,0.5023230088495575,0.009015964507143063
+3669,rsna,pneumonia,0.5055041046397293,0.009818154171410881
+3684,rsna,pneumonia,0.5044846619103154,0.007473133412388533
+3694,rsna,pneumonia,0.5049761610756672,0.007757544608505977
+3726,rsna,pneumonia,0.49197094166609495,0.01112641912880281
+3757,rsna,pneumonia,0.48718014680661315,0.007927911531043705
+3785,rsna,pneumonia,0.49466939928197384,0.009398559484449434
+3786,rsna,pneumonia,0.49021332121378425,0.0061769456913782035
+3793,rsna,pneumonia,0.4860643765292355,0.006686136865824228
+3801,rsna,pneumonia,0.5049325707164254,0.00836310192764406
+3805,rsna,pneumonia,0.497487480277149,0.00995332049362213
+3816,rsna,pneumonia,0.49517547620680985,0.009509532803331874
+3832,rsna,pneumonia,0.5077966716974228,0.014773178829298845
+3845,rsna,pneumonia,0.4870598088312638,0.014342135413608811
+3856,rsna,pneumonia,0.4989884178271707,0.01733858206811908
+3886,rsna,pneumonia,0.5085342777434771,0.010834543579391256
+3893,rsna,pneumonia,0.49311615330086217,0.017237051320175473
+3955,rsna,pneumonia,0.5060706363906611,0.01125580966355067
+3959,rsna,pneumonia,0.49242313804852395,0.021579123511817025
+3969,rsna,pneumonia,0.5034500697445747,0.007007204297162377
+3973,rsna,pneumonia,0.5082554423635408,0.006394956988688411
+3986,rsna,pneumonia,0.503053611854291,0.01200148582693936
+3987,rsna,pneumonia,0.4984378930278292,0.01025822150463664
+4001,rsna,pneumonia,0.4915194598797192,0.012389023781761046
+4014,rsna,pneumonia,0.5025026582973177,0.006632719820017575
+4032,rsna,pneumonia,0.48863735107818246,0.006111931151223605
+16,siim_covid,Negative for Pneumonia,nan,nan
+18,siim_covid,Negative for Pneumonia,nan,nan
+55,siim_covid,Negative for Pneumonia,nan,nan
+66,siim_covid,Negative for Pneumonia,nan,nan
+74,siim_covid,Negative for Pneumonia,nan,nan
+88,siim_covid,Negative for Pneumonia,nan,nan
+95,siim_covid,Negative for Pneumonia,nan,nan
+116,siim_covid,Negative for Pneumonia,nan,nan
+126,siim_covid,Negative for Pneumonia,nan,nan
+128,siim_covid,Negative for Pneumonia,nan,nan
+130,siim_covid,Negative for Pneumonia,nan,nan
+138,siim_covid,Negative for Pneumonia,nan,nan
+147,siim_covid,Negative for Pneumonia,nan,nan
+155,siim_covid,Negative for Pneumonia,nan,nan
+156,siim_covid,Negative for Pneumonia,nan,nan
+173,siim_covid,Negative for Pneumonia,nan,nan
+176,siim_covid,Negative for Pneumonia,nan,nan
+197,siim_covid,Negative for Pneumonia,nan,nan
+200,siim_covid,Negative for Pneumonia,nan,nan
+203,siim_covid,Negative for Pneumonia,nan,nan
+207,siim_covid,Negative for Pneumonia,nan,nan
+215,siim_covid,Negative for Pneumonia,nan,nan
+231,siim_covid,Negative for Pneumonia,nan,nan
+245,siim_covid,Negative for Pneumonia,nan,nan
+311,siim_covid,Negative for Pneumonia,nan,nan
+335,siim_covid,Negative for Pneumonia,nan,nan
+347,siim_covid,Negative for Pneumonia,nan,nan
+350,siim_covid,Negative for Pneumonia,nan,nan
+370,siim_covid,Negative for Pneumonia,nan,nan
+374,siim_covid,Negative for Pneumonia,nan,nan
+404,siim_covid,Negative for Pneumonia,nan,nan
+410,siim_covid,Negative for Pneumonia,nan,nan
+413,siim_covid,Negative for Pneumonia,nan,nan
+416,siim_covid,Negative for Pneumonia,nan,nan
+447,siim_covid,Negative for Pneumonia,nan,nan
+463,siim_covid,Negative for Pneumonia,nan,nan
+471,siim_covid,Negative for Pneumonia,nan,nan
+519,siim_covid,Negative for Pneumonia,nan,nan
+546,siim_covid,Negative for Pneumonia,nan,nan
+575,siim_covid,Negative for Pneumonia,nan,nan
+628,siim_covid,Negative for Pneumonia,nan,nan
+630,siim_covid,Negative for Pneumonia,nan,nan
+641,siim_covid,Negative for Pneumonia,nan,nan
+648,siim_covid,Negative for Pneumonia,nan,nan
+663,siim_covid,Negative for Pneumonia,nan,nan
+669,siim_covid,Negative for Pneumonia,nan,nan
+685,siim_covid,Negative for Pneumonia,nan,nan
+714,siim_covid,Negative for Pneumonia,nan,nan
+715,siim_covid,Negative for Pneumonia,nan,nan
+718,siim_covid,Negative for Pneumonia,nan,nan
+735,siim_covid,Negative for Pneumonia,nan,nan
+736,siim_covid,Negative for Pneumonia,nan,nan
+738,siim_covid,Negative for Pneumonia,nan,nan
+753,siim_covid,Negative for Pneumonia,nan,nan
+761,siim_covid,Negative for Pneumonia,nan,nan
+776,siim_covid,Negative for Pneumonia,nan,nan
+801,siim_covid,Negative for Pneumonia,nan,nan
+818,siim_covid,Negative for Pneumonia,nan,nan
+821,siim_covid,Negative for Pneumonia,nan,nan
+830,siim_covid,Negative for Pneumonia,nan,nan
+856,siim_covid,Negative for Pneumonia,nan,nan
+884,siim_covid,Negative for Pneumonia,nan,nan
+905,siim_covid,Negative for Pneumonia,nan,nan
+915,siim_covid,Negative for Pneumonia,nan,nan
+922,siim_covid,Negative for Pneumonia,nan,nan
+935,siim_covid,Negative for Pneumonia,nan,nan
+946,siim_covid,Negative for Pneumonia,nan,nan
+963,siim_covid,Negative for Pneumonia,nan,nan
+969,siim_covid,Negative for Pneumonia,nan,nan
+1012,siim_covid,Negative for Pneumonia,nan,nan
+1063,siim_covid,Negative for Pneumonia,nan,nan
+1064,siim_covid,Negative for Pneumonia,nan,nan
+1084,siim_covid,Negative for Pneumonia,nan,nan
+1092,siim_covid,Negative for Pneumonia,nan,nan
+1097,siim_covid,Negative for Pneumonia,nan,nan
+1104,siim_covid,Negative for Pneumonia,nan,nan
+1105,siim_covid,Negative for Pneumonia,nan,nan
+1120,siim_covid,Negative for Pneumonia,nan,nan
+1144,siim_covid,Negative for Pneumonia,nan,nan
+1147,siim_covid,Negative for Pneumonia,nan,nan
+1148,siim_covid,Negative for Pneumonia,nan,nan
+1153,siim_covid,Negative for Pneumonia,nan,nan
+1172,siim_covid,Negative for Pneumonia,nan,nan
+1188,siim_covid,Negative for Pneumonia,nan,nan
+1195,siim_covid,Negative for Pneumonia,nan,nan
+1203,siim_covid,Negative for Pneumonia,nan,nan
+1216,siim_covid,Negative for Pneumonia,nan,nan
+1237,siim_covid,Negative for Pneumonia,nan,nan
+1240,siim_covid,Negative for Pneumonia,nan,nan
+1243,siim_covid,Negative for Pneumonia,nan,nan
+1285,siim_covid,Negative for Pneumonia,nan,nan
+1308,siim_covid,Negative for Pneumonia,nan,nan
+1310,siim_covid,Negative for Pneumonia,nan,nan
+1314,siim_covid,Negative for Pneumonia,nan,nan
+1349,siim_covid,Negative for Pneumonia,nan,nan
+1384,siim_covid,Negative for Pneumonia,nan,nan
+1385,siim_covid,Negative for Pneumonia,nan,nan
+1390,siim_covid,Negative for Pneumonia,nan,nan
+1397,siim_covid,Negative for Pneumonia,nan,nan
+1416,siim_covid,Negative for Pneumonia,nan,nan
+1424,siim_covid,Negative for Pneumonia,nan,nan
+1445,siim_covid,Negative for Pneumonia,nan,nan
+1461,siim_covid,Negative for Pneumonia,nan,nan
+1485,siim_covid,Negative for Pneumonia,nan,nan
+1502,siim_covid,Negative for Pneumonia,nan,nan
+1517,siim_covid,Negative for Pneumonia,nan,nan
+1520,siim_covid,Negative for Pneumonia,nan,nan
+1523,siim_covid,Negative for Pneumonia,nan,nan
+1528,siim_covid,Negative for Pneumonia,nan,nan
+1553,siim_covid,Negative for Pneumonia,nan,nan
+1584,siim_covid,Negative for Pneumonia,nan,nan
+1589,siim_covid,Negative for Pneumonia,nan,nan
+1591,siim_covid,Negative for Pneumonia,nan,nan
+1628,siim_covid,Negative for Pneumonia,nan,nan
+1632,siim_covid,Negative for Pneumonia,nan,nan
+1639,siim_covid,Negative for Pneumonia,nan,nan
+1663,siim_covid,Negative for Pneumonia,nan,nan
+1705,siim_covid,Negative for Pneumonia,nan,nan
+1744,siim_covid,Negative for Pneumonia,nan,nan
+1781,siim_covid,Negative for Pneumonia,nan,nan
+1789,siim_covid,Negative for Pneumonia,nan,nan
+1800,siim_covid,Negative for Pneumonia,nan,nan
+1816,siim_covid,Negative for Pneumonia,nan,nan
+1844,siim_covid,Negative for Pneumonia,nan,nan
+1858,siim_covid,Negative for Pneumonia,nan,nan
+1875,siim_covid,Negative for Pneumonia,nan,nan
+1877,siim_covid,Negative for Pneumonia,nan,nan
+1887,siim_covid,Negative for Pneumonia,nan,nan
+1899,siim_covid,Negative for Pneumonia,nan,nan
+1906,siim_covid,Negative for Pneumonia,nan,nan
+1912,siim_covid,Negative for Pneumonia,nan,nan
+1969,siim_covid,Negative for Pneumonia,nan,nan
+1992,siim_covid,Negative for Pneumonia,nan,nan
+2055,siim_covid,Negative for Pneumonia,nan,nan
+2086,siim_covid,Negative for Pneumonia,nan,nan
+2103,siim_covid,Negative for Pneumonia,nan,nan
+2157,siim_covid,Negative for Pneumonia,nan,nan
+2184,siim_covid,Negative for Pneumonia,nan,nan
+2185,siim_covid,Negative for Pneumonia,nan,nan
+2195,siim_covid,Negative for Pneumonia,nan,nan
+2202,siim_covid,Negative for Pneumonia,nan,nan
+2219,siim_covid,Negative for Pneumonia,nan,nan
+2272,siim_covid,Negative for Pneumonia,nan,nan
+2286,siim_covid,Negative for Pneumonia,nan,nan
+2288,siim_covid,Negative for Pneumonia,nan,nan
+2300,siim_covid,Negative for Pneumonia,nan,nan
+2315,siim_covid,Negative for Pneumonia,nan,nan
+2325,siim_covid,Negative for Pneumonia,nan,nan
+2355,siim_covid,Negative for Pneumonia,nan,nan
+2357,siim_covid,Negative for Pneumonia,nan,nan
+2363,siim_covid,Negative for Pneumonia,nan,nan
+2377,siim_covid,Negative for Pneumonia,nan,nan
+2402,siim_covid,Negative for Pneumonia,nan,nan
+2404,siim_covid,Negative for Pneumonia,nan,nan
+2457,siim_covid,Negative for Pneumonia,nan,nan
+2473,siim_covid,Negative for Pneumonia,nan,nan
+2512,siim_covid,Negative for Pneumonia,nan,nan
+2515,siim_covid,Negative for Pneumonia,nan,nan
+2535,siim_covid,Negative for Pneumonia,nan,nan
+2612,siim_covid,Negative for Pneumonia,nan,nan
+2619,siim_covid,Negative for Pneumonia,nan,nan
+2640,siim_covid,Negative for Pneumonia,nan,nan
+2646,siim_covid,Negative for Pneumonia,nan,nan
+2682,siim_covid,Negative for Pneumonia,nan,nan
+2683,siim_covid,Negative for Pneumonia,nan,nan
+2714,siim_covid,Negative for Pneumonia,nan,nan
+2725,siim_covid,Negative for Pneumonia,nan,nan
+2744,siim_covid,Negative for Pneumonia,nan,nan
+2814,siim_covid,Negative for Pneumonia,nan,nan
+2830,siim_covid,Negative for Pneumonia,nan,nan
+2833,siim_covid,Negative for Pneumonia,nan,nan
+2835,siim_covid,Negative for Pneumonia,nan,nan
+2850,siim_covid,Negative for Pneumonia,nan,nan
+2852,siim_covid,Negative for Pneumonia,nan,nan
+2884,siim_covid,Negative for Pneumonia,nan,nan
+2891,siim_covid,Negative for Pneumonia,nan,nan
+2921,siim_covid,Negative for Pneumonia,nan,nan
+2939,siim_covid,Negative for Pneumonia,nan,nan
+2982,siim_covid,Negative for Pneumonia,nan,nan
+2992,siim_covid,Negative for Pneumonia,nan,nan
+3006,siim_covid,Negative for Pneumonia,nan,nan
+3012,siim_covid,Negative for Pneumonia,nan,nan
+3016,siim_covid,Negative for Pneumonia,nan,nan
+3023,siim_covid,Negative for Pneumonia,nan,nan
+3080,siim_covid,Negative for Pneumonia,nan,nan
+3089,siim_covid,Negative for Pneumonia,nan,nan
+3105,siim_covid,Negative for Pneumonia,nan,nan
+3109,siim_covid,Negative for Pneumonia,nan,nan
+3112,siim_covid,Negative for Pneumonia,nan,nan
+3115,siim_covid,Negative for Pneumonia,nan,nan
+3137,siim_covid,Negative for Pneumonia,nan,nan
+3139,siim_covid,Negative for Pneumonia,nan,nan
+3164,siim_covid,Negative for Pneumonia,nan,nan
+3166,siim_covid,Negative for Pneumonia,nan,nan
+3184,siim_covid,Negative for Pneumonia,nan,nan
+3221,siim_covid,Negative for Pneumonia,nan,nan
+3237,siim_covid,Negative for Pneumonia,nan,nan
+3248,siim_covid,Negative for Pneumonia,nan,nan
+3250,siim_covid,Negative for Pneumonia,nan,nan
+3265,siim_covid,Negative for Pneumonia,nan,nan
+3272,siim_covid,Negative for Pneumonia,nan,nan
+3279,siim_covid,Negative for Pneumonia,nan,nan
+3321,siim_covid,Negative for Pneumonia,nan,nan
+3342,siim_covid,Negative for Pneumonia,nan,nan
+3344,siim_covid,Negative for Pneumonia,nan,nan
+3348,siim_covid,Negative for Pneumonia,nan,nan
+3357,siim_covid,Negative for Pneumonia,nan,nan
+3362,siim_covid,Negative for Pneumonia,nan,nan
+3373,siim_covid,Negative for Pneumonia,nan,nan
+3406,siim_covid,Negative for Pneumonia,nan,nan
+3441,siim_covid,Negative for Pneumonia,nan,nan
+3455,siim_covid,Negative for Pneumonia,nan,nan
+3470,siim_covid,Negative for Pneumonia,nan,nan
+3506,siim_covid,Negative for Pneumonia,nan,nan
+3512,siim_covid,Negative for Pneumonia,nan,nan
+3520,siim_covid,Negative for Pneumonia,nan,nan
+3534,siim_covid,Negative for Pneumonia,nan,nan
+3554,siim_covid,Negative for Pneumonia,nan,nan
+3562,siim_covid,Negative for Pneumonia,nan,nan
+3564,siim_covid,Negative for Pneumonia,nan,nan
+3569,siim_covid,Negative for Pneumonia,nan,nan
+3575,siim_covid,Negative for Pneumonia,nan,nan
+3593,siim_covid,Negative for Pneumonia,nan,nan
+3597,siim_covid,Negative for Pneumonia,nan,nan
+3599,siim_covid,Negative for Pneumonia,nan,nan
+3622,siim_covid,Negative for Pneumonia,nan,nan
+3630,siim_covid,Negative for Pneumonia,nan,nan
+3669,siim_covid,Negative for Pneumonia,nan,nan
+3684,siim_covid,Negative for Pneumonia,nan,nan
+3694,siim_covid,Negative for Pneumonia,nan,nan
+3726,siim_covid,Negative for Pneumonia,nan,nan
+3757,siim_covid,Negative for Pneumonia,nan,nan
+3785,siim_covid,Negative for Pneumonia,nan,nan
+3786,siim_covid,Negative for Pneumonia,nan,nan
+3793,siim_covid,Negative for Pneumonia,nan,nan
+3801,siim_covid,Negative for Pneumonia,nan,nan
+3805,siim_covid,Negative for Pneumonia,nan,nan
+3816,siim_covid,Negative for Pneumonia,nan,nan
+3832,siim_covid,Negative for Pneumonia,nan,nan
+3845,siim_covid,Negative for Pneumonia,nan,nan
+3856,siim_covid,Negative for Pneumonia,nan,nan
+3886,siim_covid,Negative for Pneumonia,nan,nan
+3893,siim_covid,Negative for Pneumonia,nan,nan
+3955,siim_covid,Negative for Pneumonia,nan,nan
+3959,siim_covid,Negative for Pneumonia,nan,nan
+3969,siim_covid,Negative for Pneumonia,nan,nan
+3973,siim_covid,Negative for Pneumonia,nan,nan
+3986,siim_covid,Negative for Pneumonia,nan,nan
+3987,siim_covid,Negative for Pneumonia,nan,nan
+4001,siim_covid,Negative for Pneumonia,nan,nan
+4014,siim_covid,Negative for Pneumonia,nan,nan
+4032,siim_covid,Negative for Pneumonia,nan,nan
+16,siim_covid,Typical Appearance,nan,nan
+18,siim_covid,Typical Appearance,nan,nan
+55,siim_covid,Typical Appearance,nan,nan
+66,siim_covid,Typical Appearance,nan,nan
+74,siim_covid,Typical Appearance,nan,nan
+88,siim_covid,Typical Appearance,nan,nan
+95,siim_covid,Typical Appearance,nan,nan
+116,siim_covid,Typical Appearance,nan,nan
+126,siim_covid,Typical Appearance,nan,nan
+128,siim_covid,Typical Appearance,nan,nan
+130,siim_covid,Typical Appearance,nan,nan
+138,siim_covid,Typical Appearance,nan,nan
+147,siim_covid,Typical Appearance,nan,nan
+155,siim_covid,Typical Appearance,nan,nan
+156,siim_covid,Typical Appearance,nan,nan
+173,siim_covid,Typical Appearance,nan,nan
+176,siim_covid,Typical Appearance,nan,nan
+197,siim_covid,Typical Appearance,nan,nan
+200,siim_covid,Typical Appearance,nan,nan
+203,siim_covid,Typical Appearance,nan,nan
+207,siim_covid,Typical Appearance,nan,nan
+215,siim_covid,Typical Appearance,nan,nan
+231,siim_covid,Typical Appearance,nan,nan
+245,siim_covid,Typical Appearance,nan,nan
+311,siim_covid,Typical Appearance,nan,nan
+335,siim_covid,Typical Appearance,nan,nan
+347,siim_covid,Typical Appearance,nan,nan
+350,siim_covid,Typical Appearance,nan,nan
+370,siim_covid,Typical Appearance,nan,nan
+374,siim_covid,Typical Appearance,nan,nan
+404,siim_covid,Typical Appearance,nan,nan
+410,siim_covid,Typical Appearance,nan,nan
+413,siim_covid,Typical Appearance,nan,nan
+416,siim_covid,Typical Appearance,nan,nan
+447,siim_covid,Typical Appearance,nan,nan
+463,siim_covid,Typical Appearance,nan,nan
+471,siim_covid,Typical Appearance,nan,nan
+519,siim_covid,Typical Appearance,nan,nan
+546,siim_covid,Typical Appearance,nan,nan
+575,siim_covid,Typical Appearance,nan,nan
+628,siim_covid,Typical Appearance,nan,nan
+630,siim_covid,Typical Appearance,nan,nan
+641,siim_covid,Typical Appearance,nan,nan
+648,siim_covid,Typical Appearance,nan,nan
+663,siim_covid,Typical Appearance,nan,nan
+669,siim_covid,Typical Appearance,nan,nan
+685,siim_covid,Typical Appearance,nan,nan
+714,siim_covid,Typical Appearance,nan,nan
+715,siim_covid,Typical Appearance,nan,nan
+718,siim_covid,Typical Appearance,nan,nan
+735,siim_covid,Typical Appearance,nan,nan
+736,siim_covid,Typical Appearance,nan,nan
+738,siim_covid,Typical Appearance,nan,nan
+753,siim_covid,Typical Appearance,nan,nan
+761,siim_covid,Typical Appearance,nan,nan
+776,siim_covid,Typical Appearance,nan,nan
+801,siim_covid,Typical Appearance,nan,nan
+818,siim_covid,Typical Appearance,nan,nan
+821,siim_covid,Typical Appearance,nan,nan
+830,siim_covid,Typical Appearance,nan,nan
+856,siim_covid,Typical Appearance,nan,nan
+884,siim_covid,Typical Appearance,nan,nan
+905,siim_covid,Typical Appearance,nan,nan
+915,siim_covid,Typical Appearance,nan,nan
+922,siim_covid,Typical Appearance,nan,nan
+935,siim_covid,Typical Appearance,nan,nan
+946,siim_covid,Typical Appearance,nan,nan
+963,siim_covid,Typical Appearance,nan,nan
+969,siim_covid,Typical Appearance,nan,nan
+1012,siim_covid,Typical Appearance,nan,nan
+1063,siim_covid,Typical Appearance,nan,nan
+1064,siim_covid,Typical Appearance,nan,nan
+1084,siim_covid,Typical Appearance,nan,nan
+1092,siim_covid,Typical Appearance,nan,nan
+1097,siim_covid,Typical Appearance,nan,nan
+1104,siim_covid,Typical Appearance,nan,nan
+1105,siim_covid,Typical Appearance,nan,nan
+1120,siim_covid,Typical Appearance,nan,nan
+1144,siim_covid,Typical Appearance,nan,nan
+1147,siim_covid,Typical Appearance,nan,nan
+1148,siim_covid,Typical Appearance,nan,nan
+1153,siim_covid,Typical Appearance,nan,nan
+1172,siim_covid,Typical Appearance,nan,nan
+1188,siim_covid,Typical Appearance,nan,nan
+1195,siim_covid,Typical Appearance,nan,nan
+1203,siim_covid,Typical Appearance,nan,nan
+1216,siim_covid,Typical Appearance,nan,nan
+1237,siim_covid,Typical Appearance,nan,nan
+1240,siim_covid,Typical Appearance,nan,nan
+1243,siim_covid,Typical Appearance,nan,nan
+1285,siim_covid,Typical Appearance,nan,nan
+1308,siim_covid,Typical Appearance,nan,nan
+1310,siim_covid,Typical Appearance,nan,nan
+1314,siim_covid,Typical Appearance,nan,nan
+1349,siim_covid,Typical Appearance,nan,nan
+1384,siim_covid,Typical Appearance,nan,nan
+1385,siim_covid,Typical Appearance,nan,nan
+1390,siim_covid,Typical Appearance,nan,nan
+1397,siim_covid,Typical Appearance,nan,nan
+1416,siim_covid,Typical Appearance,nan,nan
+1424,siim_covid,Typical Appearance,nan,nan
+1445,siim_covid,Typical Appearance,nan,nan
+1461,siim_covid,Typical Appearance,nan,nan
+1485,siim_covid,Typical Appearance,nan,nan
+1502,siim_covid,Typical Appearance,nan,nan
+1517,siim_covid,Typical Appearance,nan,nan
+1520,siim_covid,Typical Appearance,nan,nan
+1523,siim_covid,Typical Appearance,nan,nan
+1528,siim_covid,Typical Appearance,nan,nan
+1553,siim_covid,Typical Appearance,nan,nan
+1584,siim_covid,Typical Appearance,nan,nan
+1589,siim_covid,Typical Appearance,nan,nan
+1591,siim_covid,Typical Appearance,nan,nan
+1628,siim_covid,Typical Appearance,nan,nan
+1632,siim_covid,Typical Appearance,nan,nan
+1639,siim_covid,Typical Appearance,nan,nan
+1663,siim_covid,Typical Appearance,nan,nan
+1705,siim_covid,Typical Appearance,nan,nan
+1744,siim_covid,Typical Appearance,nan,nan
+1781,siim_covid,Typical Appearance,nan,nan
+1789,siim_covid,Typical Appearance,nan,nan
+1800,siim_covid,Typical Appearance,nan,nan
+1816,siim_covid,Typical Appearance,nan,nan
+1844,siim_covid,Typical Appearance,nan,nan
+1858,siim_covid,Typical Appearance,nan,nan
+1875,siim_covid,Typical Appearance,nan,nan
+1877,siim_covid,Typical Appearance,nan,nan
+1887,siim_covid,Typical Appearance,nan,nan
+1899,siim_covid,Typical Appearance,nan,nan
+1906,siim_covid,Typical Appearance,nan,nan
+1912,siim_covid,Typical Appearance,nan,nan
+1969,siim_covid,Typical Appearance,nan,nan
+1992,siim_covid,Typical Appearance,nan,nan
+2055,siim_covid,Typical Appearance,nan,nan
+2086,siim_covid,Typical Appearance,nan,nan
+2103,siim_covid,Typical Appearance,nan,nan
+2157,siim_covid,Typical Appearance,nan,nan
+2184,siim_covid,Typical Appearance,nan,nan
+2185,siim_covid,Typical Appearance,nan,nan
+2195,siim_covid,Typical Appearance,nan,nan
+2202,siim_covid,Typical Appearance,nan,nan
+2219,siim_covid,Typical Appearance,nan,nan
+2272,siim_covid,Typical Appearance,nan,nan
+2286,siim_covid,Typical Appearance,nan,nan
+2288,siim_covid,Typical Appearance,nan,nan
+2300,siim_covid,Typical Appearance,nan,nan
+2315,siim_covid,Typical Appearance,nan,nan
+2325,siim_covid,Typical Appearance,nan,nan
+2355,siim_covid,Typical Appearance,nan,nan
+2357,siim_covid,Typical Appearance,nan,nan
+2363,siim_covid,Typical Appearance,nan,nan
+2377,siim_covid,Typical Appearance,nan,nan
+2402,siim_covid,Typical Appearance,nan,nan
+2404,siim_covid,Typical Appearance,nan,nan
+2457,siim_covid,Typical Appearance,nan,nan
+2473,siim_covid,Typical Appearance,nan,nan
+2512,siim_covid,Typical Appearance,nan,nan
+2515,siim_covid,Typical Appearance,nan,nan
+2535,siim_covid,Typical Appearance,nan,nan
+2612,siim_covid,Typical Appearance,nan,nan
+2619,siim_covid,Typical Appearance,nan,nan
+2640,siim_covid,Typical Appearance,nan,nan
+2646,siim_covid,Typical Appearance,nan,nan
+2682,siim_covid,Typical Appearance,nan,nan
+2683,siim_covid,Typical Appearance,nan,nan
+2714,siim_covid,Typical Appearance,nan,nan
+2725,siim_covid,Typical Appearance,nan,nan
+2744,siim_covid,Typical Appearance,nan,nan
+2814,siim_covid,Typical Appearance,nan,nan
+2830,siim_covid,Typical Appearance,nan,nan
+2833,siim_covid,Typical Appearance,nan,nan
+2835,siim_covid,Typical Appearance,nan,nan
+2850,siim_covid,Typical Appearance,nan,nan
+2852,siim_covid,Typical Appearance,nan,nan
+2884,siim_covid,Typical Appearance,nan,nan
+2891,siim_covid,Typical Appearance,nan,nan
+2921,siim_covid,Typical Appearance,nan,nan
+2939,siim_covid,Typical Appearance,nan,nan
+2982,siim_covid,Typical Appearance,nan,nan
+2992,siim_covid,Typical Appearance,nan,nan
+3006,siim_covid,Typical Appearance,nan,nan
+3012,siim_covid,Typical Appearance,nan,nan
+3016,siim_covid,Typical Appearance,nan,nan
+3023,siim_covid,Typical Appearance,nan,nan
+3080,siim_covid,Typical Appearance,nan,nan
+3089,siim_covid,Typical Appearance,nan,nan
+3105,siim_covid,Typical Appearance,nan,nan
+3109,siim_covid,Typical Appearance,nan,nan
+3112,siim_covid,Typical Appearance,nan,nan
+3115,siim_covid,Typical Appearance,nan,nan
+3137,siim_covid,Typical Appearance,nan,nan
+3139,siim_covid,Typical Appearance,nan,nan
+3164,siim_covid,Typical Appearance,nan,nan
+3166,siim_covid,Typical Appearance,nan,nan
+3184,siim_covid,Typical Appearance,nan,nan
+3221,siim_covid,Typical Appearance,nan,nan
+3237,siim_covid,Typical Appearance,nan,nan
+3248,siim_covid,Typical Appearance,nan,nan
+3250,siim_covid,Typical Appearance,nan,nan
+3265,siim_covid,Typical Appearance,nan,nan
+3272,siim_covid,Typical Appearance,nan,nan
+3279,siim_covid,Typical Appearance,nan,nan
+3321,siim_covid,Typical Appearance,nan,nan
+3342,siim_covid,Typical Appearance,nan,nan
+3344,siim_covid,Typical Appearance,nan,nan
+3348,siim_covid,Typical Appearance,nan,nan
+3357,siim_covid,Typical Appearance,nan,nan
+3362,siim_covid,Typical Appearance,nan,nan
+3373,siim_covid,Typical Appearance,nan,nan
+3406,siim_covid,Typical Appearance,nan,nan
+3441,siim_covid,Typical Appearance,nan,nan
+3455,siim_covid,Typical Appearance,nan,nan
+3470,siim_covid,Typical Appearance,nan,nan
+3506,siim_covid,Typical Appearance,nan,nan
+3512,siim_covid,Typical Appearance,nan,nan
+3520,siim_covid,Typical Appearance,nan,nan
+3534,siim_covid,Typical Appearance,nan,nan
+3554,siim_covid,Typical Appearance,nan,nan
+3562,siim_covid,Typical Appearance,nan,nan
+3564,siim_covid,Typical Appearance,nan,nan
+3569,siim_covid,Typical Appearance,nan,nan
+3575,siim_covid,Typical Appearance,nan,nan
+3593,siim_covid,Typical Appearance,nan,nan
+3597,siim_covid,Typical Appearance,nan,nan
+3599,siim_covid,Typical Appearance,nan,nan
+3622,siim_covid,Typical Appearance,nan,nan
+3630,siim_covid,Typical Appearance,nan,nan
+3669,siim_covid,Typical Appearance,nan,nan
+3684,siim_covid,Typical Appearance,nan,nan
+3694,siim_covid,Typical Appearance,nan,nan
+3726,siim_covid,Typical Appearance,nan,nan
+3757,siim_covid,Typical Appearance,nan,nan
+3785,siim_covid,Typical Appearance,nan,nan
+3786,siim_covid,Typical Appearance,nan,nan
+3793,siim_covid,Typical Appearance,nan,nan
+3801,siim_covid,Typical Appearance,nan,nan
+3805,siim_covid,Typical Appearance,nan,nan
+3816,siim_covid,Typical Appearance,nan,nan
+3832,siim_covid,Typical Appearance,nan,nan
+3845,siim_covid,Typical Appearance,nan,nan
+3856,siim_covid,Typical Appearance,nan,nan
+3886,siim_covid,Typical Appearance,nan,nan
+3893,siim_covid,Typical Appearance,nan,nan
+3955,siim_covid,Typical Appearance,nan,nan
+3959,siim_covid,Typical Appearance,nan,nan
+3969,siim_covid,Typical Appearance,nan,nan
+3973,siim_covid,Typical Appearance,nan,nan
+3986,siim_covid,Typical Appearance,nan,nan
+3987,siim_covid,Typical Appearance,nan,nan
+4001,siim_covid,Typical Appearance,nan,nan
+4014,siim_covid,Typical Appearance,nan,nan
+4032,siim_covid,Typical Appearance,nan,nan
+16,siim_covid,Indeterminate Appearance,nan,nan
+18,siim_covid,Indeterminate Appearance,nan,nan
+55,siim_covid,Indeterminate Appearance,nan,nan
+66,siim_covid,Indeterminate Appearance,nan,nan
+74,siim_covid,Indeterminate Appearance,nan,nan
+88,siim_covid,Indeterminate Appearance,nan,nan
+95,siim_covid,Indeterminate Appearance,nan,nan
+116,siim_covid,Indeterminate Appearance,nan,nan
+126,siim_covid,Indeterminate Appearance,nan,nan
+128,siim_covid,Indeterminate Appearance,nan,nan
+130,siim_covid,Indeterminate Appearance,nan,nan
+138,siim_covid,Indeterminate Appearance,nan,nan
+147,siim_covid,Indeterminate Appearance,nan,nan
+155,siim_covid,Indeterminate Appearance,nan,nan
+156,siim_covid,Indeterminate Appearance,nan,nan
+173,siim_covid,Indeterminate Appearance,nan,nan
+176,siim_covid,Indeterminate Appearance,nan,nan
+197,siim_covid,Indeterminate Appearance,nan,nan
+200,siim_covid,Indeterminate Appearance,nan,nan
+203,siim_covid,Indeterminate Appearance,nan,nan
+207,siim_covid,Indeterminate Appearance,nan,nan
+215,siim_covid,Indeterminate Appearance,nan,nan
+231,siim_covid,Indeterminate Appearance,nan,nan
+245,siim_covid,Indeterminate Appearance,nan,nan
+311,siim_covid,Indeterminate Appearance,nan,nan
+335,siim_covid,Indeterminate Appearance,nan,nan
+347,siim_covid,Indeterminate Appearance,nan,nan
+350,siim_covid,Indeterminate Appearance,nan,nan
+370,siim_covid,Indeterminate Appearance,nan,nan
+374,siim_covid,Indeterminate Appearance,nan,nan
+404,siim_covid,Indeterminate Appearance,nan,nan
+410,siim_covid,Indeterminate Appearance,nan,nan
+413,siim_covid,Indeterminate Appearance,nan,nan
+416,siim_covid,Indeterminate Appearance,nan,nan
+447,siim_covid,Indeterminate Appearance,nan,nan
+463,siim_covid,Indeterminate Appearance,nan,nan
+471,siim_covid,Indeterminate Appearance,nan,nan
+519,siim_covid,Indeterminate Appearance,nan,nan
+546,siim_covid,Indeterminate Appearance,nan,nan
+575,siim_covid,Indeterminate Appearance,nan,nan
+628,siim_covid,Indeterminate Appearance,nan,nan
+630,siim_covid,Indeterminate Appearance,nan,nan
+641,siim_covid,Indeterminate Appearance,nan,nan
+648,siim_covid,Indeterminate Appearance,nan,nan
+663,siim_covid,Indeterminate Appearance,nan,nan
+669,siim_covid,Indeterminate Appearance,nan,nan
+685,siim_covid,Indeterminate Appearance,nan,nan
+714,siim_covid,Indeterminate Appearance,nan,nan
+715,siim_covid,Indeterminate Appearance,nan,nan
+718,siim_covid,Indeterminate Appearance,nan,nan
+735,siim_covid,Indeterminate Appearance,nan,nan
+736,siim_covid,Indeterminate Appearance,nan,nan
+738,siim_covid,Indeterminate Appearance,nan,nan
+753,siim_covid,Indeterminate Appearance,nan,nan
+761,siim_covid,Indeterminate Appearance,nan,nan
+776,siim_covid,Indeterminate Appearance,nan,nan
+801,siim_covid,Indeterminate Appearance,nan,nan
+818,siim_covid,Indeterminate Appearance,nan,nan
+821,siim_covid,Indeterminate Appearance,nan,nan
+830,siim_covid,Indeterminate Appearance,nan,nan
+856,siim_covid,Indeterminate Appearance,nan,nan
+884,siim_covid,Indeterminate Appearance,nan,nan
+905,siim_covid,Indeterminate Appearance,nan,nan
+915,siim_covid,Indeterminate Appearance,nan,nan
+922,siim_covid,Indeterminate Appearance,nan,nan
+935,siim_covid,Indeterminate Appearance,nan,nan
+946,siim_covid,Indeterminate Appearance,nan,nan
+963,siim_covid,Indeterminate Appearance,nan,nan
+969,siim_covid,Indeterminate Appearance,nan,nan
+1012,siim_covid,Indeterminate Appearance,nan,nan
+1063,siim_covid,Indeterminate Appearance,nan,nan
+1064,siim_covid,Indeterminate Appearance,nan,nan
+1084,siim_covid,Indeterminate Appearance,nan,nan
+1092,siim_covid,Indeterminate Appearance,nan,nan
+1097,siim_covid,Indeterminate Appearance,nan,nan
+1104,siim_covid,Indeterminate Appearance,nan,nan
+1105,siim_covid,Indeterminate Appearance,nan,nan
+1120,siim_covid,Indeterminate Appearance,nan,nan
+1144,siim_covid,Indeterminate Appearance,nan,nan
+1147,siim_covid,Indeterminate Appearance,nan,nan
+1148,siim_covid,Indeterminate Appearance,nan,nan
+1153,siim_covid,Indeterminate Appearance,nan,nan
+1172,siim_covid,Indeterminate Appearance,nan,nan
+1188,siim_covid,Indeterminate Appearance,nan,nan
+1195,siim_covid,Indeterminate Appearance,nan,nan
+1203,siim_covid,Indeterminate Appearance,nan,nan
+1216,siim_covid,Indeterminate Appearance,nan,nan
+1237,siim_covid,Indeterminate Appearance,nan,nan
+1240,siim_covid,Indeterminate Appearance,nan,nan
+1243,siim_covid,Indeterminate Appearance,nan,nan
+1285,siim_covid,Indeterminate Appearance,nan,nan
+1308,siim_covid,Indeterminate Appearance,nan,nan
+1310,siim_covid,Indeterminate Appearance,nan,nan
+1314,siim_covid,Indeterminate Appearance,nan,nan
+1349,siim_covid,Indeterminate Appearance,nan,nan
+1384,siim_covid,Indeterminate Appearance,nan,nan
+1385,siim_covid,Indeterminate Appearance,nan,nan
+1390,siim_covid,Indeterminate Appearance,nan,nan
+1397,siim_covid,Indeterminate Appearance,nan,nan
+1416,siim_covid,Indeterminate Appearance,nan,nan
+1424,siim_covid,Indeterminate Appearance,nan,nan
+1445,siim_covid,Indeterminate Appearance,nan,nan
+1461,siim_covid,Indeterminate Appearance,nan,nan
+1485,siim_covid,Indeterminate Appearance,nan,nan
+1502,siim_covid,Indeterminate Appearance,nan,nan
+1517,siim_covid,Indeterminate Appearance,nan,nan
+1520,siim_covid,Indeterminate Appearance,nan,nan
+1523,siim_covid,Indeterminate Appearance,nan,nan
+1528,siim_covid,Indeterminate Appearance,nan,nan
+1553,siim_covid,Indeterminate Appearance,nan,nan
+1584,siim_covid,Indeterminate Appearance,nan,nan
+1589,siim_covid,Indeterminate Appearance,nan,nan
+1591,siim_covid,Indeterminate Appearance,nan,nan
+1628,siim_covid,Indeterminate Appearance,nan,nan
+1632,siim_covid,Indeterminate Appearance,nan,nan
+1639,siim_covid,Indeterminate Appearance,nan,nan
+1663,siim_covid,Indeterminate Appearance,nan,nan
+1705,siim_covid,Indeterminate Appearance,nan,nan
+1744,siim_covid,Indeterminate Appearance,nan,nan
+1781,siim_covid,Indeterminate Appearance,nan,nan
+1789,siim_covid,Indeterminate Appearance,nan,nan
+1800,siim_covid,Indeterminate Appearance,nan,nan
+1816,siim_covid,Indeterminate Appearance,nan,nan
+1844,siim_covid,Indeterminate Appearance,nan,nan
+1858,siim_covid,Indeterminate Appearance,nan,nan
+1875,siim_covid,Indeterminate Appearance,nan,nan
+1877,siim_covid,Indeterminate Appearance,nan,nan
+1887,siim_covid,Indeterminate Appearance,nan,nan
+1899,siim_covid,Indeterminate Appearance,nan,nan
+1906,siim_covid,Indeterminate Appearance,nan,nan
+1912,siim_covid,Indeterminate Appearance,nan,nan
+1969,siim_covid,Indeterminate Appearance,nan,nan
+1992,siim_covid,Indeterminate Appearance,nan,nan
+2055,siim_covid,Indeterminate Appearance,nan,nan
+2086,siim_covid,Indeterminate Appearance,nan,nan
+2103,siim_covid,Indeterminate Appearance,nan,nan
+2157,siim_covid,Indeterminate Appearance,nan,nan
+2184,siim_covid,Indeterminate Appearance,nan,nan
+2185,siim_covid,Indeterminate Appearance,nan,nan
+2195,siim_covid,Indeterminate Appearance,nan,nan
+2202,siim_covid,Indeterminate Appearance,nan,nan
+2219,siim_covid,Indeterminate Appearance,nan,nan
+2272,siim_covid,Indeterminate Appearance,nan,nan
+2286,siim_covid,Indeterminate Appearance,nan,nan
+2288,siim_covid,Indeterminate Appearance,nan,nan
+2300,siim_covid,Indeterminate Appearance,nan,nan
+2315,siim_covid,Indeterminate Appearance,nan,nan
+2325,siim_covid,Indeterminate Appearance,nan,nan
+2355,siim_covid,Indeterminate Appearance,nan,nan
+2357,siim_covid,Indeterminate Appearance,nan,nan
+2363,siim_covid,Indeterminate Appearance,nan,nan
+2377,siim_covid,Indeterminate Appearance,nan,nan
+2402,siim_covid,Indeterminate Appearance,nan,nan
+2404,siim_covid,Indeterminate Appearance,nan,nan
+2457,siim_covid,Indeterminate Appearance,nan,nan
+2473,siim_covid,Indeterminate Appearance,nan,nan
+2512,siim_covid,Indeterminate Appearance,nan,nan
+2515,siim_covid,Indeterminate Appearance,nan,nan
+2535,siim_covid,Indeterminate Appearance,nan,nan
+2612,siim_covid,Indeterminate Appearance,nan,nan
+2619,siim_covid,Indeterminate Appearance,nan,nan
+2640,siim_covid,Indeterminate Appearance,nan,nan
+2646,siim_covid,Indeterminate Appearance,nan,nan
+2682,siim_covid,Indeterminate Appearance,nan,nan
+2683,siim_covid,Indeterminate Appearance,nan,nan
+2714,siim_covid,Indeterminate Appearance,nan,nan
+2725,siim_covid,Indeterminate Appearance,nan,nan
+2744,siim_covid,Indeterminate Appearance,nan,nan
+2814,siim_covid,Indeterminate Appearance,nan,nan
+2830,siim_covid,Indeterminate Appearance,nan,nan
+2833,siim_covid,Indeterminate Appearance,nan,nan
+2835,siim_covid,Indeterminate Appearance,nan,nan
+2850,siim_covid,Indeterminate Appearance,nan,nan
+2852,siim_covid,Indeterminate Appearance,nan,nan
+2884,siim_covid,Indeterminate Appearance,nan,nan
+2891,siim_covid,Indeterminate Appearance,nan,nan
+2921,siim_covid,Indeterminate Appearance,nan,nan
+2939,siim_covid,Indeterminate Appearance,nan,nan
+2982,siim_covid,Indeterminate Appearance,nan,nan
+2992,siim_covid,Indeterminate Appearance,nan,nan
+3006,siim_covid,Indeterminate Appearance,nan,nan
+3012,siim_covid,Indeterminate Appearance,nan,nan
+3016,siim_covid,Indeterminate Appearance,nan,nan
+3023,siim_covid,Indeterminate Appearance,nan,nan
+3080,siim_covid,Indeterminate Appearance,nan,nan
+3089,siim_covid,Indeterminate Appearance,nan,nan
+3105,siim_covid,Indeterminate Appearance,nan,nan
+3109,siim_covid,Indeterminate Appearance,nan,nan
+3112,siim_covid,Indeterminate Appearance,nan,nan
+3115,siim_covid,Indeterminate Appearance,nan,nan
+3137,siim_covid,Indeterminate Appearance,nan,nan
+3139,siim_covid,Indeterminate Appearance,nan,nan
+3164,siim_covid,Indeterminate Appearance,nan,nan
+3166,siim_covid,Indeterminate Appearance,nan,nan
+3184,siim_covid,Indeterminate Appearance,nan,nan
+3221,siim_covid,Indeterminate Appearance,nan,nan
+3237,siim_covid,Indeterminate Appearance,nan,nan
+3248,siim_covid,Indeterminate Appearance,nan,nan
+3250,siim_covid,Indeterminate Appearance,nan,nan
+3265,siim_covid,Indeterminate Appearance,nan,nan
+3272,siim_covid,Indeterminate Appearance,nan,nan
+3279,siim_covid,Indeterminate Appearance,nan,nan
+3321,siim_covid,Indeterminate Appearance,nan,nan
+3342,siim_covid,Indeterminate Appearance,nan,nan
+3344,siim_covid,Indeterminate Appearance,nan,nan
+3348,siim_covid,Indeterminate Appearance,nan,nan
+3357,siim_covid,Indeterminate Appearance,nan,nan
+3362,siim_covid,Indeterminate Appearance,nan,nan
+3373,siim_covid,Indeterminate Appearance,nan,nan
+3406,siim_covid,Indeterminate Appearance,nan,nan
+3441,siim_covid,Indeterminate Appearance,nan,nan
+3455,siim_covid,Indeterminate Appearance,nan,nan
+3470,siim_covid,Indeterminate Appearance,nan,nan
+3506,siim_covid,Indeterminate Appearance,nan,nan
+3512,siim_covid,Indeterminate Appearance,nan,nan
+3520,siim_covid,Indeterminate Appearance,nan,nan
+3534,siim_covid,Indeterminate Appearance,nan,nan
+3554,siim_covid,Indeterminate Appearance,nan,nan
+3562,siim_covid,Indeterminate Appearance,nan,nan
+3564,siim_covid,Indeterminate Appearance,nan,nan
+3569,siim_covid,Indeterminate Appearance,nan,nan
+3575,siim_covid,Indeterminate Appearance,nan,nan
+3593,siim_covid,Indeterminate Appearance,nan,nan
+3597,siim_covid,Indeterminate Appearance,nan,nan
+3599,siim_covid,Indeterminate Appearance,nan,nan
+3622,siim_covid,Indeterminate Appearance,nan,nan
+3630,siim_covid,Indeterminate Appearance,nan,nan
+3669,siim_covid,Indeterminate Appearance,nan,nan
+3684,siim_covid,Indeterminate Appearance,nan,nan
+3694,siim_covid,Indeterminate Appearance,nan,nan
+3726,siim_covid,Indeterminate Appearance,nan,nan
+3757,siim_covid,Indeterminate Appearance,nan,nan
+3785,siim_covid,Indeterminate Appearance,nan,nan
+3786,siim_covid,Indeterminate Appearance,nan,nan
+3793,siim_covid,Indeterminate Appearance,nan,nan
+3801,siim_covid,Indeterminate Appearance,nan,nan
+3805,siim_covid,Indeterminate Appearance,nan,nan
+3816,siim_covid,Indeterminate Appearance,nan,nan
+3832,siim_covid,Indeterminate Appearance,nan,nan
+3845,siim_covid,Indeterminate Appearance,nan,nan
+3856,siim_covid,Indeterminate Appearance,nan,nan
+3886,siim_covid,Indeterminate Appearance,nan,nan
+3893,siim_covid,Indeterminate Appearance,nan,nan
+3955,siim_covid,Indeterminate Appearance,nan,nan
+3959,siim_covid,Indeterminate Appearance,nan,nan
+3969,siim_covid,Indeterminate Appearance,nan,nan
+3973,siim_covid,Indeterminate Appearance,nan,nan
+3986,siim_covid,Indeterminate Appearance,nan,nan
+3987,siim_covid,Indeterminate Appearance,nan,nan
+4001,siim_covid,Indeterminate Appearance,nan,nan
+4014,siim_covid,Indeterminate Appearance,nan,nan
+4032,siim_covid,Indeterminate Appearance,nan,nan
+16,siim_covid,Atypical Appearance,nan,nan
+18,siim_covid,Atypical Appearance,nan,nan
+55,siim_covid,Atypical Appearance,nan,nan
+66,siim_covid,Atypical Appearance,nan,nan
+74,siim_covid,Atypical Appearance,nan,nan
+88,siim_covid,Atypical Appearance,nan,nan
+95,siim_covid,Atypical Appearance,nan,nan
+116,siim_covid,Atypical Appearance,nan,nan
+126,siim_covid,Atypical Appearance,nan,nan
+128,siim_covid,Atypical Appearance,nan,nan
+130,siim_covid,Atypical Appearance,nan,nan
+138,siim_covid,Atypical Appearance,nan,nan
+147,siim_covid,Atypical Appearance,nan,nan
+155,siim_covid,Atypical Appearance,nan,nan
+156,siim_covid,Atypical Appearance,nan,nan
+173,siim_covid,Atypical Appearance,nan,nan
+176,siim_covid,Atypical Appearance,nan,nan
+197,siim_covid,Atypical Appearance,nan,nan
+200,siim_covid,Atypical Appearance,nan,nan
+203,siim_covid,Atypical Appearance,nan,nan
+207,siim_covid,Atypical Appearance,nan,nan
+215,siim_covid,Atypical Appearance,nan,nan
+231,siim_covid,Atypical Appearance,nan,nan
+245,siim_covid,Atypical Appearance,nan,nan
+311,siim_covid,Atypical Appearance,nan,nan
+335,siim_covid,Atypical Appearance,nan,nan
+347,siim_covid,Atypical Appearance,nan,nan
+350,siim_covid,Atypical Appearance,nan,nan
+370,siim_covid,Atypical Appearance,nan,nan
+374,siim_covid,Atypical Appearance,nan,nan
+404,siim_covid,Atypical Appearance,nan,nan
+410,siim_covid,Atypical Appearance,nan,nan
+413,siim_covid,Atypical Appearance,nan,nan
+416,siim_covid,Atypical Appearance,nan,nan
+447,siim_covid,Atypical Appearance,nan,nan
+463,siim_covid,Atypical Appearance,nan,nan
+471,siim_covid,Atypical Appearance,nan,nan
+519,siim_covid,Atypical Appearance,nan,nan
+546,siim_covid,Atypical Appearance,nan,nan
+575,siim_covid,Atypical Appearance,nan,nan
+628,siim_covid,Atypical Appearance,nan,nan
+630,siim_covid,Atypical Appearance,nan,nan
+641,siim_covid,Atypical Appearance,nan,nan
+648,siim_covid,Atypical Appearance,nan,nan
+663,siim_covid,Atypical Appearance,nan,nan
+669,siim_covid,Atypical Appearance,nan,nan
+685,siim_covid,Atypical Appearance,nan,nan
+714,siim_covid,Atypical Appearance,nan,nan
+715,siim_covid,Atypical Appearance,nan,nan
+718,siim_covid,Atypical Appearance,nan,nan
+735,siim_covid,Atypical Appearance,nan,nan
+736,siim_covid,Atypical Appearance,nan,nan
+738,siim_covid,Atypical Appearance,nan,nan
+753,siim_covid,Atypical Appearance,nan,nan
+761,siim_covid,Atypical Appearance,nan,nan
+776,siim_covid,Atypical Appearance,nan,nan
+801,siim_covid,Atypical Appearance,nan,nan
+818,siim_covid,Atypical Appearance,nan,nan
+821,siim_covid,Atypical Appearance,nan,nan
+830,siim_covid,Atypical Appearance,nan,nan
+856,siim_covid,Atypical Appearance,nan,nan
+884,siim_covid,Atypical Appearance,nan,nan
+905,siim_covid,Atypical Appearance,nan,nan
+915,siim_covid,Atypical Appearance,nan,nan
+922,siim_covid,Atypical Appearance,nan,nan
+935,siim_covid,Atypical Appearance,nan,nan
+946,siim_covid,Atypical Appearance,nan,nan
+963,siim_covid,Atypical Appearance,nan,nan
+969,siim_covid,Atypical Appearance,nan,nan
+1012,siim_covid,Atypical Appearance,nan,nan
+1063,siim_covid,Atypical Appearance,nan,nan
+1064,siim_covid,Atypical Appearance,nan,nan
+1084,siim_covid,Atypical Appearance,nan,nan
+1092,siim_covid,Atypical Appearance,nan,nan
+1097,siim_covid,Atypical Appearance,nan,nan
+1104,siim_covid,Atypical Appearance,nan,nan
+1105,siim_covid,Atypical Appearance,nan,nan
+1120,siim_covid,Atypical Appearance,nan,nan
+1144,siim_covid,Atypical Appearance,nan,nan
+1147,siim_covid,Atypical Appearance,nan,nan
+1148,siim_covid,Atypical Appearance,nan,nan
+1153,siim_covid,Atypical Appearance,nan,nan
+1172,siim_covid,Atypical Appearance,nan,nan
+1188,siim_covid,Atypical Appearance,nan,nan
+1195,siim_covid,Atypical Appearance,nan,nan
+1203,siim_covid,Atypical Appearance,nan,nan
+1216,siim_covid,Atypical Appearance,nan,nan
+1237,siim_covid,Atypical Appearance,nan,nan
+1240,siim_covid,Atypical Appearance,nan,nan
+1243,siim_covid,Atypical Appearance,nan,nan
+1285,siim_covid,Atypical Appearance,nan,nan
+1308,siim_covid,Atypical Appearance,nan,nan
+1310,siim_covid,Atypical Appearance,nan,nan
+1314,siim_covid,Atypical Appearance,nan,nan
+1349,siim_covid,Atypical Appearance,nan,nan
+1384,siim_covid,Atypical Appearance,nan,nan
+1385,siim_covid,Atypical Appearance,nan,nan
+1390,siim_covid,Atypical Appearance,nan,nan
+1397,siim_covid,Atypical Appearance,nan,nan
+1416,siim_covid,Atypical Appearance,nan,nan
+1424,siim_covid,Atypical Appearance,nan,nan
+1445,siim_covid,Atypical Appearance,nan,nan
+1461,siim_covid,Atypical Appearance,nan,nan
+1485,siim_covid,Atypical Appearance,nan,nan
+1502,siim_covid,Atypical Appearance,nan,nan
+1517,siim_covid,Atypical Appearance,nan,nan
+1520,siim_covid,Atypical Appearance,nan,nan
+1523,siim_covid,Atypical Appearance,nan,nan
+1528,siim_covid,Atypical Appearance,nan,nan
+1553,siim_covid,Atypical Appearance,nan,nan
+1584,siim_covid,Atypical Appearance,nan,nan
+1589,siim_covid,Atypical Appearance,nan,nan
+1591,siim_covid,Atypical Appearance,nan,nan
+1628,siim_covid,Atypical Appearance,nan,nan
+1632,siim_covid,Atypical Appearance,nan,nan
+1639,siim_covid,Atypical Appearance,nan,nan
+1663,siim_covid,Atypical Appearance,nan,nan
+1705,siim_covid,Atypical Appearance,nan,nan
+1744,siim_covid,Atypical Appearance,nan,nan
+1781,siim_covid,Atypical Appearance,nan,nan
+1789,siim_covid,Atypical Appearance,nan,nan
+1800,siim_covid,Atypical Appearance,nan,nan
+1816,siim_covid,Atypical Appearance,nan,nan
+1844,siim_covid,Atypical Appearance,nan,nan
+1858,siim_covid,Atypical Appearance,nan,nan
+1875,siim_covid,Atypical Appearance,nan,nan
+1877,siim_covid,Atypical Appearance,nan,nan
+1887,siim_covid,Atypical Appearance,nan,nan
+1899,siim_covid,Atypical Appearance,nan,nan
+1906,siim_covid,Atypical Appearance,nan,nan
+1912,siim_covid,Atypical Appearance,nan,nan
+1969,siim_covid,Atypical Appearance,nan,nan
+1992,siim_covid,Atypical Appearance,nan,nan
+2055,siim_covid,Atypical Appearance,nan,nan
+2086,siim_covid,Atypical Appearance,nan,nan
+2103,siim_covid,Atypical Appearance,nan,nan
+2157,siim_covid,Atypical Appearance,nan,nan
+2184,siim_covid,Atypical Appearance,nan,nan
+2185,siim_covid,Atypical Appearance,nan,nan
+2195,siim_covid,Atypical Appearance,nan,nan
+2202,siim_covid,Atypical Appearance,nan,nan
+2219,siim_covid,Atypical Appearance,nan,nan
+2272,siim_covid,Atypical Appearance,nan,nan
+2286,siim_covid,Atypical Appearance,nan,nan
+2288,siim_covid,Atypical Appearance,nan,nan
+2300,siim_covid,Atypical Appearance,nan,nan
+2315,siim_covid,Atypical Appearance,nan,nan
+2325,siim_covid,Atypical Appearance,nan,nan
+2355,siim_covid,Atypical Appearance,nan,nan
+2357,siim_covid,Atypical Appearance,nan,nan
+2363,siim_covid,Atypical Appearance,nan,nan
+2377,siim_covid,Atypical Appearance,nan,nan
+2402,siim_covid,Atypical Appearance,nan,nan
+2404,siim_covid,Atypical Appearance,nan,nan
+2457,siim_covid,Atypical Appearance,nan,nan
+2473,siim_covid,Atypical Appearance,nan,nan
+2512,siim_covid,Atypical Appearance,nan,nan
+2515,siim_covid,Atypical Appearance,nan,nan
+2535,siim_covid,Atypical Appearance,nan,nan
+2612,siim_covid,Atypical Appearance,nan,nan
+2619,siim_covid,Atypical Appearance,nan,nan
+2640,siim_covid,Atypical Appearance,nan,nan
+2646,siim_covid,Atypical Appearance,nan,nan
+2682,siim_covid,Atypical Appearance,nan,nan
+2683,siim_covid,Atypical Appearance,nan,nan
+2714,siim_covid,Atypical Appearance,nan,nan
+2725,siim_covid,Atypical Appearance,nan,nan
+2744,siim_covid,Atypical Appearance,nan,nan
+2814,siim_covid,Atypical Appearance,nan,nan
+2830,siim_covid,Atypical Appearance,nan,nan
+2833,siim_covid,Atypical Appearance,nan,nan
+2835,siim_covid,Atypical Appearance,nan,nan
+2850,siim_covid,Atypical Appearance,nan,nan
+2852,siim_covid,Atypical Appearance,nan,nan
+2884,siim_covid,Atypical Appearance,nan,nan
+2891,siim_covid,Atypical Appearance,nan,nan
+2921,siim_covid,Atypical Appearance,nan,nan
+2939,siim_covid,Atypical Appearance,nan,nan
+2982,siim_covid,Atypical Appearance,nan,nan
+2992,siim_covid,Atypical Appearance,nan,nan
+3006,siim_covid,Atypical Appearance,nan,nan
+3012,siim_covid,Atypical Appearance,nan,nan
+3016,siim_covid,Atypical Appearance,nan,nan
+3023,siim_covid,Atypical Appearance,nan,nan
+3080,siim_covid,Atypical Appearance,nan,nan
+3089,siim_covid,Atypical Appearance,nan,nan
+3105,siim_covid,Atypical Appearance,nan,nan
+3109,siim_covid,Atypical Appearance,nan,nan
+3112,siim_covid,Atypical Appearance,nan,nan
+3115,siim_covid,Atypical Appearance,nan,nan
+3137,siim_covid,Atypical Appearance,nan,nan
+3139,siim_covid,Atypical Appearance,nan,nan
+3164,siim_covid,Atypical Appearance,nan,nan
+3166,siim_covid,Atypical Appearance,nan,nan
+3184,siim_covid,Atypical Appearance,nan,nan
+3221,siim_covid,Atypical Appearance,nan,nan
+3237,siim_covid,Atypical Appearance,nan,nan
+3248,siim_covid,Atypical Appearance,nan,nan
+3250,siim_covid,Atypical Appearance,nan,nan
+3265,siim_covid,Atypical Appearance,nan,nan
+3272,siim_covid,Atypical Appearance,nan,nan
+3279,siim_covid,Atypical Appearance,nan,nan
+3321,siim_covid,Atypical Appearance,nan,nan
+3342,siim_covid,Atypical Appearance,nan,nan
+3344,siim_covid,Atypical Appearance,nan,nan
+3348,siim_covid,Atypical Appearance,nan,nan
+3357,siim_covid,Atypical Appearance,nan,nan
+3362,siim_covid,Atypical Appearance,nan,nan
+3373,siim_covid,Atypical Appearance,nan,nan
+3406,siim_covid,Atypical Appearance,nan,nan
+3441,siim_covid,Atypical Appearance,nan,nan
+3455,siim_covid,Atypical Appearance,nan,nan
+3470,siim_covid,Atypical Appearance,nan,nan
+3506,siim_covid,Atypical Appearance,nan,nan
+3512,siim_covid,Atypical Appearance,nan,nan
+3520,siim_covid,Atypical Appearance,nan,nan
+3534,siim_covid,Atypical Appearance,nan,nan
+3554,siim_covid,Atypical Appearance,nan,nan
+3562,siim_covid,Atypical Appearance,nan,nan
+3564,siim_covid,Atypical Appearance,nan,nan
+3569,siim_covid,Atypical Appearance,nan,nan
+3575,siim_covid,Atypical Appearance,nan,nan
+3593,siim_covid,Atypical Appearance,nan,nan
+3597,siim_covid,Atypical Appearance,nan,nan
+3599,siim_covid,Atypical Appearance,nan,nan
+3622,siim_covid,Atypical Appearance,nan,nan
+3630,siim_covid,Atypical Appearance,nan,nan
+3669,siim_covid,Atypical Appearance,nan,nan
+3684,siim_covid,Atypical Appearance,nan,nan
+3694,siim_covid,Atypical Appearance,nan,nan
+3726,siim_covid,Atypical Appearance,nan,nan
+3757,siim_covid,Atypical Appearance,nan,nan
+3785,siim_covid,Atypical Appearance,nan,nan
+3786,siim_covid,Atypical Appearance,nan,nan
+3793,siim_covid,Atypical Appearance,nan,nan
+3801,siim_covid,Atypical Appearance,nan,nan
+3805,siim_covid,Atypical Appearance,nan,nan
+3816,siim_covid,Atypical Appearance,nan,nan
+3832,siim_covid,Atypical Appearance,nan,nan
+3845,siim_covid,Atypical Appearance,nan,nan
+3856,siim_covid,Atypical Appearance,nan,nan
+3886,siim_covid,Atypical Appearance,nan,nan
+3893,siim_covid,Atypical Appearance,nan,nan
+3955,siim_covid,Atypical Appearance,nan,nan
+3959,siim_covid,Atypical Appearance,nan,nan
+3969,siim_covid,Atypical Appearance,nan,nan
+3973,siim_covid,Atypical Appearance,nan,nan
+3986,siim_covid,Atypical Appearance,nan,nan
+3987,siim_covid,Atypical Appearance,nan,nan
+4001,siim_covid,Atypical Appearance,nan,nan
+4014,siim_covid,Atypical Appearance,nan,nan
+4032,siim_covid,Atypical Appearance,nan,nan

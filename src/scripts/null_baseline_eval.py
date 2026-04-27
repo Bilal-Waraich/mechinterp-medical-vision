@@ -65,16 +65,28 @@ from scripts.universality_eval import (
 # Null model builders
 # ══════════════════════════════════════════════════════════════════════════════
 
-def build_random_sae(reference_sae: BatchTopKSAE) -> BatchTopKSAE:
+def build_random_sae(reference_sae):
     """Return a randomly initialised SAE with the same architecture."""
-    model = BatchTopKSAE(
-        d_model=reference_sae.d_model,
-        d_sae=reference_sae.d_sae,
-        k=reference_sae.k,
-        n_batches_to_dead=reference_sae.n_batches_to_dead,
-        aux_penalty=reference_sae.aux_penalty,
-        l1_coeff=reference_sae.l1_coeff,
-    )
+    from matryoshka_sae import MatryoshkaSAE
+    if isinstance(reference_sae, MatryoshkaSAE):
+        model = MatryoshkaSAE(
+            d_model=reference_sae.d_model,
+            d_sae=reference_sae.d_sae,
+            k_schedule=reference_sae.k_schedule,
+            scale_weights=getattr(reference_sae, "scale_weights", None),
+            n_batches_to_dead=reference_sae.n_batches_to_dead,
+            aux_penalty=reference_sae.aux_penalty,
+            l1_coeff=reference_sae.l1_coeff,
+        )
+    else:
+        model = BatchTopKSAE(
+            d_model=reference_sae.d_model,
+            d_sae=reference_sae.d_sae,
+            k=reference_sae.k,
+            n_batches_to_dead=reference_sae.n_batches_to_dead,
+            aux_penalty=reference_sae.aux_penalty,
+            l1_coeff=reference_sae.l1_coeff,
+        )
     model.eval()
     return model
 
@@ -111,8 +123,8 @@ class PCANullSAE:
         magnitudes = proj.abs()
         k = min(self.k, self.d_sae)
         topk_vals, topk_idx = magnitudes.topk(k, dim=1)
-        threshold = topk_vals[:, -1].unsqueeze(1)
-        sparse = torch.where(magnitudes >= threshold, magnitudes, torch.zeros_like(magnitudes))
+        sparse = torch.zeros_like(magnitudes)
+        sparse.scatter_(1, topk_idx, topk_vals)
         return sparse
 
     def to(self, device):

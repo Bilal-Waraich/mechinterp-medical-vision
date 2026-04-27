@@ -201,7 +201,7 @@ def main() -> None:
     # Save combined stats for downstream use
     stats = {
         "feature_max":  combined_max,
-        "feature_mean": combined_max,   # approximate: max≈mean for universality
+        "feature_mean": combined_max.mean(dim=0),
         "global_max":   global_max,
         "n_images":     n_total,
     }
