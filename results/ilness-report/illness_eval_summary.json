@@ -1,6 +1,6 @@
 {
-  "run_timestamp": "2026-04-25T17:19:10.927870Z",
-  "elapsed_seconds": 346.0,
+  "run_timestamp": "2026-04-27T15:45:24.638330Z",
+  "elapsed_seconds": 344.6,
   "n_confirmed_latents": 252,
   "n_patches": 49,
   "datasets": [

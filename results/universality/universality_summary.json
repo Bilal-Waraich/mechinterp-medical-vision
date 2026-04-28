@@ -13,11 +13,11 @@
     "tb"
   ],
   "n_scanner_flagged": 0,
-  "n_level1_candidates": 827,
-  "n_level2_confirmed": 206,
+  "n_level1_candidates": 863,
+  "n_level2_confirmed": 279,
   "n_split_pairs": 0,
-  "n_after_split": 206,
-  "n_universal": 188,
+  "n_after_split": 279,
+  "n_universal": 252,
   "thresholds": {
     "t_top": 50,
     "freq_thr": 0.01,
