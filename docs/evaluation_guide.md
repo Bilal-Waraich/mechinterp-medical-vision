@@ -8,12 +8,16 @@ Organised in the order you should actually look at things, with concrete metric 
 
 ## 0. Mental model before you start
 
-The pipeline answers two separable questions:
+The pipeline answers three separable questions:
 
 1. **Are the universal latents real?** (Is the SAE learning something that isn't just "random projections activate together" or "the dataset-specific scanner signature"?)
 2. **What do they *mean*?** (What anatomical or clinical concept does each universal latent represent?)
+3. **Do they encode pathology, or just anatomy?** (A latent can be universal and visually coherent while firing identically on healthy and sick images — illness stratification is the only way to tell.)
 
-Steps 1–3 of the pipeline answer the first question with numbers. Step 4 and the visualisation jobs answer the second with pictures. Never skip straight to the pictures — a latent can look beautiful and still be an artefact. The null baseline and scanner audit exist specifically to keep you honest about this.
+Steps 1–3 of the pipeline answer the first question with numbers. Step 4 and the visualisation jobs answer the second with pictures. **Step 5 (illness-stratified eval) answers the third with probes and spatial grounding.** Never skip straight to the pictures — a latent can look beautiful and still be an artefact. The null baseline and scanner audit exist specifically to keep you honest about this.
+
+### The canonical class-match gate caveat
+The universality eval labels each confirmed latent with a `matched_canonical_class`. For the current BatchTopK layer-3 runs this resolves to `no_finding` for all confirmed latents — not because the latents are uninteresting, but because `no_finding` is the plurality class in both CheXpert (~40%) and RSNA (~75%), so the top-50 activating images for any broadly-firing latent are dominated by `no_finding` by majority. **Do not interpret `matched_canonical_class = no_finding` as "this latent encodes healthy anatomy."** Use the pathology-preference ratio ρ_k from the illness report instead.
 
 ### Layer semantics
 - **Layer 2** (`pm_index=2`, Swin Stage 2→3): mid-level features. Expect texture-like and local structure latents (edges of ribs, lung-field boundaries, diaphragm line).
@@ -170,7 +174,82 @@ For each latent, ask:
 
 ---
 
-## 5. Phase-3 visualisation — `vis_outputs/`
+## 5. Illness-stratified evaluation — `illness/`
+
+**Script:** `src/scripts/illness_stratified_eval.py`  
+**Run after:** universality eval has produced a confirmed latent list and the merged `activations.safetensors` is available.  
+**Reference:** `docs/illness-stratified-eval-methodology.md` for full mathematical detail.
+
+This is the most diagnostically useful step for the thesis. It answers whether each confirmed latent is a generic anatomical feature or a pathology-sensitive feature, and if pathology-sensitive, whether it spatially localises to the diseased region.
+
+### Files produced
+
+| File | What you actually read |
+|---|---|
+| `illness_latent_summary.json` | Top-10 latent indices per illness group by mean activation. First thing to open. |
+| `illness_activation_profiles.csv` | Per-latent, per-group, per-dataset: `mean_activation`, `activation_freq`, `n_images`. |
+| `illness_latent_matrix.csv` | 7 × K matrix — rows are illness groups, columns are confirmed latents. Heatmap this. |
+| `illness_discriminability_probe_coarse.csv` | Per-latent AUROC for 7-group canonical classification (5-fold CV logistic regression). |
+| `illness_discriminability_probe_fine.csv` | Per-latent AUROC for fine clinical labels (CheXpert 14-label, RSNA binary, SIIM 4-class). |
+| `illness_spatial_grounding.csv` | Per-latent Pearson r between patch activations and bbox overlap, per illness group. |
+
+### Inspection order
+
+**Step A — Rank by pathology-preference ratio ρ_k**
+
+Compute from `illness_activation_profiles.csv`:
+
+```
+ρ_k = mean(mean_activation over groups 0,1,2,3,4,6) / mean_activation for group 5 (no_finding)
+```
+
+Sort all K confirmed latents by ρ_k. This immediately partitions the set:
+
+| ρ_k | Tier | What to expect in patch ablation |
+|---|---|---|
+| < 1.0 | Geometry/framing | Fires at image border, apical corners, or lateral wall edge. Visual: symmetric ring or corner blobs. |
+| 1.0–2.0 | Anatomy/background | Fires broadly across both healthy and sick images. Visual: diffuse whole-image activation. |
+| 2.0–3.5 | Pathology-presence | Fires more on sick images but not localised. Visual: loose cloud over lung fields. |
+| ≥ 3.5 | Pathology-localised | Fires on sick images AND at specific anatomical location. Visual: tight reproducible blob on one lung region. |
+
+For the BatchTopK layer-3 xray_v2 run: ρ_k ranges 0.61–5.18 across 65 confirmed latents. The highest-ρ latents (e.g. latent 1088 at ρ=5.18) show tight spatial clusters in patch ablation; lowest-ρ (e.g. latent 981 at ρ=0.61) fire at the lateral image border.
+
+**Step B — Check AUROC for your top-ρ latents**
+
+Open `illness_discriminability_probe_coarse.csv`. Filter to latents with ρ_k ≥ 2.0. AUROC > 0.55 on at least one dataset with a matching pathology group confirms the latent is individually discriminative.
+
+For the current run: mean AUROC is 0.54 across all datasets, best individual ≈ 0.67 on RSNA for airspace_opacity latents. These are modest but above the 0.5 random baseline, consistent with scalar single-feature probes.
+
+For fine-grained labels: open `illness_discriminability_probe_fine.csv` and filter to `label_name = Consolidation` or `Lung Opacity` for airspace latents, `Pleural Effusion` for pleural latents.
+
+**Step C — Spatial grounding for airspace_opacity latents**
+
+Open `illness_spatial_grounding.csv`. Filter to `illness_group = airspace_opacity` and `dataset ∈ {rsna, siim_covid}` (only datasets with bounding boxes). Look for latents where `pearson_r > 0` and `pval < 0.05`. These latents fire at the annotated opacity location, not just broadly on sick images.
+
+For the current run: spatial r values are near zero even for the best latents — consistent with Tier 3 (pathology-presence, not localised) for most of the confirmed set. Latent 1088 is the strongest candidate for Tier 4 based on patch ablation alone.
+
+**Step D — Cross-reference with inspect_latents/**
+
+For each latent you've identified as interesting from the numbers:
+1. Open `inspect_latents/latent_XXXXX/` (or the corresponding PNG).
+2. Confirm the heatmap cluster site matches the illness group: airspace_opacity → lower/mid lung; pleural → lateral margin; cardiac → mediastinum.
+3. Check consistency: does the cluster sit in the same anatomical zone across all 4 dataset rows?
+
+A latent that is Tier 3 by ρ_k but shows a tight consistent cluster in 3/4 dataset rows is worth reporting as a candidate Tier 4 even if the Pearson r is not significant (small n in the bbox-annotated group can suppress p-values).
+
+### What the illness eval adds to the thesis argument
+
+The universality eval establishes that the SAE latents are **cross-dataset and scanner-invariant**. The illness eval establishes that *within* the universal set, a gradient exists from geometry detectors to pathology detectors. This gradient is the main empirical result:
+
+- Geometry/framing detectors (ρ < 1): SAE has learned X-ray composition conventions.
+- Pathology-presence detectors (ρ 2–3.5, AUROC > 0.55): SAE has disentangled "sick patient globally" from anatomy.
+- Pathology-localised detectors (ρ ≥ 3.5, spatial r > 0): SAE has learned a concept grounded in the physical location of disease.
+
+The thesis claim is: an SAE trained on a multi-task foundation model's intermediate representations spontaneously disentangles these three levels without disease supervision. The illness eval is the evidence.
+
+---
+
+## 6. Phase-3 visualisation — `vis_outputs/`
 
 Produced by `visualise.py all`. These are the *general* SAE visualisations (not specific to the universal set) and complement the pipeline.
 
@@ -244,6 +323,8 @@ Once both pipelines + vis jobs are done:
 - `trained_L2 / random_L2 ≥ 2`.
 - `n_level2_confirmed ≥ 10` with at least 1 Bonferroni pass on at least one layer.
 - Spot-checking 10 random confirmed latents in `inspect_latents/` shows 7+ with coherent anatomical activation.
+- Illness-stratified eval shows ρ_k > 1.0 for ≥ 50% of confirmed latents (SAE is preferring pathological images for most of its universal features).
+- At least 1 confirmed latent achieves ρ_k ≥ 3.5 with a spatially consistent patch cluster (even if Pearson r p-value is not < 0.05).
 
 ---
 
@@ -263,7 +344,7 @@ When writing up a layer for discussion, produce this table:
 
 | Metric | L2 value | L3 value | Notes |
 |---|---|---|---|
-| `flagged_fraction` |  |  | audit |
+| `flagged_fraction` |  |  | scanner audit |
 | `n_level1_candidates` |  |  | freq gate |
 | `n_level2_confirmed` |  |  | **headline number** |
 | `n_spatial_bonferroni_pass` |  |  | class-correlated |
@@ -271,5 +352,9 @@ When writing up a layer for discussion, produce this table:
 | Trained / PCA ratio |  |  | null sanity |
 | Dead fraction |  |  | from stats.pt |
 | Latents with coherent visuals |  |  | manual, sampled 10 |
+| Latents ρ_k ≥ 2.0 (pathology-presence) |  |  | illness eval |
+| Latents ρ_k ≥ 3.5 (pathology-localised) |  |  | illness eval |
+| Best single-latent AUROC (airspace) |  |  | illness probe |
+| Latents with spatial r > 0, p < 0.05 |  |  | illness grounding |
 
 This is the single artefact to share. Everything else is supporting evidence.

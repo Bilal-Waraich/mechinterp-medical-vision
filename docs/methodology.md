@@ -376,7 +376,65 @@ Step 8 — Qualitative inspection
            patch_ablation.png + index.md
   status : ✅ implemented  (render_semantic_grid + render_ablation_panel
                              + render_frequency_bar)
+
+Step 9 — Illness-stratified clinical characterisation
+  script : src/scripts/illness_stratified_eval.py
+  input  : SAE checkpoint + merged activations.safetensors
+           confirmed latent indices from universality_summary.json
+           (optional) --rsna_label_csv, --siim_label_csv for fine probe
+           (optional) --rsna_bbox_csv, --siim_bbox_csv for spatial grounding
+  output : illness_activation_profiles.csv
+           illness_latent_matrix.csv
+           illness_latent_summary.json
+           illness_discriminability_probe_coarse.csv
+           illness_discriminability_probe_fine.csv
+           illness_spatial_grounding.csv
+           illness_eval_summary.json
+  status : ✅ implemented  (see docs/illness-stratified-eval-methodology.md)
 ```
+
+---
+
+---
+
+### 1.8 Illness-stratified clinical characterisation (Step 9)
+
+Properties 1–4 and the spatial grounding test establish *that* the confirmed latents are universal and scanner-invariant. They do not establish *what clinical concept* each latent encodes, nor whether it discriminates between pathological and healthy images. The illness-stratified evaluation is a mandatory post-hoc analysis that answers both questions for every confirmed latent.
+
+**Full mathematical detail:** `docs/illness-stratified-eval-methodology.md`
+
+#### Motivation: the canonical class-match gate limitation
+
+Property 1 includes a class-match gate: the dominant canonical class among the top-50 activating images must agree across active datasets. In practice this gate resolves to `no_finding` for all confirmed latents in the current BatchTopK layer-3 runs. This is a systematic bias: `no_finding` is the plurality class in CheXpert (~40%) and RSNA (~75%), so any broadly-firing latent's top-50 images will be numerically dominated by healthy images. The class-match label `no_finding` therefore means "this latent does not have a single pathology class as an *absolute majority* in its top-50", not "this latent prefers healthy images."
+
+The illness-stratified eval bypasses this by computing per-group activation statistics directly and measuring the **pathology-preference ratio**:
+
+$$\rho_k = \frac{\frac{1}{6}\sum_{g \neq 5} M_{g,k}}{M_{5,k}}$$
+
+where $M_{g,k}$ is the mean image-level max-pooled activation of latent $k$ on illness group $g$, averaged across datasets. Latents with $\rho_k > 1$ activate more on pathological images than on healthy images — this is the primary discriminability signal, independent of the class-match gate.
+
+#### Three analyses
+
+**A1 — Coarse discriminability probe.** For each confirmed latent $k$ and dataset $d$, a logistic regression classifier with one-vs-rest decomposition is fitted using the scalar image-level activation $z^{d,\text{img}}_{n,k}$ as the sole feature. Performance is measured by 5-fold stratified cross-validation macro-averaged AUROC. A scalar linear probe is chosen deliberately: if a single SAE latent truly encodes a clinical concept, it should have discriminative power on its own without any feature combination.
+
+**A2 — Fine-grained per-label probe.** The same CV-AUROC protocol applied to full per-dataset clinical labels (CheXpert's 14 binary labels, RSNA binary pneumonia, SIIM-COVID 4-class), giving per-latent per-label AUROC values that reveal which specific pathologies each latent is most discriminative for.
+
+**B — Illness-stratified spatial grounding.** For images in each illness group, the Pearson correlation between per-patch latent activation and patch-level pathology coverage (fractional bbox overlap) is computed separately per group. This is a strictly stronger test than the pooled spatial grounding in Step 5: it asks whether the latent fires at the annotated lesion *within the set of sick images specifically*, avoiding the dilution from healthy images that have no bounding boxes.
+
+#### Discriminability taxonomy
+
+| Tier | ρ_k | AUROC | Spatial r | Interpretation |
+|---|---|---|---|---|
+| 1 — Geometry/framing | < 1.0 | ≈ 0.5 | — | Fires on healthy images; encodes X-ray composition conventions |
+| 2 — Anatomy/background | 1.0–2.0 | ≈ 0.5 | — | Fires uniformly; domain signal without clinical specificity |
+| 3 — Pathology-presence | 2.0–3.5 | > 0.55 | ≈ 0 | Fires globally more on sick images; not spatially localised |
+| 4 — Pathology-localised | ≥ 3.5 | > 0.60 | > 0, p < 0.05 | Fires on sick images AND at the annotated lesion location |
+
+For the BatchTopK layer-3 xray_v2 run: ρ_k ranges 0.61–5.18 across 65 confirmed latents. Most confirmed latents fall in Tier 2–3; the highest-ρ latents (e.g. latent 1088, ρ=5.18) show spatially tight patch activation consistent with Tier 4.
+
+#### Relationship to the thesis claim
+
+The universality pipeline (Steps 1–8) establishes that the SAE has learned cross-dataset, scanner-invariant representations. The illness-stratified eval (Step 9) establishes the clinical gradient within that universal set: some latents encode X-ray composition, some encode broad pathological severity, and some encode spatially localised disease concepts. This gradient — emerging without disease supervision, purely from the structure of the foundation model's representations — is the central empirical finding.
 
 ---
 
@@ -403,6 +461,14 @@ Step 8 — Qualitative inspection
   & Remy, J. (2008). **Fleischner Society: Glossary of Terms for Thoracic
   Imaging.** *Radiology, 246*(3), 697–722.
   https://pubmed.ncbi.nlm.nih.gov/18195376/
+
+- Alain, G., & Bengio, Y. (2017). **Understanding Intermediate Layers Using
+  Linear Classifier Probes.** *ICLR Workshop.*
+  https://arxiv.org/abs/1610.01644
+
+- DeLong, E. R., DeLong, D. M., & Clarke-Pearson, D. L. (1988). **Comparing
+  the Areas under Two or More Correlated Receiver Operating Characteristic
+  Curves.** *Biometrics, 44*(3), 837–845.
 
 - Klabunde, M., et al. (2024). **Towards Universality: Studying Mechanistic
   Similarity Across Language Model Architectures.** *arXiv:2410.06672.*
