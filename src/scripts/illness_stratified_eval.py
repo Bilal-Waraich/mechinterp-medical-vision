@@ -120,7 +120,27 @@ def load_dataset_activations(
         stems_by_name: dict[str, list[str]] = (
             json.loads(meta["image_stems"]) if "image_stems" in meta else {}
         )
+        print(f"    image_stems keys in metadata: {list(stems_by_name.keys())}")
         n_patches = int(meta.get("spatial_h", 7)) * int(meta.get("spatial_w", 7))
+
+        # Build alias map: try exact name, lowercase, and known dataset aliases
+        _STEM_ALIASES: dict[str, list[str]] = {
+            "chexpert": ["chexpert", "CheXpert", "chexpert_sampled", "chex"],
+            "rsna": ["rsna", "RSNA", "rsna_pneumonia"],
+            "siim_covid": ["siim_covid", "siim", "SIIM", "siim-covid19"],
+            "tb": ["tb", "TB", "tuberculosis"],
+        }
+
+        def _get_stems(name: str) -> list[str]:
+            for alias in _STEM_ALIASES.get(name, [name]):
+                if alias in stems_by_name:
+                    return stems_by_name[alias]
+            # last resort: case-insensitive match
+            name_lower = name.lower()
+            for k, v in stems_by_name.items():
+                if k.lower() == name_lower:
+                    return v
+            return []
 
         datasets = []
         for i, name in enumerate(args.dataset_names):
@@ -136,7 +156,8 @@ def load_dataset_activations(
                 lbl = labels_all[img_indices]
             else:
                 lbl = torch.full((0,), -1, dtype=torch.int32)
-            stems = stems_by_name.get(name, [])
+            stems = _get_stems(name)
+            print(f"    [{name}] found {len(stems)} image stems")
             datasets.append((name, acts, lbl, stems))
         return datasets
 

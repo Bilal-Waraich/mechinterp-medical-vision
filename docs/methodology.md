@@ -6,6 +6,45 @@ semantic representations.
 
 ---
 
+## 0. Swin Stage Mapping (pm_index → Architecture)
+
+The harvest script (`src/conglomerate/harvest_all.py`) registers a forward hook
+on a specific point in the UMedPT backbone via `--pm_index`. The experiment
+directories (`layer-2/`, `layer-3/`) are **sequence labels, not Swin stage
+numbers**. The correct architectural mapping is:
+
+| pm_index | Module hooked | Output captured | d_model | Spatial | Thesis name | Exp dir |
+|----------|--------------|-----------------|---------|---------|-------------|---------|
+| 0 | PatchMerging post-Stage 1 | Before Stage 2 blocks | 256 | 28×28 | Stage 1→2 | not run |
+| 1 | PatchMerging post-Stage 2 | Before Stage 3 blocks | 512 | 14×14 | Stage 2→3 | not run |
+| **2** | PatchMerging post-Stage 3 | After Stage 3 downsampling, **before Stage 4 blocks** | **1024** | **7×7** | **Stage 3→4 transition** | `layer-2/` |
+| **3** | features[-1] = Stage 4 blocks | **After Stage 4 processing**, before classification head | **1024** | **7×7** | **Stage 4 output** | `layer-3/` |
+
+Both run experiments share `d_model=1024` and `7×7` spatial resolution. The
+difference is purely processing depth: pm_index=2 captures representations after
+spatial merging but before Stage 4's self-attention refinement; pm_index=3
+captures the fully processed final representations.
+
+**Always use "Stage 3→4 transition" and "Stage 4 output" in writing — never
+"layer 2" or "layer 3".**
+
+### Universality results by stage
+
+| Stage | pm_index | Confirmed latents | Spatial Bonferroni passes |
+|-------|----------|-------------------|--------------------------|
+| Stage 3→4 transition | 2 | 45 | 2 |
+| Stage 4 output | 3 | **65** | **3** |
+
+Stage 4 output yields 44% more confirmed universal latents under identical
+protocol and identical SAE dictionary size (d_sae=4096). The gain is attributable
+to processing depth, not representational capacity (same d_model and spatial
+resolution). Stage 4's transformer blocks perform the final global context
+integration before classification, producing more semantically committed and
+cross-dataset consistent representations. Stage 4 output is the **primary
+analytical focus**; Stage 3→4 results serve as a comparative reference.
+
+---
+
 ## 1. Universality
 
 ### 1.1 General definition
@@ -60,7 +99,7 @@ disagreement, or a dataset with no labelled image in its top-K, rejects the
 latent. When no `--label_csv` flag is supplied the class-match gate is
 skipped and Level 1 falls back to frequency-only.
 
-**Token counts at pm_index=2 (7×7 = 49 tokens/image):**
+**Token counts (7×7 = 49 tokens/image, applies to both pm_index=2 and pm_index=3):**
 
 | Dataset | Images | Tokens | 1% threshold |
 |---|---|---|---|
