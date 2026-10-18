@@ -122,7 +122,13 @@ reproduction reports are welcome.
 
 ## About this repository's history
 
-This repository contains the `batch-topk` line of work, which is the thesis pipeline. Its history was rewritten to
+This repository has two branches:
+
+- **`batch-topk`** (default): the thesis pipeline (BatchTopK SAE).
+- **[`Matryoshka`](../../tree/Matryoshka)**: a Matryoshka sparse-autoencoder implementation and its analysis. An earlier
+  snapshot that diverged from `batch-topk` before the final thesis changes.
+
+The history was rewritten to
 remove large binary files and institution-internal infrastructure details, so commit hashes differ from the original
 development repository.
 
