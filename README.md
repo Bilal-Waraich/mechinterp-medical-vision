@@ -12,3 +12,8 @@ This repo implements the full **Harvest → Train → Visualise** pipeline for a
 - **Bilal Waraich** — [@Bilal-Waraich](https://github.com/Bilal-Waraich)
 
 Fraunhofer MEVIS — Mechanistic Interpretability Group
+
+## Branches
+
+- **`batch-topk`** (default) — the BatchTopK SAE pipeline: harvest → train → visualise, plus the thesis analyses.
+- **`Matryoshka`** — the Matryoshka SAE implementation (`src/matryoshka_sae.py`) and its analyses. This work lives only on that branch.
