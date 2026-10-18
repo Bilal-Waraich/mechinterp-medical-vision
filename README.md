@@ -12,7 +12,7 @@ learned features are *universal*: do they fire, and point in the same direction,
 from different institutions, populations and label schemes?
 
 <p align="center">
-  <img src="docs/img/sae_architecture.svg" alt="BatchTopK sparse autoencoder architecture on UMedPT Stage 4 tokens" width="900">
+  <img src="docs/img/sae_architecture.png" alt="BatchTopK sparse autoencoder architecture on UMedPT Stage 4 tokens" width="900">
 </p>
 
 *A chest X-ray is tokenised by the frozen UMedPT Swin backbone into 49 × 1024 Stage 4 patch tokens. Each token is
@@ -29,16 +29,16 @@ same tests confirm 16 components for a PCA baseline and 1,490 for a randomly ini
 harvest  ->  train  ->  evaluate universality  ->  visualise
 ```
 
-| Stage | Script | What it does |
-|---|---|---|
-| Harvest | `src/conglomerate/harvest_all.py` | Runs the frozen UMedPT encoder over the four datasets, hooks one Swin stage (`--pm_index`), RMS-normalises and per-dataset-centres the activations, and writes one `.safetensors` file. |
-| Train | `src/train_sae.py` | Trains the BatchTopK SAE with stratified batches (25 % of each batch per dataset). Config presets live in `configs/`. |
-| Scanner audit | `src/scripts/scanner_latent_audit.py` | Flags latents that encode *which dataset* an image came from. |
-| Universality | `src/scripts/universality_eval.py` | Frequency gate, direction alignment, spatial grounding, split detection. |
-| Null baselines | `src/scripts/null_baseline_eval.py` | The same tests on a random SAE and on PCA. |
-| Clinical analysis | `src/scripts/illness_stratified_eval.py`, `cross_dataset_eval.py`, `inspect_universal_latents.py` | Pathology-preference ratio, cross-dataset probes, per-latent inspection. |
-| Causal check | `src/scripts/run_activation_patching.py` | Swaps matched decoder directions between two SAEs and measures the downstream change. |
-| Visualise | `src/visualise.py`, `src/visualisation/` | Patch grids, deletion-mode ablation maps, HTML dashboard. |
+| Stage | Script |
+|---|---|
+| Harvest | `src/conglomerate/harvest_all.py` |
+| Train | `src/train_sae.py` |
+| Scanner audit | `src/scripts/scanner_latent_audit.py` |
+| Universality | `src/scripts/universality_eval.py` |
+| Null baselines | `src/scripts/null_baseline_eval.py` |
+| Clinical analysis | `src/scripts/illness_stratified_eval.py`, `cross_dataset_eval.py`, `inspect_universal_latents.py` |
+| Causal check | `src/scripts/run_activation_patching.py` |
+| Visualise | `src/visualise.py`, `src/visualisation/` |
 
 Each script documents its arguments in its module docstring and via `--help`. Methodology notes are in
 [`docs/`](docs/), starting with [`docs/methodology.md`](docs/methodology.md) and
