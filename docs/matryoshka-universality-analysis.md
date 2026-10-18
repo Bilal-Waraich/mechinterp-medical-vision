@@ -1,5 +1,7 @@
 # Matryoshka SAE — Universality Analysis
 
+> **Note:** the cluster job files (`nomad/...`) referenced in this document are not part of the public repository. The scripts they call are in `src/`; see the README for how to run them.
+
 How the codebase identifies *universal* latents in a **Matryoshka SAE** — i.e. features that fire for the same semantic concept across multiple chest X-ray datasets, at the same image regions, and remain stable across the Matryoshka nesting scales.
 
 The analysis is run by two Nomad jobs in `nomad/xray/analysis/`:

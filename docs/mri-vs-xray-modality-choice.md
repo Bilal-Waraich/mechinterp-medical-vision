@@ -47,7 +47,7 @@ features that survive despite abundant modality-specific data are genuinely robu
 
 **Roughly equal; different flavours.**
 
-| MRI datasets on fileserver | Disease |
+| MRI datasets available | Disease |
 |---|---|
 | BraTS 2020 | Glioma, oedema |
 | MSseg2 | Multiple sclerosis lesions |
@@ -57,7 +57,7 @@ features that survive despite abundant modality-specific data are genuinely robu
 | PI-CAI | Prostate cancer (T2/ADC/DWI) |
 | MSD Task02 Heart | Left atrium |
 
-| X-ray datasets on fileserver | Disease |
+| X-ray datasets available | Disease |
 |---|---|
 | ChestXRay2017 (NIH) | 14 pathology labels inc. effusion, pneumonia, nodules |
 | CheXpert (Stanford) | 14 labels, uncertainty annotations |

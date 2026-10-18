@@ -105,7 +105,6 @@ def _setup_mmm():
             p = str(root / pkg)
             if Path(p).exists() and p not in sys.path:
                 sys.path.insert(0, p)
-    os.environ.setdefault("MMM_LICENSE_ACCEPTED", "i accept")
 
 
 # ── model loading ──────────────────────────────────────────────────────────────

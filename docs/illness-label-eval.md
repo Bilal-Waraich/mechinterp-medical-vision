@@ -30,9 +30,9 @@ The canonical groups intentionally collapse related conditions (e.g. COVID-typic
 
 | Dataset | Fine-grained label | CSV path on Gaia |
 |---|---|---|
-| CheXpert | 14 pathology columns (binary, uncertain→0) | `/deep_learning/input/data/mmm/chexpert/train.csv` |
-| SIIM-COVID | Negative / Typical / Indeterminate / Atypical | `/deep_learning/input/data/mmm/siim-covid19-detection/train_study_level.csv` |
-| RSNA | 0=normal, 1=pneumonia | `/deep_learning/input/data/mmm/rsna-pneumonia-detection-challenge/stage_2_train_labels.csv` |
+| CheXpert | 14 pathology columns (binary, uncertain→0) | `$SAE_INPUT_ROOT/chexpert/train.csv` |
+| SIIM-COVID | Negative / Typical / Indeterminate / Atypical | `$SAE_INPUT_ROOT/siim-covid19-detection/train_study_level.csv` |
+| RSNA | 0=normal, 1=pneumonia | `$SAE_INPUT_ROOT/rsna-pneumonia-detection-challenge/stage_2_train_labels.csv` |
 | TB | 0=normal, 1=TB positive | Encoded in filename; no extra CSV needed |
 
 ### Output

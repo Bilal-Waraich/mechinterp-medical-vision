@@ -1,5 +1,7 @@
 # Illness-Stratified Evaluation — Matryoshka L3 Findings
 
+> **Note:** the cluster job files (`nomad/...`) referenced in this document are not part of the public repository. The scripts they call are in `src/`; see the README for how to run them.
+
 **Universality run:** 2026-04-28 · 5-stage Matryoshka pipeline  
 **Illness eval run:** 2026-04-27 · elapsed 346 s  
 **Model:** Matryoshka SAE · Layer 3 · `xray_v1` · checkpoint `step_0200000`  

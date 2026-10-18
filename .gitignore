@@ -4,7 +4,6 @@ dummy-testing-mmm/shapes_data
 .vscode
 .claude
 .env
-encoder-1.0.4.pt
 *.egg-info
 .pytest_cache
 __pycache__/
@@ -13,3 +12,4 @@ __pycache__/
 data/
 output*.txt
 thesis-reference.md
+.DS_Store

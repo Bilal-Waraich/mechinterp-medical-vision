@@ -109,7 +109,7 @@ class SemiCOLWeakDataset(Dataset):
     Parameters
     ----------
     data_dir : str or Path
-        Root of the SemiCOL data, e.g. /deep_learning/input/data/mmm/semicol
+        Root of the SemiCOL data, e.g. $SAE_INPUT_ROOT/semicol
     max_per_slide : int
         Maximum patches to sample per WSI (stratified random cap).  Default 500.
 

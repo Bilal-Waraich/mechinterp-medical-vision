@@ -9,11 +9,11 @@ No GPU or encoder is needed — only the dataset file lists are read.
 
 Usage:
     python src/scripts/patch_stems_metadata.py \\
-        --chexpert_dir  /deep_learning/input/data/mmm/chexpert/CheXpert-v1.0 \\
-        --rsna_dir      /deep_learning/input/data/mmm/rsna-pneumonia-detection-challenge \\
-        --siim_dir      /deep_learning/input/data/mmm/siim-covid19-detection \\
-        --tb_dir        /deep_learning/input/data/mmm/tb-shenzhen \\
-        --safetensors_dir /deep_learning/output/UMed-SAE/matryoshka/layer-3/.../xray_v1 \\
+        --chexpert_dir  $SAE_INPUT_ROOT/chexpert/CheXpert-v1.0 \\
+        --rsna_dir      $SAE_INPUT_ROOT/rsna-pneumonia-detection-challenge \\
+        --siim_dir      $SAE_INPUT_ROOT/siim-covid19-detection \\
+        --tb_dir        $SAE_INPUT_ROOT/tb-shenzhen \\
+        --safetensors_dir $SAE_OUTPUT_ROOT/matryoshka/layer-3/.../xray_v1 \\
         --n_samples     10000 \\
         --seed          42
 """
@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 import sys
 from pathlib import Path
@@ -136,8 +137,9 @@ def main():
 
 def _setup_mmm():
     """Register mmm as a package so dataset imports work."""
-    mmm_root = Path("/deep_learning/input/data/MechanisticInterpretability_BWA_NLA")
-    if mmm_root.exists() and str(mmm_root) not in sys.path:
+    # Only needed for a local, non-pip checkout of the library: set MMM_ROOT to its location.
+    mmm_root = Path(os.environ["MMM_ROOT"]) if "MMM_ROOT" in os.environ else None
+    if mmm_root is not None and mmm_root.exists() and str(mmm_root) not in sys.path:
         sys.path.insert(0, str(mmm_root))
 
 

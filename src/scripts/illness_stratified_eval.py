@@ -14,28 +14,28 @@ Two analyses on the 188 confirmed universal latents from universality_eval.py:
 
 Usage — Matryoshka (separate files):
     python src/scripts/illness_stratified_eval.py \\
-        --checkpoint_dir /deep_learning/output/UMed-SAE/matryoshka/layer-2/.../step_0200000 \\
+        --checkpoint_dir $SAE_OUTPUT_ROOT/matryoshka/layer-2/.../step_0200000 \\
         --confirmed_latents results/universality/confirmed_universal_latents.json \\
         --activations /path/activations_chexpert.safetensors:chexpert \\
         --activations /path/activations_rsna.safetensors:rsna \\
         --activations /path/activations_siim.safetensors:siim_covid \\
         --activations /path/activations_tb.safetensors:tb \\
-        --chex_csv    /deep_learning/input/data/mmm/chexpert/CheXpert-v1.0/train.csv \\
-        --rsna_csv    /deep_learning/input/data/mmm/rsna-pneumonia-detection-challenge/stage_2_train_labels.csv \\
-        --siim_study_csv /deep_learning/input/data/mmm/siim-covid19-detection/train_study_level.csv \\
-        --siim_bbox_csv  /deep_learning/input/data/mmm/siim-covid19-detection/train_image_level.csv \\
-        --rsna_bbox_csv  /deep_learning/input/data/mmm/rsna-pneumonia-detection-challenge/stage_2_train_labels.csv \\
-        --output_dir  /deep_learning/output/... \\
+        --chex_csv    $SAE_INPUT_ROOT/chexpert/CheXpert-v1.0/train.csv \\
+        --rsna_csv    $SAE_INPUT_ROOT/rsna-pneumonia-detection-challenge/stage_2_train_labels.csv \\
+        --siim_study_csv $SAE_INPUT_ROOT/siim-covid19-detection/train_study_level.csv \\
+        --siim_bbox_csv  $SAE_INPUT_ROOT/siim-covid19-detection/train_image_level.csv \\
+        --rsna_bbox_csv  $SAE_INPUT_ROOT/rsna-pneumonia-detection-challenge/stage_2_train_labels.csv \\
+        --output_dir  $SAE_OUTPUT_ROOT/... \\
         --device cuda:0
 
 Usage — BatchTopK (merged file):
     python src/scripts/illness_stratified_eval.py \\
-        --checkpoint_dir /deep_learning/output/UMed-SAE/batch-topk/layer-2/.../step_0200000 \\
+        --checkpoint_dir $SAE_OUTPUT_ROOT/batch-topk/layer-2/.../step_0200000 \\
         --confirmed_latents results/universality/confirmed_universal_latents.json \\
         --merged_activations /path/activations.safetensors \\
         --dataset_names chexpert rsna siim_covid tb \\
         ... (same CSV args) ...
-        --output_dir  /deep_learning/output/...
+        --output_dir  $SAE_OUTPUT_ROOT/...
 """
 
 from __future__ import annotations

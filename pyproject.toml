@@ -1,12 +1,13 @@
 [project]
-name = "sparse-auto-encoder"
+name = "mechinterp-medical-vision"
 version = "0.2.0"
 description = "BatchTopK Sparse Autoencoder for UMedPT vision model activations"
 readme = "README.md"
+license = {text = "MIT"}
 requires-python = ">=3.11"
 authors = [
-    {name = "Nik", email = "81419030+Nikolay-Ts@users.noreply.github.com"},
-    {name = "Bilal", email = "157110822+Bilal-Waraich@users.noreply.github.com"}
+    {name = "Nikolay Tsonev", email = "81419030+Nikolay-Ts@users.noreply.github.com"},
+    {name = "Bilal Waraich", email = "157110822+Bilal-Waraich@users.noreply.github.com"}
 ]
 
 dependencies = [
@@ -16,12 +17,16 @@ dependencies = [
     "safetensors>=0.4.0",
     "numpy>=1.24.0",
 
+    # ── UMedPT encoder (Fraunhofer MEVIS; non-commercial research licence) ─
+    "medicalmultitaskmodeling==1.6.3",
+
     # ── SAE training (BatchTopK reference: bartbussmann/BatchTopK) ───────
     "sae-lens>=3.0.0",
     "wandb>=0.17.0",
 
     # ── Activation harvesting ─────────────────────────────────────────────
     "Pillow",
+    "pydicom>=2.4.0",
     "scikit-image>=0.25.2,<0.26",
     "opencv-python-headless",
     "tqdm>=4.66.1,<5",
@@ -30,6 +35,8 @@ dependencies = [
     "pandas>=2.1.1,<3",
     "matplotlib>=3.7.0",
     "networkx>=3.3",
+    "scipy>=1.11.0",          # Pearson p-values for spatial grounding
+    "scikit-learn>=1.3.0",    # Logistic-regression probes (scanner + cross-dataset)
 
     # ── Build utilities ───────────────────────────────────────────────────
     "packaging>=21.0",

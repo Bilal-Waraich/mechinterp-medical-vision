@@ -9,7 +9,7 @@
     "siim_covid",
     "tb"
   ],
-  "checkpoint_dir": "/deep_learning/output/UMed-SAE/matryoshka/layer-3/xray-conglomerate/xray_v1/checkpoints/step_0200000",
-  "confirmed_latents_path": "/deep_learning/output/UMed-SAE/matryoshka/layer-3/xray-conglomerate/xray_v1/universality_matryoshka/confirmed_universal_latents.json",
+  "checkpoint_dir": "$SAE_OUTPUT_ROOT/matryoshka/layer-3/xray-conglomerate/xray_v1/checkpoints/step_0200000",
+  "confirmed_latents_path": "$SAE_OUTPUT_ROOT/matryoshka/layer-3/xray-conglomerate/xray_v1/universality_matryoshka/confirmed_universal_latents.json",
   "warnings": []
 }

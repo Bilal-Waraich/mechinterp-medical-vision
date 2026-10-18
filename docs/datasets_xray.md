@@ -18,7 +18,7 @@ Mixing PA and AP introduces a systematic confound — the model can learn "AP = 
 
 | Property | Detail |
 |---|---|
-| **Path** | `//fileserver/share/deep_learning/input/data/mmm/chexpert/CheXpert-v1.0` |
+| **Path** | `$SAE_INPUT_ROOT/chexpert/CheXpert-v1.0` |
 | **Source** | Stanford Hospital (Irvin et al. 2019) |
 | **Image volume** | ~223,414 training images |
 | **Format** | JPEG |
@@ -62,7 +62,7 @@ Mixing PA and AP introduces a systematic confound — the model can learn "AP = 
 
 | Property | Detail |
 |---|---|
-| **Path** | `//fileserver/share/deep_learning/input/data/mmm/rsna-pneumonia-detection-challenge/stage_2_train_images` |
+| **Path** | `$SAE_INPUT_ROOT/rsna-pneumonia-detection-challenge/stage_2_train_images` |
 | **Source** | Radiological Society of North America (Kaggle challenge) |
 | **Image volume** | ~26,000 images |
 | **Format** | DICOM (`.dcm`) |
@@ -83,7 +83,7 @@ Mixing PA and AP introduces a systematic confound — the model can learn "AP = 
 
 | Property | Detail |
 |---|---|
-| **Path** | `//fileserver/share/deep_learning/input/data/mmm/siim-covid19-detection` |
+| **Path** | `$SAE_INPUT_ROOT/siim-covid19-detection` |
 | **Source** | Society for Imaging Informatics in Medicine (SIIM) / Kaggle challenge |
 | **Image volume** | ~6,000 studies (~one image per study) |
 | **Format** | DICOM (`.dcm`) |
@@ -110,7 +110,7 @@ Mixing PA and AP introduces a systematic confound — the model can learn "AP = 
 
 | Property | Detail |
 |---|---|
-| **Path** | `//fileserver/share/deep_learning/input/data/mmm/tuberculosis-chest-xrays-shenzhen` |
+| **Path** | `$SAE_INPUT_ROOT/tuberculosis-chest-xrays-shenzhen` |
 | **Source** | Shenzhen No.3 People's Hospital, China |
 | **Image volume** | ~662–700 images |
 | **Format** | PNG (filename-encoded labels: `CHNCXR_XXXX_0.png` = normal, `CHNCXR_XXXX_1.png` = TB) |

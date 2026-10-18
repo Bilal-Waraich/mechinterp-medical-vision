@@ -18,13 +18,13 @@ count is significantly above the null rate from both baselines.
 Usage
 -----
 python src/scripts/null_baseline_eval.py \\
-    --checkpoint_dir  /deep_learning/output/.../checkpoints/step_0200000 \\
-    --activations     /deep_learning/output/.../activations_chexpert.safetensors:chexpert \\
-    --activations     /deep_learning/output/.../activations_rsna.safetensors:rsna \\
-    --activations     /deep_learning/output/.../activations_siim.safetensors:siim_covid \\
-    --activations     /deep_learning/output/.../activations_tb.safetensors:tb \\
+    --checkpoint_dir  $SAE_OUTPUT_ROOT/.../checkpoints/step_0200000 \\
+    --activations     $SAE_OUTPUT_ROOT/.../activations_chexpert.safetensors:chexpert \\
+    --activations     $SAE_OUTPUT_ROOT/.../activations_rsna.safetensors:rsna \\
+    --activations     $SAE_OUTPUT_ROOT/.../activations_siim.safetensors:siim_covid \\
+    --activations     $SAE_OUTPUT_ROOT/.../activations_tb.safetensors:tb \\
     --null_mode       random pca \\
-    --output_dir      /deep_learning/output/.../universality/null_baseline \\
+    --output_dir      $SAE_OUTPUT_ROOT/.../universality/null_baseline \\
     --device          cuda:0
 
 See also

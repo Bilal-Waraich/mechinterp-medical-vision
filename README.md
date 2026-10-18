@@ -1,338 +1,168 @@
-# BatchTopK Sparse Auto-Encoder for UMedPT
+# mechinterp-medical-vision
 
-> Mechanistic interpretability through sparse dictionary learning on Swin Transformer activations.
+**Sparse-autoencoder mechanistic interpretability of a medical foundation model.**
 
-This repo implements the full **Harvest → Train → Visualise** pipeline for a [BatchTopK Sparse Autoencoder](https://github.com/bartbussmann/BatchTopK) applied to the [UMedPT](https://github.com/FraunhoferMEVIS/MedicalMultitaskModeling) multi-task Swin Transformer.
+Code accompanying the bachelor thesis *Probing Feature Universality in Medical Vision Models*
+(Bilal Waraich, Constructor University, May 2026).
+**[Read the thesis (PDF)](thesis/Probing_Feature_Universality_in_Medical_Vision_Models_Thesis_BilalWaraich.pdf)**
 
----
+The pipeline trains a [BatchTopK sparse autoencoder](https://arxiv.org/abs/2412.06410) on activations of
+[UMedPT](https://arxiv.org/abs/2311.09847) (a multi-task Swin Transformer for medical imaging) and asks whether the
+learned features are *universal*: do they fire, and point in the same direction, across four chest X-ray datasets
+from different institutions, populations and label schemes?
 
-## Repository Structure
+<p align="center">
+  <img src="docs/img/sae_architecture.svg" alt="BatchTopK sparse autoencoder architecture on UMedPT Stage 4 tokens" width="900">
+</p>
+
+*A chest X-ray is tokenised by the frozen UMedPT Swin backbone into 49 × 1024 Stage 4 patch tokens. Each token is
+encoded independently, sparsified to a 4,096-dimensional code, and reconstructed. Sparsity is enforced by BatchTopK
+during training (a global top-k·B across the batch) and by per-sample top-k at inference.*
+
+> **You are on the `Matryoshka` branch.** It adds a Matryoshka sparse-autoencoder implementation and its analysis on top of the shared pipeline. It is an earlier snapshot than the thesis branch: it diverged from [`batch-topk`](../../tree/batch-topk) before the final thesis changes, so some later scripts and fixes (for example `run_activation_patching.py` and `visualise.py`) exist only there. The thesis results were produced with `batch-topk`.
+
+**Headline result (thesis, Section 4):** of 4,096 SAE features, 65 are confirmed universal across CheXpert and RSNA
+Pneumonia, and three of those also pass a Bonferroni-corrected spatial test against radiologist bounding boxes. The
+same tests confirm 16 components for a PCA baseline and 1,490 for a randomly initialised SAE.
+
+## Pipeline
 
 ```
-sparse-auto-encoder/
-├── pyproject.toml                      # Dependencies & project metadata
-├── README.md
-│
-├── encoder-1.0.4.pt/                   # UMedPT encoder checkpoint (not tracked)
-│   └── encoder.pt
-│
-├── UmedPT/                             # UMedPT source (submodule / symlink)
-├── UmedPT-sdk/                         # UMedPT SDK
-│
-├── src/
-│   ├── config.py                       # SAEConfig (training hyperparams)
-│   ├── sae_models.py                   # BatchTopKSAE nn.Module
-│   ├── train_sae.py                    # Phase 2: training loop + CLI
-│   ├── visualise.py                    # Phase 3: top-level CLI entry-point
-│   │
-│   ├── scripts/
-│   │   └── harvest_activations.py      # Phase 1: activation harvesting CLI
-│   │
-│   ├── visualisation/                  # Phase 3: visualisation modules
-│   │   ├── __init__.py
-│   │   ├── vis_config.py               #   VisConfig dataclass
-│   │   ├── loaders.py                  #   Load SAE, activations, images
-│   │   ├── collector.py                #   Feature statistics (max, argmax, mean)
-│   │   ├── semantic_dict.py            #   Layer 1: patch crop grids
-│   │   ├── spatial_maps.py             #   Layer 2: per-feature heatmap overlays
-│   │   ├── graph_utils.py              #   Layer 3: W_dec·W_enc interaction matrix
-│   │   └── attribution_graph.py        #   Layer 3: networkx graph renderer
-│   │
-│   └── tests/
-│       ├── conftest.py                 #   Shared pytest fixtures
-│       └── test_visualisation.py       #   13 CPU-only tests
-│
-└── data/                               # All generated artefacts (gitignored)
-    ├── dummy_activations.safetensors
-    ├── checkpoints/
-    │   └── step_050000/
-    └── vis_outputs/
+harvest  ->  train  ->  evaluate universality  ->  visualise
 ```
 
----
+| Stage | Script | What it does |
+|---|---|---|
+| Harvest | `src/conglomerate/harvest_all.py` | Runs the frozen UMedPT encoder over the four datasets, hooks one Swin stage (`--pm_index`), RMS-normalises and per-dataset-centres the activations, and writes one `.safetensors` file. |
+| Train | `src/train_sae.py` | Trains the BatchTopK SAE with stratified batches (25 % of each batch per dataset). Config presets live in `configs/`. |
+| Scanner audit | `src/scripts/scanner_latent_audit.py` | Flags latents that encode *which dataset* an image came from. |
+| Universality | `src/scripts/universality_eval.py` | Frequency gate, direction alignment, spatial grounding, split detection. |
+| Null baselines | `src/scripts/null_baseline_eval.py` | The same tests on a random SAE and on PCA. |
+| Clinical analysis | `src/scripts/illness_stratified_eval.py`, `cross_dataset_eval.py`, `inspect_universal_latents.py` | Pathology-preference ratio, cross-dataset probes, per-latent inspection. |
+| Visualise | `src/visualise.py`, `src/visualisation/` | Patch grids, deletion-mode ablation maps, HTML dashboard. |
 
-## Installation
+Each script documents its arguments in its module docstring and via `--help`. Methodology notes are in
+[`docs/`](docs/), starting with [`docs/methodology.md`](docs/methodology.md) and
+[`docs/universality_analysis.md`](docs/universality_analysis.md).
+
+## Matryoshka SAE (this branch)
+
+| File | What it does |
+|---|---|
+| `src/matryoshka_sae.py` | Matryoshka sparse autoencoder: reconstruction loss at several nested sparsity levels, so the features that are active at the smallest k are the most broadly useful. |
+| `src/matryoshka_config.py` | Trainer configuration (`k_schedule`, per-scale loss weights, per-dataset activation files). |
+| `src/train_matryoshka.py` | Trains the Matryoshka SAE on harvested activations. |
+| `src/scripts/matryoshka_universality_eval.py` | Five-stage universality filtering adapted to a Matryoshka SAE. |
+
+Background and results are in [`docs/matryoshka-universality-analysis.md`](docs/matryoshka-universality-analysis.md)
+and [`docs/illness-eval-findings-mat-l3.md`](docs/illness-eval-findings-mat-l3.md). Treat this branch as research
+code: it has seen less cleanup and testing than `batch-topk`.
+
+## Setup
+
+Python 3.11.
 
 ```bash
-cd sparse-auto-encoder
-
-# Core dependencies
-pip install -e ".[dev]"
-
-# UMedPT dependencies (required for Phase 1 — activation harvesting)
-pip install -e UmedPT/
+git clone https://github.com/Bilal-Waraich/mechinterp-medical-vision.git
+cd mechinterp-medical-vision
+python -m venv .venv && source .venv/bin/activate
+pip install -e .
 ```
 
----
+`pip install -e .` also installs the UMedPT library (`medicalmultitaskmodeling==1.6.3`). A pip dry-run confirmed that
+the full dependency set resolves together on Python 3.11 (torch 2.6, torchvision 0.21, numpy 1.26, wandb 0.23,
+sae-lens 6.5).
 
-## End-to-End Pipeline
+> **Licence note.** UMedPT / MedicalMultitaskModeling is released by Fraunhofer MEVIS under a
+> [non-commercial research licence](https://github.com/FraunhoferMEVIS/MedicalMultitaskModeling/blob/main/license.md)
+> that does not allow redistribution. This repository therefore contains **none** of its code or weights: you install
+> the library from PyPI and obtain the weights yourself. Accepting that licence is your own responsibility, and the
+> scripts here do not accept it on your behalf. Read it, then follow the library's instructions for acknowledging it
+> (it reports what is needed when it is first imported).
 
-### Phase 1 — Harvest Activations
+### Encoder weights
 
-Extract intermediate representations from the frozen Swin Transformer backbone.
+The harvest step loads a pickled UMedPT encoder (`torch.load(..., weights_only=False)`) from `--checkpoint`, for
+example `encoder-1.0.4.pt/encoder.pt`. The thesis used the UMedPT encoder at release version 1.0.4. See the
+[MedicalMultitaskModeling README](https://github.com/FraunhoferMEVIS/MedicalMultitaskModeling) for how to obtain the
+pretrained weights. A checkpoint of this kind is unpickled, so **only load files from sources you trust**.
+
+### Data
+
+Obtain the four datasets from their original sources and follow their terms of use:
+
+| Dataset | Source |
+|---|---|
+| CheXpert | Irvin et al., AAAI 2019. <https://arxiv.org/abs/1901.07031> |
+| RSNA Pneumonia | <https://www.kaggle.com/c/rsna-pneumonia-detection-challenge> |
+| SIIM-FISABIO-RSNA COVID-19 | <https://www.kaggle.com/c/siim-covid19-detection> |
+| TB Shenzhen | Jaeger et al., 2014. <https://doi.org/10.3978/j.issn.2223-4292.2014.11.20> |
+
+Sampling, filtering and label mapping are described in [`docs/datasets_xray.md`](docs/datasets_xray.md).
+
+### Paths
+
+Two environment variables control where things live (see [`configs/paths.py`](configs/paths.py)):
 
 ```bash
-python src/scripts/harvest_activations.py \
+export SAE_INPUT_ROOT=/path/to/datasets   # raw datasets and label CSVs (default: ./data)
+export SAE_OUTPUT_ROOT=/path/to/outputs   # activations, SAE checkpoints, analysis outputs (default: ./outputs)
+```
+
+## Example: harvest, then train
+
+```bash
+python src/conglomerate/harvest_all.py \
     --checkpoint encoder-1.0.4.pt/encoder.pt \
-    --n_samples 50000 \
-    --batch_size 32 \
-    --image_size 224 \
-    --pm_index 1 \
-    --output data/dummy_activations.safetensors \
-    --device cuda:0
+    --chexpert_dir   $SAE_INPUT_ROOT/chexpert \
+    --rsna_dir       $SAE_INPUT_ROOT/rsna-pneumonia \
+    --siim_dir       $SAE_INPUT_ROOT/siim-covid19 \
+    --tb_dir         $SAE_INPUT_ROOT/tb-shenzhen \
+    --output  data/xray_activations.safetensors \
+    --pm_index 2 --device cuda:0
+
+python src/train_sae.py --config configs/sae_pm2.json
 ```
 
-| Parameter | Description |
-|---|---|
-| `--checkpoint` | Path to the serialised UMedPT `encoder.pt` |
-| `--n_samples` | Number of images to process |
-| `--pm_index` | PatchMerging layer index (see table below) |
-| `--output` | Output `.safetensors` file |
+## Reproducibility status
 
-**PatchMerging index guide:**
+The original experiments ran on a GPU cluster, with the datasets and weights mounted from internal storage. This
+public version replaces those hardcoded locations with the environment variables above and leaves out the cluster
+job files and container build files. **It has not yet been re-run end to end outside the original environment.**
+What has been checked: the dependency set resolves, all Python files compile, and the model-loading path relies on
+only two UMedPT classes (`PyramidEncoder`, `TorchVisionSwinformer`), which are identical between the library version
+the experiments ran with and the pinned release. A GPU is needed for harvesting and training. Issues and
+reproduction reports are welcome.
 
-| `--pm_index` | Boundary | `d_model` | Spatial |
-|:---:|---|:---:|:---:|
-| 0 | Stage 1→2 | 256 | 28×28 |
-| **1** | **Stage 2→3** | **512** | **14×14** |
-| 2 | Stage 3→4 | 1024 | 7×7 |
+## About this repository's history
 
-**What it does:**
-1. Loads images (mmm ShapeDataset or built-in synthetic fallback)
-2. Hooks the Swin PatchMerging layer at the chosen stage boundary
-3. Captures activations `(B, H', W', C')` → flattens to `(N_eff, d_model)`
-4. Applies Anthropic-style RMS normalisation
-5. Saves to `.safetensors` with metadata (`spatial_h`, `spatial_w`, `d_model`, `n_images`)
+This repository has two branches: `batch-topk` (the thesis pipeline, default) and `Matryoshka` (the Matryoshka SAE work). Its history was rewritten to
+remove large binary files and institution-internal infrastructure details, so commit hashes differ from the original
+development repository.
 
-**Output:** `data/dummy_activations.safetensors`
+## Licence
 
----
+The code in this repository is released under the [MIT licence](LICENSE).
 
-### Phase 2 — Train SAE
+This covers only the code written for this project. It does **not** cover:
 
-Train a BatchTopK Sparse Autoencoder on the harvested activations.
+- **UMedPT / MedicalMultitaskModeling**, which is installed separately and has its own non-commercial research
+  licence (see the licence note above).
+- **The datasets**, each of which has its own terms of use.
+- **The thesis PDF and the figures in `thesis/` and `docs/img/`**, which are © 2026 Bilal Waraich, shared for reading
+  and citation.
 
-```bash
-python src/train_sae.py \
-    --d_model 512 \
-    --expansion_factor 4 \
-    --k 32 \
-    --batch_size 2048 \
-    --steps 50000 \
-    --checkpoint_every 5000 \
-    --activations_path data/dummy_activations.safetensors \
-    --output_dir data/checkpoints \
-    --device cuda:0
-```
+Because the pipeline depends on UMedPT, any use of the whole pipeline is also bound by UMedPT's licence terms.
 
-| Parameter | Default | Description |
-|---|:---:|---|
-| `--d_model` | 384 | Input activation dimension |
-| `--expansion_factor` | 4 | Dictionary size = `d_model × expansion_factor` |
-| `--k` | 32 | Target active features per token |
-| `--batch_size` | 2048 | Training batch size |
-| `--steps` | 50,000 | Total training steps |
-| `--checkpoint_every` | 5,000 | Steps between checkpoints |
-| `--wandb_project` | `sae-umedpt` | W&B project (optional) |
+## Acknowledgements
 
-**Output:** `data/checkpoints/step_050000/` containing:
-- `sae_weights.safetensors` — model state dict
-- `cfg.json` — full training config snapshot
+Developed in collaboration with [Nikolay Tsonev](https://github.com/Nikolay-Ts), with whom the dataset, activation
+harvesting and training parts were worked on together. Thanks to the authors of UMedPT (Fraunhofer MEVIS) and of
+BatchTopK SAEs (Bussmann et al.), whose work this builds on.
 
----
+## References
 
-### Phase 3 — Visualise
-
-Generate interpretability dashboards from a trained SAE checkpoint.
-
-> **Note:** `--images_dir` must contain the same images used during harvest, sorted alphabetically to match the activation order.
-
-#### Option A: Run the full pipeline at once
-
-```bash
-python src/visualise.py all \
-    --checkpoint_dir data/checkpoints/step_050000 \
-    --activations_path data/dummy_activations.safetensors \
-    --images_dir data/images \
-    --output_dir data/vis_outputs \
-    --device cuda:0
-```
-
-This runs **collect → Layer 1 → Layer 3** automatically:
-1. Computes and saves feature statistics (`stats.pt`)
-2. Renders semantic dictionaries for the top-20 most active features
-3. Renders attribution graphs with spatial companion panels for the first 5 images
-
-#### Option B: Run individual steps
-
-<details>
-<summary><b>Step 3a — Collect feature statistics</b></summary>
-
-```bash
-python src/visualise.py collect \
-    --checkpoint_dir data/checkpoints/step_050000 \
-    --activations_path data/dummy_activations.safetensors \
-    --stats_output data/vis_outputs/stats.pt \
-    --device cuda:0
-```
-
-Encodes all activation rows through the SAE, reshapes to `[n_images, n_patches, d_sae]`, and computes per-feature/per-image statistics (`feature_max`, `feature_argmax`, `feature_mean`, `global_max`).
-</details>
-
-<details>
-<summary><b>Step 3b — Layer 1: Semantic dictionaries</b></summary>
-
-```bash
-python src/visualise.py layer1 \
-    --checkpoint_dir data/checkpoints/step_050000 \
-    --activations_path data/dummy_activations.safetensors \
-    --images_dir data/images \
-    --stats_path data/vis_outputs/stats.pt \
-    --top_n 20 \
-    --output_dir data/vis_outputs/semantic_dicts
-```
-
-For each feature, shows a 3×3 grid of the top-9 images that activated it most, cropped to the most-activating patch with spatial context. Use `--feature_idx 42` for a single feature instead of `--top_n`.
-</details>
-
-<details>
-<summary><b>Step 3c — Layer 2: Spatial activation maps</b></summary>
-
-```bash
-python src/visualise.py layer2 \
-    --checkpoint_dir data/checkpoints/step_050000 \
-    --activations_path data/dummy_activations.safetensors \
-    --images_dir data/images \
-    --image_idx 7 \
-    --feature_indices 0 14 203 \
-    --output_dir data/vis_outputs/spatial_maps
-```
-
-For a single image, renders per-feature heatmaps showing *where* each feature fires, with three panels: original image | heatmap | overlay.
-</details>
-
-<details>
-<summary><b>Step 3d — Layer 3: Attribution graph</b></summary>
-
-```bash
-python src/visualise.py layer3 \
-    --checkpoint_dir data/checkpoints/step_050000 \
-    --activations_path data/dummy_activations.safetensors \
-    --images_dir data/images \
-    --image_idx 7 \
-    --output_dir data/vis_outputs/attribution_graphs
-```
-
-Computes pairwise feature interactions via the linear approximation `interaction(i→j) = W_dec[i] · W_enc[:, j]`, weighted by mean activation. Renders a directed networkx graph (blue = excitatory, red = inhibitory) plus a companion spatial-overlay panel.
-</details>
-
----
-
-### Output Structure
-
-```
-data/vis_outputs/
-├── stats.pt                                    # Feature statistics
-├── semantic_dicts/                             # Layer 1
-│   ├── feature_00042.png
-│   ├── feature_00107.png
-│   └── ...
-├── spatial_maps/                               # Layer 2
-│   └── spatial_image_00007.png
-└── attribution_graphs/                         # Layer 3
-    ├── graph_image_00007.png
-    └── graph_spatial_image_00007.png
-```
-
----
-
-## Deployment (Nomad Batch Job)
-
-The full harvest → train pipeline runs as a single Nomad batch job using CSI volumes for storage.
-
-### Build & Push Docker Image
-
-```bash
-# Build from repo root
-docker build -t registry.example.com/sae-01/sae-pipeline:latest .
-
-# Login to Harbor
-docker login registry.example.com
-
-# Push
-docker push registry.example.com/sae-01/sae-pipeline:latest
-```
-
-> If you built with a different tag, retag first:
-> ```bash
-> docker tag <old-tag> registry.example.com/sae-01/sae-pipeline:latest
-> ```
-
-### Submit & Monitor
-
-```bash
-# Submit
-nomad job run nomad/sae-pipeline.nomad
-
-# Check status
-nomad job status sae-1.0
-
-# Stream logs (replace <alloc-id> with ID from status output)
-nomad alloc logs <alloc-id> harvest
-nomad alloc logs <alloc-id> train
-```
-
-### Storage Layout (`\\fileserver\share\deep_learning\`)
-
-| Path | Role |
-|---|---|
-| `input\data\MechanisticInterpretability_BWA_NLA\encoder-1.0.4.pt\encoder.pt` | Encoder checkpoint (read-only, CSI `default_dl_input`) |
-| `output\MechanisticInterpretability_BWA_NLA\sae-1.0\checkpoints\` | SAE checkpoints written by train task (CSI `default_dl_output`) |
-
-Intermediate activations (`~4 GB`) live in `NOMAD_ALLOC_DIR` (ephemeral, shared between tasks, discarded after job).
-
----
-
-## Tests
-
-All tests run on CPU with tiny synthetic data (no GPU or disk I/O required):
-
-```bash
-python -m pytest src/tests/test_visualisation.py -v
-```
-
----
-
-## Architecture Overview
-
-```
-Phase 1: Harvest                Phase 2: Train               Phase 3: Visualise
-─────────────────              ──────────────────           ────────────────────
-                                                           
-Swin Transformer               Flat activations             Trained SAE
-    │                          [N_eff, d_model]             + activations
-    │ forward hook                  │                       + images
-    ▼                               ▼                           │
-PatchMerging(pm_idx)       ┌────────────────┐          ┌───────┴────────┐
-    │                      │  BatchTopKSAE  │          │                │
-    │ (B,H,W,C) → flat     │  d_sae = d×4   │          │   visualise.py │
-    ▼                      │  k = 32        │          │   CLI router   │
-[N_eff, d_model]           └────────┬───────┘          │                │
-    │                               │                  └───────┬────────┘
-    │ RMS normalise                 │ checkpoint                │
-    ▼                               ▼                  ┌───────┼────────┐
-.safetensors               step_XXXXX/                 │       │        │
-                           ├─ sae_weights.st           ▼       ▼        ▼
-                           └─ cfg.json              Layer1  Layer2   Layer3
-                                                    crops   spatial  graph
-                                                    3×3     heatmap  W_dec·W_enc
-```
-
----
-
-## Authors
-
-- **Nik** — 81419030+Nikolay-Ts@users.noreply.github.com
-- **Bilal** — 157110822+Bilal-Waraich@users.noreply.github.com
-
-Fraunhofer MEVIS — Mechanistic Interpretability Group
+- Schäfer et al., *Overcoming Data Scarcity in Biomedical Imaging with a Foundational Multi-Task Model*, 2023. arXiv:2311.09847
+- Bussmann, Leask, Nanda, *BatchTopK Sparse Autoencoders*, 2024. arXiv:2412.06410
+- Gao et al., *Scaling and Evaluating Sparse Autoencoders*, 2024. arXiv:2406.04093
+- Elhage et al., *Toy Models of Superposition*, 2022. arXiv:2209.10652

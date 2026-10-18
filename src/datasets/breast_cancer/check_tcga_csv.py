@@ -2,7 +2,7 @@
 
 Run from the repo root:
     python src/datasets/breast_cancer/check_tcga_csv.py \
-        --csv \\fileserver\share\deep_learning\input\data\mmm\tcga_breast\tcga_brca_all_clean.csv
+        --csv $SAE_INPUT_ROOT/tcga_breast\tcga_brca_all_clean.csv
 """
 
 import argparse

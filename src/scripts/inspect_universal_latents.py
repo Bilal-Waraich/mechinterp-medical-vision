@@ -19,17 +19,17 @@ Input
 Usage
 -----
 python src/scripts/inspect_universal_latents.py \\
-    --confirmed_json  /deep_learning/output/.../universality/universality_summary.json \\
-    --checkpoint_dir  /deep_learning/output/.../checkpoints/step_0200000 \\
-    --activations     /deep_learning/output/.../activations_chexpert.safetensors:chexpert \\
-    --activations     /deep_learning/output/.../activations_rsna.safetensors:rsna \\
-    --activations     /deep_learning/output/.../activations_siim.safetensors:siim_covid \\
-    --activations     /deep_learning/output/.../activations_tb.safetensors:tb \\
-    --images_dir      /deep_learning/input/data/mmm/chexpert/CheXpert-v1.0/valid:chexpert \\
-    --images_dir      /deep_learning/input/data/mmm/rsna-pneumonia-detection-challenge/stage_2_train_images:rsna \\
-    --images_dir      /deep_learning/input/data/mmm/siim-covid19-detection/train:siim_covid \\
-    --images_dir      /deep_learning/input/data/mmm/tuberculosis-chest-xrays-shenzhen/images/images:tb \\
-    --output_dir      /deep_learning/output/.../universality/inspection \\
+    --confirmed_json  $SAE_OUTPUT_ROOT/.../universality/universality_summary.json \\
+    --checkpoint_dir  $SAE_OUTPUT_ROOT/.../checkpoints/step_0200000 \\
+    --activations     $SAE_OUTPUT_ROOT/.../activations_chexpert.safetensors:chexpert \\
+    --activations     $SAE_OUTPUT_ROOT/.../activations_rsna.safetensors:rsna \\
+    --activations     $SAE_OUTPUT_ROOT/.../activations_siim.safetensors:siim_covid \\
+    --activations     $SAE_OUTPUT_ROOT/.../activations_tb.safetensors:tb \\
+    --images_dir      $SAE_INPUT_ROOT/chexpert/CheXpert-v1.0/valid:chexpert \\
+    --images_dir      $SAE_INPUT_ROOT/rsna-pneumonia-detection-challenge/stage_2_train_images:rsna \\
+    --images_dir      $SAE_INPUT_ROOT/siim-covid19-detection/train:siim_covid \\
+    --images_dir      $SAE_INPUT_ROOT/tuberculosis-chest-xrays-shenzhen/images/images:tb \\
+    --output_dir      $SAE_OUTPUT_ROOT/.../universality/inspection \\
     --top_k           8 \\
     --max_latents     15 \\
     --device          cpu

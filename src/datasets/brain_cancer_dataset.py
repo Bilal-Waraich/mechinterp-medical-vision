@@ -56,7 +56,7 @@ class BrainTumorDataset(Dataset):
     ----------
     data_dir : str or Path
         Path to the split root, e.g.
-        ``/deep_learning/input/data/mmm/brain_tumor_kagglesets/
+        ``$SAE_INPUT_ROOT/brain_tumor_kagglesets/
           brain-tumor-classification-mri/Training``
         Must contain the four class subdirectories listed above.
 
