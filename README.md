@@ -1,19 +1,140 @@
-# BatchTopK Sparse Auto-Encoder for UMedPT
+# mechinterp-medical-vision
 
-> Mechanistic interpretability through sparse dictionary learning on Swin Transformer activations.
+**Sparse-autoencoder mechanistic interpretability of a medical foundation model.**
 
-This repo implements the full **Harvest → Train → Visualise** pipeline for a [BatchTopK Sparse Autoencoder](https://github.com/bartbussmann/BatchTopK) applied to the [UMedPT](https://github.com/FraunhoferMEVIS/MedicalMultitaskModeling) multi-task Swin Transformer.
+Code accompanying the bachelor thesis *Probing Feature Universality in Medical Vision Models*
+(Bilal Waraich, Constructor University, May 2026).
+**[Read the thesis (PDF)](thesis/Probing_Feature_Universality_in_Medical_Vision_Models_Thesis_BilalWaraich.pdf)**
 
----
+The pipeline trains a [BatchTopK sparse autoencoder](https://arxiv.org/abs/2412.06410) on activations of
+[UMedPT](https://arxiv.org/abs/2311.09847) (a multi-task Swin Transformer for medical imaging) and asks whether the
+learned features are *universal*: do they fire, and point in the same direction, across four chest X-ray datasets
+from different institutions, populations and label schemes?
 
-## Authors
+<p align="center">
+  <img src="docs/img/sae_architecture.svg" alt="BatchTopK sparse autoencoder architecture on UMedPT Stage 4 tokens" width="900">
+</p>
 
-- **Nikolay Tsonev** — [@Nikolay-Ts](https://github.com/Nikolay-Ts)
-- **Bilal Waraich** — [@Bilal-Waraich](https://github.com/Bilal-Waraich)
+*A chest X-ray is tokenised by the frozen UMedPT Swin backbone into 49 × 1024 Stage 4 patch tokens. Each token is
+encoded independently, sparsified to a 4,096-dimensional code, and reconstructed. Sparsity is enforced by BatchTopK
+during training (a global top-k·B across the batch) and by per-sample top-k at inference.*
 
-Fraunhofer MEVIS — Mechanistic Interpretability Group
+**Headline result (thesis, Section 4):** of 4,096 SAE features, 65 are confirmed universal across CheXpert and RSNA
+Pneumonia, and three of those also pass a Bonferroni-corrected spatial test against radiologist bounding boxes. The
+same tests confirm 16 components for a PCA baseline and 1,490 for a randomly initialised SAE.
 
-## Branches
+## Pipeline
 
-- **`batch-topk`** (default) — the BatchTopK SAE pipeline: harvest → train → visualise, plus the thesis analyses.
-- **`Matryoshka`** — the Matryoshka SAE implementation (`src/matryoshka_sae.py`) and its analyses. This work lives only on that branch.
+```
+harvest  ->  train  ->  evaluate universality  ->  visualise
+```
+
+| Stage | Script | What it does |
+|---|---|---|
+| Harvest | `src/conglomerate/harvest_all.py` | Runs the frozen UMedPT encoder over the four datasets, hooks one Swin stage (`--pm_index`), RMS-normalises and per-dataset-centres the activations, and writes one `.safetensors` file. |
+| Train | `src/train_sae.py` | Trains the BatchTopK SAE with stratified batches (25 % of each batch per dataset). Config presets live in `configs/`. |
+| Scanner audit | `src/scripts/scanner_latent_audit.py` | Flags latents that encode *which dataset* an image came from. |
+| Universality | `src/scripts/universality_eval.py` | Frequency gate, direction alignment, spatial grounding, split detection. |
+| Null baselines | `src/scripts/null_baseline_eval.py` | The same tests on a random SAE and on PCA. |
+| Clinical analysis | `src/scripts/illness_stratified_eval.py`, `cross_dataset_eval.py`, `inspect_universal_latents.py` | Pathology-preference ratio, cross-dataset probes, per-latent inspection. |
+| Causal check | `src/scripts/run_activation_patching.py` | Swaps matched decoder directions between two SAEs and measures the downstream change. |
+| Visualise | `src/visualise.py`, `src/visualisation/` | Patch grids, deletion-mode ablation maps, HTML dashboard. |
+
+Each script documents its arguments in its module docstring and via `--help`. Methodology notes are in
+[`docs/`](docs/), starting with [`docs/methodology.md`](docs/methodology.md) and
+[`docs/universality_analysis.md`](docs/universality_analysis.md).
+
+## Setup
+
+Python 3.11.
+
+```bash
+git clone https://github.com/Bilal-Waraich/mechinterp-medical-vision.git
+cd mechinterp-medical-vision
+python -m venv .venv && source .venv/bin/activate
+pip install -e .
+```
+
+`pip install -e .` also installs the UMedPT library (`medicalmultitaskmodeling==1.6.3`). A pip dry-run confirmed that
+the full dependency set resolves together on Python 3.11 (torch 2.6, torchvision 0.21, numpy 1.26, wandb 0.23,
+sae-lens 6.5).
+
+> **Licence note.** UMedPT / MedicalMultitaskModeling is released by Fraunhofer MEVIS under a
+> [non-commercial research licence](https://github.com/FraunhoferMEVIS/MedicalMultitaskModeling/blob/main/license.md)
+> that does not allow redistribution. This repository therefore contains **none** of its code or weights: you install
+> the library from PyPI and obtain the weights yourself. Accepting that licence is your own responsibility, and the
+> scripts here do not accept it on your behalf. Read it, then follow the library's instructions for acknowledging it
+> (it reports what is needed when it is first imported).
+
+### Encoder weights
+
+The harvest step loads a pickled UMedPT encoder (`torch.load(..., weights_only=False)`) from `--checkpoint`, for
+example `encoder-1.0.4.pt/encoder.pt`. The thesis used the UMedPT encoder at release version 1.0.4. See the
+[MedicalMultitaskModeling README](https://github.com/FraunhoferMEVIS/MedicalMultitaskModeling) for how to obtain the
+pretrained weights. A checkpoint of this kind is unpickled, so **only load files from sources you trust**.
+
+### Data
+
+Obtain the four datasets from their original sources and follow their terms of use:
+
+| Dataset | Source |
+|---|---|
+| CheXpert | Irvin et al., AAAI 2019. <https://arxiv.org/abs/1901.07031> |
+| RSNA Pneumonia | <https://www.kaggle.com/c/rsna-pneumonia-detection-challenge> |
+| SIIM-FISABIO-RSNA COVID-19 | <https://www.kaggle.com/c/siim-covid19-detection> |
+| TB Shenzhen | Jaeger et al., 2014. <https://doi.org/10.3978/j.issn.2223-4292.2014.11.20> |
+
+Sampling, filtering and label mapping are described in [`docs/datasets_xray.md`](docs/datasets_xray.md).
+
+### Paths
+
+Two environment variables control where things live (see [`configs/paths.py`](configs/paths.py)):
+
+```bash
+export SAE_INPUT_ROOT=/path/to/datasets   # raw datasets and label CSVs (default: ./data)
+export SAE_OUTPUT_ROOT=/path/to/outputs   # activations, SAE checkpoints, analysis outputs (default: ./outputs)
+```
+
+## Example: harvest, then train
+
+```bash
+python src/conglomerate/harvest_all.py \
+    --checkpoint encoder-1.0.4.pt/encoder.pt \
+    --chexpert_dir   $SAE_INPUT_ROOT/chexpert \
+    --rsna_dir       $SAE_INPUT_ROOT/rsna-pneumonia \
+    --siim_dir       $SAE_INPUT_ROOT/siim-covid19 \
+    --tb_dir         $SAE_INPUT_ROOT/tb-shenzhen \
+    --output  data/xray_activations.safetensors \
+    --pm_index 2 --device cuda:0
+
+python src/train_sae.py --config configs/sae_pm2.json
+```
+
+## Reproducibility status
+
+The original experiments ran on a GPU cluster, with the datasets and weights mounted from internal storage. This
+public version replaces those hardcoded locations with the environment variables above and leaves out the cluster
+job files and container build files. **It has not yet been re-run end to end outside the original environment.**
+What has been checked: the dependency set resolves, all Python files compile, and the model-loading path relies on
+only two UMedPT classes (`PyramidEncoder`, `TorchVisionSwinformer`), which are identical between the library version
+the experiments ran with and the pinned release. A GPU is needed for harvesting and training. Issues and
+reproduction reports are welcome.
+
+## About this repository's history
+
+This repository contains the `batch-topk` line of work, which is the thesis pipeline. Its history was rewritten to
+remove large binary files and institution-internal infrastructure details, so commit hashes differ from the original
+development repository.
+
+## Acknowledgements
+
+Developed in collaboration with [Nikolay Tsonev](https://github.com/Nikolay-Ts), with whom the dataset, activation
+harvesting and training parts were worked on together. Thanks to the authors of UMedPT (Fraunhofer MEVIS) and of
+BatchTopK SAEs (Bussmann et al.), whose work this builds on.
+
+## References
+
+- Schäfer et al., *Overcoming Data Scarcity in Biomedical Imaging with a Foundational Multi-Task Model*, 2023. arXiv:2311.09847
+- Bussmann, Leask, Nanda, *BatchTopK Sparse Autoencoders*, 2024. arXiv:2412.06410
+- Gao et al., *Scaling and Evaluating Sparse Autoencoders*, 2024. arXiv:2406.04093
+- Elhage et al., *Toy Models of Superposition*, 2022. arXiv:2209.10652
