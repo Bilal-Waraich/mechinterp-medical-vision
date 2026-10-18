@@ -5,8 +5,8 @@ description = "BatchTopK Sparse Autoencoder for UMedPT vision model activations"
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [
-    {name = "Nik", email = "81419030+Nikolay-Ts@users.noreply.github.com"},
-    {name = "Bilal", email = "157110822+Bilal-Waraich@users.noreply.github.com"}
+    {name = "Nikolay Tsonev", email = "81419030+Nikolay-Ts@users.noreply.github.com"},
+    {name = "Bilal Waraich", email = "157110822+Bilal-Waraich@users.noreply.github.com"}
 ]
 
 dependencies = [

@@ -13,3 +13,4 @@ __pycache__/
 data/
 output*.txt
 thesis-reference.md
+.DS_Store

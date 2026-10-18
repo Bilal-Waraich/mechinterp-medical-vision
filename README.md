@@ -8,7 +8,7 @@ This repo implements the full **Harvest → Train → Visualise** pipeline for a
 
 ## Authors
 
-- **Nik** — 81419030+Nikolay-Ts@users.noreply.github.com
-- **Bilal** — 157110822+Bilal-Waraich@users.noreply.github.com
+- **Nikolay Tsonev** — [@Nikolay-Ts](https://github.com/Nikolay-Ts)
+- **Bilal Waraich** — [@Bilal-Waraich](https://github.com/Bilal-Waraich)
 
 Fraunhofer MEVIS — Mechanistic Interpretability Group
