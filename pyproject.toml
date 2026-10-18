@@ -1,5 +1,5 @@
 [project]
-name = "sparse-auto-encoder"
+name = "mechinterp-medical-vision"
 version = "0.2.0"
 description = "BatchTopK Sparse Autoencoder for UMedPT vision model activations"
 readme = "README.md"
@@ -15,6 +15,9 @@ dependencies = [
     "torchvision",
     "safetensors>=0.4.0",
     "numpy>=1.24.0",
+
+    # ── UMedPT encoder (Fraunhofer MEVIS; non-commercial research licence) ─
+    "medicalmultitaskmodeling==1.6.3",
 
     # ── SAE training (BatchTopK reference: bartbussmann/BatchTopK) ───────
     "sae-lens>=3.0.0",
