@@ -3,6 +3,7 @@ name = "mechinterp-medical-vision"
 version = "0.2.0"
 description = "BatchTopK Sparse Autoencoder for UMedPT vision model activations"
 readme = "README.md"
+license = {text = "MIT"}
 requires-python = ">=3.11"
 authors = [
     {name = "Nikolay Tsonev", email = "81419030+Nikolay-Ts@users.noreply.github.com"},

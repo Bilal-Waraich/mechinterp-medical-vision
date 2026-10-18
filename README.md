@@ -126,6 +126,20 @@ This repository contains the `batch-topk` line of work, which is the thesis pipe
 remove large binary files and institution-internal infrastructure details, so commit hashes differ from the original
 development repository.
 
+## Licence
+
+The code in this repository is released under the [MIT licence](LICENSE).
+
+This covers only the code written for this project. It does **not** cover:
+
+- **UMedPT / MedicalMultitaskModeling**, which is installed separately and has its own non-commercial research
+  licence (see the licence note above).
+- **The datasets**, each of which has its own terms of use.
+- **The thesis PDF and the figures in `thesis/` and `docs/img/`**, which are © 2026 Bilal Waraich, shared for reading
+  and citation.
+
+Because the pipeline depends on UMedPT, any use of the whole pipeline is also bound by UMedPT's licence terms.
+
 ## Acknowledgements
 
 Developed in collaboration with [Nikolay Tsonev](https://github.com/Nikolay-Ts), with whom the dataset, activation
