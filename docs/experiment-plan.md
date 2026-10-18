@@ -169,7 +169,7 @@ loss within 2× of each other; no instability.
 
 ## Phase 3 — Universality Analysis
 
-Driven end-to-end by `nomad/xray/analysis/pipeline-batchtopk-l{2,3}.nomad`, which chains the four scripts below. Every task corresponds to a function inside `src/scripts/universality_eval.py` unless noted.
+Run end-to-end by chaining the four scripts below (the original runs used a cluster job scheduler for this). Every task corresponds to a function inside `src/scripts/universality_eval.py` unless noted.
 
 | Task | Script / function | Output |
 |---|---|---|

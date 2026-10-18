@@ -43,7 +43,7 @@ class PneumoniaDataset(Dataset):
     ----------
     data_dir : str or Path
         Path to the directory containing *.dcm files, e.g.
-        ``/deep_learning/input/data/mmm/rsna-pneumonia-detection-challenge/
+        ``$SAE_INPUT_ROOT/rsna-pneumonia-detection-challenge/
           stage_2_train_images``
 
     Attributes

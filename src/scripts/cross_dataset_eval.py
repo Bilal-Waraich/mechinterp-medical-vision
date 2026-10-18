@@ -26,12 +26,12 @@ or run scanner_latent_audit.py directly on the merged file.
 Usage
 -----
 python src/scripts/cross_dataset_eval.py \\
-    --checkpoint_dir /deep_learning/output/UMed-SAE/batch-topk/layer-2/xray-conglomerate/xray_v1/checkpoints/step_0200000 \\
-    --activations /deep_learning/output/UMed-SAE/batch-topk/layer-2/xray-conglomerate/xray_v1/activations_chexpert.safetensors:chexpert \\
-    --activations /deep_learning/output/UMed-SAE/batch-topk/layer-2/xray-conglomerate/xray_v1/activations_rsna.safetensors:rsna \\
-    --activations /deep_learning/output/UMed-SAE/batch-topk/layer-2/xray-conglomerate/xray_v1/activations_siim.safetensors:siim_covid \\
-    --activations /deep_learning/output/UMed-SAE/batch-topk/layer-2/xray-conglomerate/xray_v1/activations_tb.safetensors:tb \\
-    --output_dir /deep_learning/output/UMed-SAE/batch-topk/layer-2/xray-conglomerate/xray_v1/universality \\
+    --checkpoint_dir $SAE_OUTPUT_ROOT/batch-topk/layer-2/xray-conglomerate/xray_v1/checkpoints/step_0200000 \\
+    --activations $SAE_OUTPUT_ROOT/batch-topk/layer-2/xray-conglomerate/xray_v1/activations_chexpert.safetensors:chexpert \\
+    --activations $SAE_OUTPUT_ROOT/batch-topk/layer-2/xray-conglomerate/xray_v1/activations_rsna.safetensors:rsna \\
+    --activations $SAE_OUTPUT_ROOT/batch-topk/layer-2/xray-conglomerate/xray_v1/activations_siim.safetensors:siim_covid \\
+    --activations $SAE_OUTPUT_ROOT/batch-topk/layer-2/xray-conglomerate/xray_v1/activations_tb.safetensors:tb \\
+    --output_dir $SAE_OUTPUT_ROOT/batch-topk/layer-2/xray-conglomerate/xray_v1/universality \\
     --top_features 50 \\
     --device cuda:0
 

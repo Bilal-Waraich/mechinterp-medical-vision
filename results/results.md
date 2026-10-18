@@ -4,7 +4,7 @@
 **Checkpoint:** `step_0200000`  
 **Run:** `xray-conglomerate / xray_v2`  
 **Illness eval timestamp:** 2026-04-25  
-**Output root:** `\\fileserver\...\batch-topk\layer-3\xray-conglomerate\xray_v2\universality\`
+**Output root:** `$SAE_OUTPUT_ROOT/batch-topk/layer-3/xray-conglomerate/xray_v2/universality/`
 
 ---
 

@@ -29,15 +29,15 @@ Separate (Matryoshka jobs):
 Usage — BatchTopK (merged file)
 --------------------------------
 python src/scripts/universality_eval.py \\
-    --checkpoint_dir /deep_learning/output/UMed-SAE/batch-topk/layer-2/xray-conglomerate/xray_v1/checkpoints/step_0200000 \\
-    --merged_activations /deep_learning/output/UMed-SAE/batch-topk/layer-2/xray-conglomerate/xray_v1/activations.safetensors \\
+    --checkpoint_dir $SAE_OUTPUT_ROOT/batch-topk/layer-2/xray-conglomerate/xray_v1/checkpoints/step_0200000 \\
+    --merged_activations $SAE_OUTPUT_ROOT/batch-topk/layer-2/xray-conglomerate/xray_v1/activations.safetensors \\
     --dataset_names chexpert rsna siim_covid tb \\
-    --scanner_audit /deep_learning/output/.../audit/scanner_latent_audit.json \\
-    --label_csv chexpert:/deep_learning/input/.../CheXpert-v1.0/train.csv \\
-    --label_csv rsna:/deep_learning/input/.../stage_2_train_labels.csv \\
-    --rsna_bbox_csv /deep_learning/input/.../stage_2_train_labels.csv \\
-    --siim_bbox_csv /deep_learning/input/.../siim-covid19-detection/train_image_level.csv \\
-    --output_dir /deep_learning/output/.../universality \\
+    --scanner_audit $SAE_OUTPUT_ROOT/.../audit/scanner_latent_audit.json \\
+    --label_csv chexpert:$SAE_INPUT_ROOT/.../CheXpert-v1.0/train.csv \\
+    --label_csv rsna:$SAE_INPUT_ROOT/.../stage_2_train_labels.csv \\
+    --rsna_bbox_csv $SAE_INPUT_ROOT/.../stage_2_train_labels.csv \\
+    --siim_bbox_csv $SAE_INPUT_ROOT/.../siim-covid19-detection/train_image_level.csv \\
+    --output_dir $SAE_OUTPUT_ROOT/.../universality \\
     --device cuda:0
 
 See also

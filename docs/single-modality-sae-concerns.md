@@ -161,7 +161,7 @@ is present" rather than "what does this projection look like."
 **Codebase status:** ✅ Default raised to `pm_index=2` (Stage 3→4,
 d_model=1024, 7×7 grid) in `src/config.py`. `SAEConfig.for_pm_index()`
 handles the d_model/n_patches mapping. Layer-3 (`pm_index=3`) is also
-provisioned via `nomad/xray/layer3-batchtopk.nomad` for comparison runs.
+provisioned as a separate run for comparison.
 
 ---
 
@@ -268,7 +268,7 @@ validation via the cross-dataset probe (§1.4 of `methodology.md`).
 | 3 | Magnitude mismatch | Moderate | **High** | ✅ RMS norm + per-dataset centering |
 | 4 | Feature splitting | Moderate | **High** | ✅ Jaccard split detection in pipeline |
 | 5 | Geometric/view bias | Low | **High** | ✅ PA-only filter on CheXpert + SIIM |
-| 6 | Which stage to hook | — | — | ✅ Default `pm_index=2`; Layer-3 via separate nomad |
+| 6 | Which stage to hook | — | — | ✅ Default `pm_index=2`; Layer-3 via a separate run |
 | 7 | Dead features / heterogeneous data | Moderate | **High** | ✅ `n_batches_to_dead=25` + stratified sampling |
 | 8 | Cross-dataset b_dec drift | Moderate | **High** | ✅ Per-dataset centering + zero `b_dec` init |
 | 9 | Encoder fine-tuning confound | High | High | ⚠️ Decision required (TD-1 in experiment-plan.md) |

@@ -1,11 +1,12 @@
 r"""
 Central path configuration for all analysis scripts.
 
-Edit the paths in each section below, then all scripts will pick them up
-automatically.
+Set two environment variables and all scripts pick them up automatically:
 
-Storage root on the file server:
-    \\fileserver\share\deep_learning\output\UMed-SAE\
+    SAE_OUTPUT_ROOT   where activations, SAE checkpoints and analysis outputs live
+                      (default: ./outputs)
+    SAE_INPUT_ROOT    where the raw datasets and label CSVs live
+                      (default: ./data)
 
 X-ray experiment layout
 -----------------------
@@ -24,12 +25,7 @@ X-ray experiment layout
 import os
 from pathlib import Path
 
-# Auto-detect environment: Docker (Linux) mounts the volume at /deep_learning/output,
-# local Windows uses the network share directly.
-if os.name == "nt":
-    _ROOT = Path(r"\\fileserver\share\deep_learning\output\UMed-SAE")
-else:
-    _ROOT = Path("/deep_learning/output/UMed-SAE")
+_ROOT = Path(os.environ.get("SAE_OUTPUT_ROOT", "./outputs"))
 
 # ── Legacy (individual-dataset SAEs, Layer 2) ─────────────────────────────
 _L2 = _ROOT / "batch-topk" / "layer-2"
@@ -135,10 +131,7 @@ XRAY_MATRYOSHKA_L3 = {
 
 # ── Label CSVs (canonical class matching in universality_eval.py) ─────────
 # Pass these as: --label_csv chexpert:PATH rsna:PATH siim_covid:PATH tb:PATH
-if os.name == "nt":
-    _INPUT = Path(r"\\fileserver\share\deep_learning\input\data\mmm")
-else:
-    _INPUT = Path("/deep_learning/input/data/mmm")
+_INPUT = Path(os.environ.get("SAE_INPUT_ROOT", "./data"))
 
 XRAY_LABEL_CSVS = {
     "chexpert":   _INPUT / "chexpert" / "train.csv",
